@@ -8,4 +8,15 @@
 - Jeremy JUNAC
 - Johann MORTARA 
 
- 
+## Installation
+
+```bash
+mvn package
+```
+
+## Running the project
+
+```bash
+java -jar target/teamf-0.1-SNAPSHOT.jar
+```
+
