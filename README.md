@@ -1,4 +1,7 @@
 # :car: BlablaMove F :car:
+
+[![Build Status](https://travis-ci.org/Taken0711/blablamove-f.svg)](https://travis-ci.org/Taken0711/blablamove-f)
+
 :traffic_light: ***Projet AL SI5 V5*** :traffic_light:
 
 
