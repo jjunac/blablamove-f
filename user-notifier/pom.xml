@@ -9,8 +9,8 @@
     <name>BlablaMove :: User Notifier</name>
 
     <parent>
-        <groupId>fr.unice.polytech.si5.blablamove</groupId>
-        <artifactId>teamf</artifactId>
+        <groupId>fr.unice.polytech.al.teamf</groupId>
+        <artifactId>blablamove</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 </project>
