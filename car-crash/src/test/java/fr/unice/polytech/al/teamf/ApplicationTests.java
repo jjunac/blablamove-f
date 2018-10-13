@@ -1,4 +1,4 @@
-package hello;
+package fr.unice.polytech.al.teamf;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
