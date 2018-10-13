@@ -10,6 +10,7 @@
 
     <modules>
         <module>car-crash</module>
+        <module>commons</module>
         <module>user-notifier</module>
     </modules>
 
