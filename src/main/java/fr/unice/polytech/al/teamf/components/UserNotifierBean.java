@@ -1,7 +1,7 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.NotifyUser;
-import fr.unice.polytech.al.teamf.User;
+import fr.unice.polytech.al.teamf.entities.User;
 import org.springframework.stereotype.Component;
 
 @Component
