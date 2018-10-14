@@ -8,12 +8,6 @@
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <modules>
-        <module>car-crash</module>
-        <module>common</module>
-        <module>user-notifier</module>
-    </modules>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
