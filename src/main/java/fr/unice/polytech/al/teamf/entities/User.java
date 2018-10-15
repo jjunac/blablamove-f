@@ -1,10 +1,18 @@
 package fr.unice.polytech.al.teamf.entities;
 
-import lombok.AllArgsConstructor;
+import fr.unice.polytech.al.teamf.Parcel;
 import lombok.Data;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Data
-@AllArgsConstructor
 public class User {
-    private String name;
+    private final String name;
+    private List<Parcel> transportedPackages;
+
+    public List<User> getUsersOwningPackages(){
+        return transportedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
+    }
+
 }
