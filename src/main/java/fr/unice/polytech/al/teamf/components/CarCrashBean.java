@@ -12,9 +12,15 @@ public class CarCrashBean implements CarCrash {
     @Autowired
     NotifyUser notifyUser;
 
+    /**
+     *
+     * @param user User transporting the packages
+     */
     @Override
-    public void notifyUser() {
-        notifyUser.notifyUser(new User("Philippe"), "Hello World!");
+    public void notifyCrash(User user) {
+        for (User userToNotify : user.getUsersOwningPackages()){
+            notifyUser.notifyUser(userToNotify, String.format("%s had an accident while transporting %s's package !", user.getName(), userToNotify.getName()));
+        }
     }
     
 }
