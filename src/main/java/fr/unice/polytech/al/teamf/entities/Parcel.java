@@ -1,4 +1,4 @@
-package fr.unice.polytech.al.teamf;
+package fr.unice.polytech.al.teamf.entities;
 
 
 import fr.unice.polytech.al.teamf.entities.User;

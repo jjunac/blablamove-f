@@ -19,8 +19,12 @@ public class CarCrashBean implements CarCrash {
     @Override
     public void notifyCrash(User user) {
         for (User userToNotify : user.getUsersOwningPackages()){
-            notifyUser.notifyUser(userToNotify, String.format("%s had an accident while transporting %s's package !", user.getName(), userToNotify.getName()));
+            notifyUser.notifyUser(userToNotify, buildMessage(user.getName()));
         }
     }
-    
+
+    String buildMessage(String username) {
+        return String.format("%s had an accident while transporting your package !", username);
+    }
+
 }

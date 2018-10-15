@@ -1,6 +1,5 @@
 package fr.unice.polytech.al.teamf.entities;
 
-import fr.unice.polytech.al.teamf.Parcel;
 import lombok.Data;
 
 import java.util.List;

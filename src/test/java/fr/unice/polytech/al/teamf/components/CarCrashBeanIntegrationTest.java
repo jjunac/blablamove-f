@@ -1,7 +1,6 @@
-package fr.unice.polytech.al.teamf;
+package fr.unice.polytech.al.teamf.components;
 
-import fr.unice.polytech.al.teamf.components.CarCrashBean;
-import fr.unice.polytech.al.teamf.components.UserNotifierBean;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,13 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @Import({CarCrashBean.class, UserNotifierBean.class})
-class CarCrashBeanTest {
+class CarCrashBeanIntegrationTest {
 
     @Autowired
     private CarCrashBean carCrash;
