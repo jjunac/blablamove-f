@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.CarCrash;
+import fr.unice.polytech.al.teamf.DriverFinder;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,9 @@ public class CarCrashBean implements CarCrash {
     @Autowired
     NotifyUser notifyUser;
 
+    @Autowired
+    DriverFinder driverFinder;
+
     /**
      *
      * @param user User transporting the packages
@@ -20,6 +24,7 @@ public class CarCrashBean implements CarCrash {
     public void notifyCrash(User user) {
         for (User userToNotify : user.getUsersOwningPackages()){
             notifyUser.notifyUser(userToNotify, buildMessage(user.getName()));
+            driverFinder.findNewDriver(user);
         }
     }
 
