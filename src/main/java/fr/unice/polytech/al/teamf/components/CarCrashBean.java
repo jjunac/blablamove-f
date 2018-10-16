@@ -23,7 +23,7 @@ public class CarCrashBean implements CarCrash {
         }
     }
 
-    String buildMessage(String username) {
+    static String buildMessage(String username) {
         return String.format("%s had an accident while transporting your package !", username);
     }
 
