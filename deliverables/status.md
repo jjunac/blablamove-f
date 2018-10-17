@@ -11,7 +11,9 @@
  
 ### Prévisions semaine 42-43
 
- - ??????
+ - Implémenter une meilleure stratégie de test
+ - Développer de nouveaux services qui réalisent notre scénario car crash
+ - Rendre les mocks de nos services plus intelligents
 
 ## _Status_ semaine 40-41 
 
