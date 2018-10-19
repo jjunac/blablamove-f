@@ -14,11 +14,11 @@ import java.util.Arrays;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@Import({DriverFinderBean.class, UserNotifierBean.class})
-class DriverFinderBeanIntegrationTest {
+@Import({FindDriverBean.class, UserNotifierBean.class})
+class FindDriverBeanIntegrationTest {
 
     @Autowired
-    private DriverFinderBean driverFinder;
+    private FindDriverBean driverFinder;
 
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
@@ -33,6 +33,6 @@ class DriverFinderBeanIntegrationTest {
 
         String[] outputLines = out.toString().split("\\r?\\n");
         System.out.println(Arrays.toString(outputLines));
-        assertThat(outputLines[0]).contains("Philippe").contains(DriverFinderBean.buildMessage("Erick"));
+        assertThat(outputLines[0]).contains("Philippe").contains(FindDriverBean.buildMessage("Erick"));
     }
 }

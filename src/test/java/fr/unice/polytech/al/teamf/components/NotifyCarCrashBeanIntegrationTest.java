@@ -5,8 +5,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -17,11 +15,11 @@ import java.util.Arrays;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class})
-class CarCrashBeanIntegrationTest {
+@Import({NotifyCarCrashBean.class, UserNotifierBean.class, FindDriverBean.class})
+class NotifyCarCrashBeanIntegrationTest {
 
     @Autowired
-    private CarCrashBean carCrash;
+    private NotifyCarCrashBean carCrash;
 
     @Test
     void shouldNotifyOwnersWhenADriverHasACarCrash() {
@@ -41,7 +39,7 @@ class CarCrashBeanIntegrationTest {
 
         String[] outputLines = out.toString().split("\\r?\\n");
         System.out.println(Arrays.toString(outputLines));
-        assertThat(outputLines[0]).contains("Philippe").contains(CarCrashBean.buildMessage("Benjamin"));
-        assertThat(outputLines[1]).contains("Sebastien").contains(CarCrashBean.buildMessage("Benjamin"));
+        assertThat(outputLines[0]).contains("Philippe").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+        assertThat(outputLines[1]).contains("Sebastien").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
     }
 }

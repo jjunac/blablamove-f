@@ -1,13 +1,13 @@
 package fr.unice.polytech.al.teamf.components;
 
-import fr.unice.polytech.al.teamf.DriverFinder;
+import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DriverFinderBean implements DriverFinder {
+public class FindDriverBean implements FindDriver {
 
     @Autowired
     NotifyUser notifyUser;
