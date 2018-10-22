@@ -14,10 +14,10 @@ import java.io.PrintStream;
 
 @ExtendWith(SpringExtension.class)
 @Import(UserNotifierBean.class)
-class UserNotifierBeanTest {
+public class UserNotifierBeanTest {
 
     @Autowired
-    private UserNotifierBean userNotifierBean;
+    private  UserNotifierBean userNotifierBean;
 
     @Test
     void shouldNotifyUser() {
