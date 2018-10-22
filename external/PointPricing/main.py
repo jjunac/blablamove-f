@@ -35,7 +35,7 @@ class Users(Resource):
         return USERS
 
 
-api.add_resource(User, '/user/<string:user_name>')
+api.add_resource(User, '/users/<string:user_name>')
 api.add_resource(Users, '/users')
 
 if __name__ == '__main__':
