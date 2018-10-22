@@ -41,5 +41,6 @@ class NotifyCarCrashBeanIntegrationTest {
         System.out.println(Arrays.toString(outputLines));
         assertThat(outputLines[0]).contains("Philippe").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
         assertThat(outputLines[1]).contains("Sebastien").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+        // TODO need to test that driver finder is also called as well
     }
 }
