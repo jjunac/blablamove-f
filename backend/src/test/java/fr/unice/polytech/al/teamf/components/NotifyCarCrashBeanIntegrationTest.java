@@ -1,5 +1,6 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,11 @@ class NotifyCarCrashBeanIntegrationTest {
     @Autowired
     private NotifyCarCrashBean carCrash;
 
+    @Autowired
+    private PullNotifications pullNotifications;
+
     @Test
     void shouldNotifyOwnersWhenADriverHasACarCrash() {
-        // Mock output to make assert afterwards
-        UserNotifierBean userNotifierBeanWithMockedOutput = new UserNotifierBean();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        userNotifierBeanWithMockedOutput.printStream = new PrintStream(out);
-        carCrash.notifyUser = userNotifierBeanWithMockedOutput;
 
         User benjamin = new User("Benjamin");
         User philippe = new User("Philippe");
@@ -37,10 +36,22 @@ class NotifyCarCrashBeanIntegrationTest {
         benjamin.setTransportedPackages(Arrays.asList(p1, p2));
         carCrash.notifyCrash(benjamin);
 
-        String[] outputLines = out.toString().split("\\r?\\n");
-        System.out.println(Arrays.toString(outputLines));
-        assertThat(outputLines[0]).contains("Philippe").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
-        assertThat(outputLines[1]).contains("Sebastien").contains(NotifyCarCrashBean.buildMessage("Benjamin"));
-        // TODO need to test that driver finder is also called as well
+        assertThat(pullNotifications.pullNotificationForUser("Philippe"))
+                .asList()
+                .hasSize(2)
+                .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
+                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+
+        assertThat(pullNotifications.pullNotificationForUser("Sebastien"))
+                .asList()
+                .hasSize(2)
+                .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
+                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+
+        assertThat(pullNotifications.pullNotificationForUser("Benjamin"))
+                .asList()
+                .hasSize(2)
+                .contains(FindDriverBean.buildDriverMessage("Erick", "Philippe"))
+                .contains(FindDriverBean.buildDriverMessage("Erick", "Sebastien"));
     }
 }

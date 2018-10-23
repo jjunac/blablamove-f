@@ -1,5 +1,7 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -20,19 +20,22 @@ class FindDriverBeanIntegrationTest {
     @Autowired
     private FindDriverBean driverFinder;
 
+    @Autowired
+    private PullNotifications pullNotifications;
+
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
-        // Mock output to make assert afterwards
-        UserNotifierBean userNotifierBeanWithMockedOutput = new UserNotifierBean();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        userNotifierBeanWithMockedOutput.printStream = new PrintStream(out);
-        driverFinder.notifyUser = userNotifierBeanWithMockedOutput;
-
         User philippe = new User("Philippe");
-        driverFinder.findNewDriver(philippe);
+        User benjamin = new User("Benjamin");
+        driverFinder.findNewDriver(benjamin, new Parcel(philippe));
 
-        String[] outputLines = out.toString().split("\\r?\\n");
-        System.out.println(Arrays.toString(outputLines));
-        assertThat(outputLines[0]).contains("Philippe").contains(FindDriverBean.buildMessage("Erick"));
+        assertThat(pullNotifications.pullNotificationForUser("Philippe"))
+                .asList()
+                .hasSize(1)
+                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+        assertThat(pullNotifications.pullNotificationForUser("Benjamin"))
+                .asList()
+                .hasSize(1)
+                .contains(FindDriverBean.buildDriverMessage("Erick", "Philippe"));
     }
 }
