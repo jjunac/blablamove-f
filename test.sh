@@ -3,10 +3,12 @@
 for f in $(ls -d */)
 do
     if [ -f $f/test.sh ]; then
-        echo "entering $f"
+        echo "===== Entering $f ====="
         cd $f
-        if ! ./test.sh;then
-            exit $?
+        ./test.sh
+        return_code=$?
+        if [ $return_code -ne 0 ];then
+            exit $return_code
         fi
         cd ..
     fi

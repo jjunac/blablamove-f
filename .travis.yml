@@ -5,7 +5,7 @@ cache:
   directories:
   - "$HOME/.m2/repository"
 before_script:
-  chmod u+x ./test.sh
+  chmod -R u+x *.sh
 script:
   - ./test.sh
 notifications:
