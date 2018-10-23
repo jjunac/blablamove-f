@@ -5,7 +5,7 @@ do
     if [ -f $f/install.sh ]; then
         echo "entering $f"
         cd $f
-        ./install.sh
+        bash install.sh
         cd ..
     fi
 done
