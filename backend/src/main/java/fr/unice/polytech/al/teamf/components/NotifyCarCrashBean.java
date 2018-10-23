@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.webservices.IncidentServiceImpl;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
     @Override
     public void notifyCrash(User user) {
         logger.trace("NotifyCarCrashBean.notifyCrash");
-        for (User userToNotify : user.getUsersOwningPackages()){
-            notifyUser.notifyUser(userToNotify, buildMessage(user.getName()));
-            findDriver.findNewDriver(user);
+        for (Parcel parcel : user.getTransportedPackages()){
+            notifyUser.notifyUser(parcel.getOwner(), buildMessage(user.getName()));
+            findDriver.findNewDriver(user, parcel);
         }
     }
 
