@@ -4,6 +4,7 @@ jdk:
 cache:
   directories:
   - "$HOME/.m2/repository"
-
+script:
+  - ./test.sh
 notifications:
   email: false
