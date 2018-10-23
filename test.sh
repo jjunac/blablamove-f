@@ -5,7 +5,9 @@ do
     if [ -f $f/test.sh ]; then
         echo "entering $f"
         cd $f
-        ./test.sh
+        if ! ./test.sh;then
+            exit $?
+        fi
         cd ..
     fi
 done
