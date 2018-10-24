@@ -27,5 +27,5 @@ def request_webservice(url, method, params, output_message):
 assert request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann"}, "Johann notify a car crash")
 assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"}, "Johann is notified that Erick will take the packages")) == 2
 assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"}, "Erick is notified that he will take Johann's packages")) == 2
-assert len(request_webservice("http://localhost:8080/555", "pullNotificationForUser", {"username": "Jeremy"}, "Jeremy is notified that Johann had an accident and that Erick will take his package")) == 2
+assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"}, "Jeremy is notified that Johann had an accident and that Erick will take his package")) == 2
 assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"}, "Thomas is notified that Johann had an accident and that Erick will take his package")) == 2
