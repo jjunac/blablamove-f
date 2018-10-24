@@ -1,5 +1,22 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 42-43 
+
+:vertical_traffic_light: **Green** 
+
+ - Implémentation des services externes d'assurance et de reroutage
+ - Implémentation des Web Services qui gère les problèmes (point d'entrée du système) et envoie les notifications
+ - Mise en place de tests fonctionnels pour les Web Services
+ - Début d'implémentation de la gestion des points
+ 
+ ### Prévisions semaine 43-44
+
+ - Ajout d'un composant Registry pour accéder et éditer les données
+ - Mise en place de la persistance
+ - Continuer l'implémentation de la gestion des points
+ - Mise en place du docker-compose
+ - Amélioration de nos suites de test
+
 ## _Status_ semaine 41-42 
 
 :vertical_traffic_light: **Green**  
