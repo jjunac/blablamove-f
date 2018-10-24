@@ -14,18 +14,14 @@ import java.io.PrintStream;
 
 @ExtendWith(SpringExtension.class)
 @Import(UserNotifierBean.class)
-class UserNotifierBeanTest {
+public class UserNotifierBeanTest {
 
     @Autowired
-    private UserNotifierBean userNotifierBean;
+    private  UserNotifierBean userNotifierBean;
 
     @Test
     void shouldNotifyUser() {
-        // Mocking output
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        userNotifierBean.printStream = new PrintStream(out);
-
-        userNotifierBean.notifyUser(new User("Clara"), "This is a test message");
-        assertThat(out.toString()).contains("Clara").contains("This is a test message");
+        userNotifierBean.notifyUser(new User("Jean-Yves (Delmotte)"), "This is a test message");
+        assertThat(userNotifierBean.pullNotificationForUser("Jean-Yves (Delmotte)")).contains("This is a test message");
     }
 }

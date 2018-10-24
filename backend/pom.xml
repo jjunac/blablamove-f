@@ -74,6 +74,12 @@
             <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- jsonrpc4j -->
+        <dependency>
+            <groupId>com.github.briandilley.jsonrpc4j</groupId>
+            <artifactId>jsonrpc4j</artifactId>
+            <version>1.5.3</version>
+        </dependency>
     </dependencies>
 
     <build>
