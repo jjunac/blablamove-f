@@ -2,4 +2,4 @@
 
 set -e
 mvn install
-pip install requests
+python3 -m pip install requests
