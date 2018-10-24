@@ -1,0 +1,31 @@
+version: '3.2'
+
+services:
+  blablamove:
+    build: ./backend
+    image: blablamove
+    container_name: blablamove
+    depends_on:
+      - "insurance"
+      - "point_pricing"
+      - "route_finder"
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    stdin_open: true
+  insurance:
+    build: ./external/Insurance
+    image: insurance
+    container_name: insurance
+    stdin_open: true
+  point_pricing:
+    build: ./external/PointPricing
+    image: point_pricing
+    container_name: point_pricing
+    stdin_open: true
+  route_finder:
+    build: ./external/RouteFinder
+    image: route_finder
+    container_name: route_finder
+    stdin_open: true
