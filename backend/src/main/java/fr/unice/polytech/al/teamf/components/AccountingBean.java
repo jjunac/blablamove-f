@@ -6,6 +6,7 @@ import fr.unice.polytech.al.teamf.entities.User;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,7 +35,7 @@ public class AccountingBean implements ComputePoints {
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
                 user.setPoints(nbPoints);
             }
-        } catch (ResourceAccessException e) {
+        } catch (ResourceAccessException | HttpClientErrorException e) {
             System.out.println("Impossible to reach accounting server.");
         } catch (IOException e) {
             e.printStackTrace();
