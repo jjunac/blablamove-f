@@ -1,12 +1,14 @@
 language: java
 jdk:
   - oraclejdk8
+python:
+  - "3.6"
 cache:
   directories:
-  - "$HOME/.m2/repository"
+    - "$HOME/.m2/repository"
 before_script:
-  chmod -R +x *.sh
+  - bash install.sh
 script:
-  - ./test.sh
+  - bash test.sh
 notifications:
   email: false
