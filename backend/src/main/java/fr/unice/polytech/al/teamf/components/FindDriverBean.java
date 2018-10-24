@@ -18,7 +18,8 @@ public class FindDriverBean implements FindDriver {
         // Mocking new user
         User newDriver = new User("Erick");
         notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newDriver.getName()));
-        notifyUser.notifyUser(currentDriver, buildDriverMessage(newDriver.getName(), parcel.getOwner().getName()));
+        notifyUser.notifyUser(currentDriver, buildCurrentDriverMessage(newDriver.getName(), parcel.getOwner().getName()));
+        notifyUser.notifyUser(newDriver, buildNewDriverMessage(parcel.getOwner().getName(), currentDriver.getName()));
         return newDriver;
 
     }
@@ -27,8 +28,12 @@ public class FindDriverBean implements FindDriver {
         return String.format("%s is taking your package !", newDriverName);
     }
 
-    static String buildDriverMessage(String newDriverName, String ownerName) {
+    static String buildCurrentDriverMessage(String newDriverName, String ownerName) {
         return String.format("%s is taking %s's package !", newDriverName, ownerName);
+    }
+
+    static String buildNewDriverMessage(String currentDriverName, String ownerName) {
+        return String.format("You will take %s's package in %s's car !", ownerName, currentDriverName);
     }
 
 }
