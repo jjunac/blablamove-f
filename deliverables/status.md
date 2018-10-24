@@ -16,12 +16,13 @@
  - Continuer l'implémentation de la gestion des points
  - Mise en place du docker-compose
  - Amélioration de nos suites de test
+ - Réflexions sur l'utilisation d'un broker de messages
 
 ## _Status_ semaine 41-42 
 
 :vertical_traffic_light: **Green**  
 
- - Justification du diagramme de composant
+ - Justification du diagramme de composants
  - Mise en place de la pile technologique (Spring)
  - Walking skeleton du composant qui pose problème, à savoir UserNotifier + 2 composants qui l'appellent
  - Tests unitaires + tests d'intégrations basiques pour vérifier le walking skeleton 
