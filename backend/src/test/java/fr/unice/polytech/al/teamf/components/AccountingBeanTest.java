@@ -19,15 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Import({AccountingBean.class, RestTemplate.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 5000)
-class AccountingBeanIntegrationTest {
+class AccountingBeanTest {
 
     @Autowired
     private AccountingBean accountingBean;
 
     @BeforeEach
     public void setUp() {
-        stubFor(put(urlPathMatching("/users/Jerome.*")).willReturn(aResponse().withStatus(201)));
-        stubFor(put(urlPathMatching("/users/Julien.*")).willReturn(aResponse().withStatus(404)));
+        stubFor(put(urlPathEqualTo("/users/Jerome")).willReturn(aResponse().withStatus(201)));
+        stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse().withStatus(404)));
     }
 
     @Test
