@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -51,7 +49,12 @@ class NotifyCarCrashBeanIntegrationTest {
         assertThat(pullNotifications.pullNotificationForUser("Benjamin"))
                 .asList()
                 .hasSize(2)
-                .contains(FindDriverBean.buildDriverMessage("Erick", "Philippe"))
-                .contains(FindDriverBean.buildDriverMessage("Erick", "Sebastien"));
+                .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"))
+                .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Sebastien"));
+        assertThat(pullNotifications.pullNotificationForUser("Erick"))
+                .asList()
+                .hasSize(2)
+                .contains(FindDriverBean.buildNewDriverMessage("Philippe", "Benjamin"))
+                .contains(FindDriverBean.buildNewDriverMessage("Sebastien", "Benjamin"));
     }
 }

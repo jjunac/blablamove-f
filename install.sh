@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 for f in $(ls -d */)
 do
     if [ -f $f/install.sh ]; then

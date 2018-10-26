@@ -1,12 +1,17 @@
 language: java
 jdk:
   - oraclejdk8
+python:
+  - "3.6"
 cache:
   directories:
-  - "$HOME/.m2/repository"
+    - "$HOME/.m2/repository"
+before_install:
+  - sudo apt-get -y install python3-pip python-dev
+  - sudo pip3 install requests==2.20.0
 before_script:
-  chmod -R +x *.sh
+  - bash install.sh
 script:
-  - ./test.sh
+  - bash test.sh
 notifications:
   email: false

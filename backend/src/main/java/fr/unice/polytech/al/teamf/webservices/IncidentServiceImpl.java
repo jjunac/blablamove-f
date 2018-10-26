@@ -21,12 +21,15 @@ public class IncidentServiceImpl implements IncidentService {
 
     Map<String, User> users = new HashMap<>();
     {
-        users.put("Thomas", new User("Thomas"));
-        users.put("Loic", new User("Loic"));
+        User thomas = new User("Thomas");
+        users.put("Thomas", thomas);
+        User loic = new User("Loic");
+        users.put("Loic", loic);
         User jeremy = new User("Jeremy");
         users.put("Jeremy", jeremy);
         User johann = new User("Johann");
         johann.addTransportedPackage(new Parcel(jeremy));
+        johann.addTransportedPackage(new Parcel(thomas));
         users.put("Johann", johann);
     }
 

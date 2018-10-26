@@ -14,12 +14,12 @@
 ## Installation
 
 ```bash
-mvn package
+./install.sh
 ```
 
-## Running the project
+## Running the tests
 
 ```bash
-java -jar target/teamf-0.1-SNAPSHOT.jar
+./test.sh
 ```
 

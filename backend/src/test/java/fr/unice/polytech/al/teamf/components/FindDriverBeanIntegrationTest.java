@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -36,6 +34,10 @@ class FindDriverBeanIntegrationTest {
         assertThat(pullNotifications.pullNotificationForUser("Benjamin"))
                 .asList()
                 .hasSize(1)
-                .contains(FindDriverBean.buildDriverMessage("Erick", "Philippe"));
+                .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"));
+        assertThat(pullNotifications.pullNotificationForUser("Erick"))
+                .asList()
+                .hasSize(1)
+                .contains(FindDriverBean.buildNewDriverMessage("Philippe", "Benjamin"));
     }
 }
