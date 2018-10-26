@@ -22,12 +22,13 @@ parser.add_argument('points')
 class User(Resource):
     def get(self, user_name):
         abort_if_user_doesnt_exist(user_name)
-        return USERS[user_name]
+        return USERS[user_name], 200
 
     def put(self, user_name):
         args = parser.parse_args()
-        USERS[user_name]["points"] = int(args["points"])
-        return USERS[user_name], 201
+        abort_if_user_doesnt_exist(user_name)
+        USERS[user_name]["points"] += int(args["points"])
+        return USERS[user_name]["points"], 201
 
 
 class Users(Resource):

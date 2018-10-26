@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 @Data
 public class User {
     private final String name;
-    private int points = 0;
     private List <Parcel> transportedPackages = new LinkedList <>();
 
     public boolean addTransportedPackage(Parcel parcel) {
@@ -24,11 +23,4 @@ public class User {
         return transportedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
     }
 
-    public void addPoints(int nbPoints) {
-        points += nbPoints;
-    }
-
-    public int getPoints() {
-        return points;
-    }
 }
