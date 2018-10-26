@@ -8,7 +8,6 @@ cache:
     - "$HOME/.m2/repository"
 before_install:
   - sudo apt-get -y install python3-pip python-dev
-  - sudo pip3 install requests==2.20.0
 before_script:
   - bash install.sh
 script:
