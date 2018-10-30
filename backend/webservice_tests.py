@@ -2,8 +2,12 @@
 
 import requests
 
-rpc_id = 0
+RED = "\033[91m"
+GREEN = "\033[92m"
+WHITE = "\033[00m"
+YELLOW = "\033[93m"
 
+rpc_id = 0
 
 def rpc_call(url, method, params):
     global rpc_id
@@ -12,20 +16,36 @@ def rpc_call(url, method, params):
     response_object = res.json()
     return response_object.get("result", None), response_object.get("error", None), res.status_code
 
-
-def request_webservice(url, method, params, output_message):
-    print("#===== %s =====#" % output_message)
+def request_webservice(url, method, params):
     res, err, status = rpc_call(url, method, params)
     if err:
-        print("Error %d: %s" % (status, err))
+        print("\tError %d: %s" % (status, err))
         exit(status)
-    print("Response: %s" % res)
-    print()
+    print("\tResponse: %s" % res)
     return res
-    
 
-assert request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann"}, "Johann notify a car crash")
-assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"}, "Johann is notified that Erick will take the packages")) == 2
-assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"}, "Erick is notified that he will take Johann's packages")) == 2
-assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"}, "Jeremy is notified that Johann had an accident and that Erick will take his package")) == 2
-assert len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"}, "Thomas is notified that Johann had an accident and that Erick will take his package")) == 2
+def print_color(text, color): print(color, text, WHITE)
+
+def step(title): print_color("#=== %s ===#" % title, YELLOW)
+
+def assert_equals(expected, actual):
+    res = expected == actual
+    print("\tResult:", end="")
+    print_color("OK", GREEN) if res else print_color("ERROR", RED)
+    print()
+    assert res
+
+step("Johann notify a car crash")
+assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann"}))
+
+step("Johann is notified that Erick will take the packages")
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
+
+step("Erick is notified that he will take Johann's packages")
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})))
+
+step("Jeremy is notified that Johann had an accident and that Erick will take his package")
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+
+step("Thomas is notified that Johann had an accident and that Erick will take his package")
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
