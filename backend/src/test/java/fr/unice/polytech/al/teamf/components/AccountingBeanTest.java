@@ -36,13 +36,13 @@ class AccountingBeanTest {
     void shouldChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
         User user = new User("Jerome");
         Mission mission = new Mission(user, 20);
-        assertEquals(30, accountingBean.computePoints(user, mission));
+        assertEquals(30, accountingBean.computePoints(mission));
     }
 
     @Test
     void shouldNotChangeTheNumberOfPointsOfTheUser() {
         User user = new User("Julien");
         Mission mission = new Mission(user, 20);
-        assertThrows(UnknownUserException.class, () -> accountingBean.computePoints(user, mission));
+        assertThrows(UnknownUserException.class, () -> accountingBean.computePoints(mission));
     }
 }

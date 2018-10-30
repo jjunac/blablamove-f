@@ -4,18 +4,22 @@ import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FindPackageHostBean implements FindPackageHost {
+
     @Autowired
     NotifyUser notifyUser;
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public User findHost(Parcel parcel) {
         // Mocking new Host user
-        User newHost = new User("Camille");
+        User newHost = userRepository.findByName("Julien").get(0);
         notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newHost.getName()));
         notifyUser.notifyUser(newHost, buildHostMessage(parcel.getOwner().getName()));
         return newHost;
