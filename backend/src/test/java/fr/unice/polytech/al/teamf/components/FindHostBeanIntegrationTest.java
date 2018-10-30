@@ -24,13 +24,14 @@ class FindHostBeanIntegrationTest {
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
         User paulette = new User("Paulette");
+        User julien = new User("Julien");
         hostFinder.findHost(new Parcel(paulette));
 
-        assertThat(pullNotifications.pullNotificationForUser("Paulette"))
+        assertThat(pullNotifications.pullNotificationForUser(paulette))
                 .asList()
                 .hasSize(1)
-                .contains(FindPackageHostBean.buildOwnerMessage("Camille"));
-        assertThat(pullNotifications.pullNotificationForUser("Camille"))
+                .contains(FindPackageHostBean.buildOwnerMessage("Julien"));
+        assertThat(pullNotifications.pullNotificationForUser(julien))
                 .asList()
                 .hasSize(1)
                 .contains(FindPackageHostBean.buildHostMessage("Paulette"));

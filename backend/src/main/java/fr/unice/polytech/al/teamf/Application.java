@@ -38,6 +38,10 @@ public class Application implements CommandLineRunner {
         userRepository.save(jeremy);
         User johann = new User("Johann");
         userRepository.save(johann);
+        User erick = new User("Erick");
+        userRepository.save(erick);
+        User julien = new User("Julien");
+        userRepository.save(julien);
 
         Parcel parcel1 = new Parcel(jeremy);
         johann.addTransportedPackage(parcel1);

@@ -25,17 +25,18 @@ class FindDriverBeanIntegrationTest {
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
         User philippe = new User("Philippe");
         User benjamin = new User("Benjamin");
+        User erick = new User("Erick");
         driverFinder.findNewDriver(benjamin, new Parcel(philippe));
 
-        assertThat(pullNotifications.pullNotificationForUser("Philippe"))
+        assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
                 .hasSize(1)
                 .contains(FindDriverBean.buildOwnerMessage("Erick"));
-        assertThat(pullNotifications.pullNotificationForUser("Benjamin"))
+        assertThat(pullNotifications.pullNotificationForUser(benjamin))
                 .asList()
                 .hasSize(1)
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"));
-        assertThat(pullNotifications.pullNotificationForUser("Erick"))
+        assertThat(pullNotifications.pullNotificationForUser(erick))
                 .asList()
                 .hasSize(1)
                 .contains(FindDriverBean.buildNewDriverMessage("Philippe", "Benjamin"));
