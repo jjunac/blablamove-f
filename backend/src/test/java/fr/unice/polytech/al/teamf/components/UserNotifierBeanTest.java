@@ -21,7 +21,8 @@ public class UserNotifierBeanTest {
 
     @Test
     void shouldNotifyUser() {
-        userNotifierBean.notifyUser(new User("Jean-Yves (Delmotte)"), "This is a test message");
-        assertThat(userNotifierBean.pullNotificationForUser("Jean-Yves (Delmotte)")).contains("This is a test message");
+        User jyd = new User("Jean-Yves (Delmotte)");
+        userNotifierBean.notifyUser(jyd, "This is a test message");
+        assertThat(userNotifierBean.pullNotificationForUser(jyd)).contains("This is a test message");
     }
 }

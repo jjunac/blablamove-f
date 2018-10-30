@@ -24,6 +24,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private List <Parcel> ownedPackages = new LinkedList <>();
 
+    @OneToMany(mappedBy = "user")
+    private List <Notification> notifications = new LinkedList <>();
+
     private String name;
 
     public User(String name) {
@@ -49,6 +52,14 @@ public class User implements Serializable {
 
     public boolean removeOwnedPackage(Parcel parcel) {
         return ownedPackages.remove(parcel);
+    }
+
+    public boolean addNotification(Notification notification) {
+        return notifications.add(notification);
+    }
+
+    public void clearNotifications() {
+        notifications.clear();
     }
 
     @Override
