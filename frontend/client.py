@@ -1,7 +1,6 @@
 from time import sleep
 
 import requests
-import readline
 from argparse import ArgumentParser
 
 rpc_id = 0
@@ -63,17 +62,6 @@ def wait_notifications():
             print(e)
             exit(1)
 
-
-def completer(text, state):
-    options = [i for i in commands if i.startswith(text)]
-    if state < len(options):
-        return options[state]
-    else:
-        return None
-
-
-readline.parse_and_bind("tab: complete")
-readline.set_completer(completer)
 
 commands = {"help": help, "exit": quit, "notify_car_crash": notify_car_crash,
             "pull_notification": pull_notification_for_user,
