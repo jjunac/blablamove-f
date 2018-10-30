@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 public class AccountingBean implements ComputePoints {
 
     @Override
-    public int computePoints(User user, Mission mission) throws UnknownUserException {
+    public int computePoints(Mission mission) throws UnknownUserException {
         int newNbPoints = mission.getRetribution();
-        return modifyPointsOfUser(user, newNbPoints);
+        return modifyPointsOfUser(mission.getDriver(), newNbPoints);
     }
 
     private int modifyPointsOfUser(User user, int nbPoints) throws UnknownUserException {
