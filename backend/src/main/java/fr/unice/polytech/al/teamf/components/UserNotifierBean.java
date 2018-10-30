@@ -28,6 +28,7 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
     @Override
     public List<String> pullNotificationForUser(String username) {
         logger.info(String.format("%s is pulling its notifications", username));
+        logger.info(userNotifications.toString());
         List<String> res = userNotifications.remove(username);
         return res != null ? res : new LinkedList<>();
     }

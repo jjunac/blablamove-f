@@ -5,6 +5,7 @@ import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.components.UserNotifierBean;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import java.util.Map;
 public class IncidentServiceImpl implements IncidentService {
 
     private final Logger logger = LoggerFactory.getLogger(IncidentServiceImpl.class);
+
+    @Autowired
+    UserRepository userRepository;
 
     Map<String, User> users = new HashMap<>();
     {
@@ -39,7 +43,8 @@ public class IncidentServiceImpl implements IncidentService {
     @Override
     public boolean notifyCarCrash(String username) {
         logger.trace("IncidentServiceImpl.notifyCarCrash");
-        notifyCarCrash.notifyCrash(users.get(username));
+        // For the POC, assume the existence and the unicity
+        notifyCarCrash.notifyCrash(userRepository.findByName(username).get(0));
         return true;
     }
 }

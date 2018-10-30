@@ -1,12 +1,26 @@
 package fr.unice.polytech.al.teamf.entities;
 
 
-import fr.unice.polytech.al.teamf.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
-public class Parcel {
-    User owner;
+@Entity
+@NoArgsConstructor
+public class Parcel implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @ManyToOne
+    private User owner;
+
+    public Parcel(User owner) {
+        this.owner = owner;
+    }
 }
