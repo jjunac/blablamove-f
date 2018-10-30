@@ -43,8 +43,11 @@ public class IncidentServiceImpl implements IncidentService {
     @Override
     public boolean notifyCarCrash(String username) {
         logger.trace("IncidentServiceImpl.notifyCarCrash");
+        logger.debug(userRepository.findAll().toString());
         // For the POC, assume the existence and the unicity
-        notifyCarCrash.notifyCrash(userRepository.findByName(username).get(0));
+        User user = userRepository.findByName(username).get(0);
+        logger.debug(user.toString());
+        notifyCarCrash.notifyCrash(user);
         return true;
     }
 }

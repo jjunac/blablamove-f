@@ -1,10 +1,8 @@
 package fr.unice.polytech.al.teamf.entities;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,8 +17,11 @@ public class Parcel implements Serializable {
 
     @ManyToOne
     private User owner;
+    @ManyToOne
+    private User transporter;
 
     public Parcel(User owner) {
         this.owner = owner;
+        owner.addOwnedPackage(this);
     }
 }
