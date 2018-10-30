@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import fr.unice.polytech.al.teamf.ComputePoints;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
@@ -11,19 +12,20 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 @Component
 public class AccountingBean implements ComputePoints {
 
     @Override
-    public int computePoints(User user, Mission mission) {
+    public int computePoints(User user, Mission mission) throws UnknownUserException {
         int newNbPoints = mission.getRetribution();
-        modifyPointsOfUser(user, newNbPoints);
-        return mission.getRetribution();
+        return modifyPointsOfUser(user, newNbPoints);
     }
 
-    private void modifyPointsOfUser(User user, int nbPoints) {
+    private int modifyPointsOfUser(User user, int nbPoints) throws UnknownUserException {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
                 .fromHttpUrl(String.format("http://localhost:5000/users/%s", user.getName()))
                 .queryParam("points", nbPoints);
@@ -33,13 +35,14 @@ public class AccountingBean implements ComputePoints {
                     null,
                     clientHttpResponse -> clientHttpResponse);
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
-                user.setPoints(nbPoints);
+                return Integer.parseInt(new BufferedReader(new InputStreamReader(queryResponse.getBody())).readLine());
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
             System.out.println("Impossible to reach accounting server.");
         } catch (IOException e) {
             e.printStackTrace();
         }
+        throw new UnknownUserException(user);
     }
 
 

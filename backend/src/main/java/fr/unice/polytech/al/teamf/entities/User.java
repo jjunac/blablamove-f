@@ -2,7 +2,6 @@ package fr.unice.polytech.al.teamf.entities;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,7 +21,6 @@ public class User implements Serializable {
     private List <Parcel> transportedPackages = new LinkedList <>();
 
     private String name;
-    private int points = 0;
 
     public User(String name) {
         this.name = name;
@@ -40,11 +38,4 @@ public class User implements Serializable {
         return transportedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
     }
 
-    public void addPoints(int nbPoints) {
-        points += nbPoints;
-    }
-
-    public int getPoints() {
-        return points;
-    }
 }

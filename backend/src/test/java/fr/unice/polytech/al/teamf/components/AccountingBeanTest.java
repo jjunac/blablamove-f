@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @Import({AccountingBean.class, RestTemplate.class})
@@ -26,25 +28,21 @@ class AccountingBeanTest {
 
     @BeforeEach
     public void setUp() {
-        stubFor(put(urlPathEqualTo("/users/Jerome")).willReturn(aResponse().withStatus(201)));
+        stubFor(put(urlPathEqualTo("/users/Jerome")).willReturn(aResponse().withBody("30").withStatus(201)));
         stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse().withStatus(404)));
     }
 
     @Test
-    void shouldChangeTheNumberOfPointsOfTheUser() {
+    void shouldChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
         User user = new User("Jerome");
-        user.setPoints(10);
         Mission mission = new Mission(user, 20);
-        accountingBean.computePoints(user, mission);
-        assertEquals(20, user.getPoints());
+        assertEquals(30, accountingBean.computePoints(user, mission));
     }
 
     @Test
     void shouldNotChangeTheNumberOfPointsOfTheUser() {
         User user = new User("Julien");
-        user.setPoints(10);
         Mission mission = new Mission(user, 20);
-        accountingBean.computePoints(user, mission);
-        assertEquals(10, user.getPoints());
+        assertThrows(UnknownUserException.class, () -> accountingBean.computePoints(user, mission));
     }
 }
