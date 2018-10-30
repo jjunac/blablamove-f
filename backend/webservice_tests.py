@@ -48,7 +48,7 @@ step("Erick is notified that he will take Johann's packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})))
 
 step("Jeremy is notified that Johann had an accident and that Erick will take his package")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Thomas is notified that Johann had an accident and that Erick will take his package")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
