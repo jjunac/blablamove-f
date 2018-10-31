@@ -7,15 +7,16 @@
  - Prise de conscience que le Registry n'était pas nécessaire
  - Persistance des principaux objets du système
  - Docker-compose (sans la BD)
- - Amélioration de notre suite de tests (intégrations + fonctionnels)
+ - Amélioration de notre suite de tests (intégration + fonctionnels)
+ - Implémentation de la gestion des points (Web Service + composant + service externe)
  - Début de l'implémentation du client
  
  ### Prévisions semaine 44-45
 
  - Fin de la persistance
- - Ajout d'une messaging queue
- - Ajout de la BD et de la messaging queue dans le docker-compose
- - Fin du client + tests end-to-end (client -> backend -> external -> backend -> client)
+ - Ajout d'une _messaging queue_
+ - Ajout de la BD et de la _messaging queue_ dans le docker-compose
+ - Fin du client + tests _end-to-end_ (client → backend → external → backend → client)
 
 ## _Status_ semaine 42-43 
 
