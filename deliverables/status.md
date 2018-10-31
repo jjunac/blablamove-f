@@ -1,5 +1,22 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 43-44 
+
+:vertical_traffic_light: **Green** 
+
+ - Prise de conscience que le Registry n'était pas nécessaire
+ - Persistance des principaux objets du système
+ - Docker-compose (sans la BD)
+ - Amélioration de notre suite de tests (intégrations + fonctionnels)
+ - Début de l'implémentation du client
+ 
+ ### Prévisions semaine 44-45
+
+ - Fin de la persistance
+ - Ajout d'une messaging queue
+ - Ajout de la BD et de la messaging queue dans le docker-compose
+ - Fin du client + tests end-to-end (client -> backend -> external -> backend -> client)
+
 ## _Status_ semaine 42-43 
 
 :vertical_traffic_light: **Green** 
