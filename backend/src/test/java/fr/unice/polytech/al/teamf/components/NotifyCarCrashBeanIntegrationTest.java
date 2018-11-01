@@ -1,11 +1,13 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -13,9 +15,10 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DataJpaTest
 @ExtendWith(SpringExtension.class)
 @Import({NotifyCarCrashBean.class, UserNotifierBean.class, FindDriverBean.class})
-class NotifyCarCrashBeanIntegrationTest {
+class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private NotifyCarCrashBean carCrash;
@@ -26,13 +29,13 @@ class NotifyCarCrashBeanIntegrationTest {
     @Test
     void shouldNotifyOwnersWhenADriverHasACarCrash() {
 
-        User benjamin = new User("Benjamin");
-        User philippe = new User("Philippe");
-        User sebastien = new User("Sebastien");
-        User erick = new User("Erick");
-        Parcel p1 = new Parcel(philippe);
-        Parcel p2 = new Parcel(sebastien);
-        benjamin.setTransportedPackages(Arrays.asList(p1, p2));
+        User benjamin = createAndSaveUser("Benjamin");
+        User philippe = createAndSaveUser("Philippe");
+        User sebastien = createAndSaveUser("Sebastien");
+        User erick = userRepository.findByName("Erick").get(0);
+        Parcel p1 = createAndSaveParcel(philippe, benjamin);
+        Parcel p2 = createAndSaveParcel(sebastien, benjamin);
+
         carCrash.notifyCrash(benjamin);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
@@ -55,7 +58,7 @@ class NotifyCarCrashBeanIntegrationTest {
         assertThat(pullNotifications.pullNotificationForUser(erick))
                 .asList()
                 .hasSize(2)
-                .contains(FindDriverBean.buildNewDriverMessage("Philippe", "Benjamin"))
-                .contains(FindDriverBean.buildNewDriverMessage("Sebastien", "Benjamin"));
+                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"))
+                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
     }
 }

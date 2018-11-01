@@ -1,32 +1,35 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
-import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DataJpaTest
 @ExtendWith(SpringExtension.class)
 @Import({FindDriverBean.class, UserNotifierBean.class})
-class FindDriverBeanIntegrationTest {
+class FindDriverBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private FindDriverBean driverFinder;
-
     @Autowired
     private PullNotifications pullNotifications;
 
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
-        User philippe = new User("Philippe");
-        User benjamin = new User("Benjamin");
-        User erick = new User("Erick");
-        driverFinder.findNewDriver(benjamin, new Parcel(philippe));
+        System.out.println(driverFinder);
+        User philippe = createAndSaveUser("Philippe");
+        User benjamin = createAndSaveUser("Benjamin");
+        // Get the mocked new driver
+        User erick = userRepository.findByName("Erick").get(0);
+        driverFinder.findNewDriver(benjamin, createAndSaveParcel(philippe, benjamin));
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
@@ -39,6 +42,6 @@ class FindDriverBeanIntegrationTest {
         assertThat(pullNotifications.pullNotificationForUser(erick))
                 .asList()
                 .hasSize(1)
-                .contains(FindDriverBean.buildNewDriverMessage("Philippe", "Benjamin"));
+                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"));
     }
 }

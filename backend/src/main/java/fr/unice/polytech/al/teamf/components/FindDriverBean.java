@@ -27,7 +27,7 @@ public class FindDriverBean implements FindDriver {
         User newDriver = userRepository.findByName("Erick").get(0);
         notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newDriver.getName()));
         notifyUser.notifyUser(currentDriver, buildCurrentDriverMessage(newDriver.getName(), parcel.getOwner().getName()));
-        notifyUser.notifyUser(newDriver, buildNewDriverMessage(parcel.getOwner().getName(), currentDriver.getName()));
+        notifyUser.notifyUser(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()));
         return newDriver;
 
     }

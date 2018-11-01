@@ -1,19 +1,22 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DataJpaTest
 @ExtendWith(SpringExtension.class)
 @Import({FindPackageHostBean.class, UserNotifierBean.class})
-class FindHostBeanIntegrationTest {
+class FindHostBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private FindPackageHostBean hostFinder;
@@ -23,9 +26,12 @@ class FindHostBeanIntegrationTest {
 
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
-        User paulette = new User("Paulette");
-        User julien = new User("Julien");
-        hostFinder.findHost(new Parcel(paulette));
+        User paulette = createAndSaveUser("Paulette");
+        User georgette = createAndSaveUser("Georgette");
+        User julien = userRepository.findByName("Julien").get(0);
+        hostFinder.findHost(createAndSaveParcel(paulette, georgette));
+
+        // FIXME test that the current transporter is notified
 
         assertThat(pullNotifications.pullNotificationForUser(paulette))
                 .asList()
