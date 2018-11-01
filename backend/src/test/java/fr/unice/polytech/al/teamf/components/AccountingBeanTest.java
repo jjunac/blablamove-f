@@ -28,21 +28,23 @@ class AccountingBeanTest {
 
     @BeforeEach
     public void setUp() {
-        stubFor(put(urlPathEqualTo("/users/Jerome")).willReturn(aResponse().withBody("30").withStatus(201)));
+        /* Returns the value after modification */
+        stubFor(put(urlPathEqualTo("/users/Erick")).willReturn(aResponse().withBody("30").withStatus(201)));
         stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse().withStatus(404)));
     }
 
     @Test
     void shouldChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
-        User user = new User("Jerome");
+        /* We suppose Erick has 10 points before the test */
+        User user = new User("Erick");
         Mission mission = new Mission(user, 20);
         assertEquals(30, accountingBean.computePoints(mission));
     }
 
     @Test
-    void shouldNotChangeTheNumberOfPointsOfTheUser() {
+    void shouldNotChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
         User user = new User("Julien");
         Mission mission = new Mission(user, 20);
-        assertThrows(UnknownUserException.class, () -> accountingBean.computePoints(mission));
+        assertEquals(0, accountingBean.computePoints(mission));
     }
 }

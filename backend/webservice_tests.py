@@ -52,3 +52,9 @@ assert_equals(2, len(request_webservice("http://localhost:8080/notification", "p
 
 step("Thomas is notified that Johann had an accident and that Erick will take his package")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+
+step("The package is dropped and Erick earns points")
+nb_points_before = requests.get("http://localhost:5000/users/Erick").json().get("points", None)
+assert_equals(True, request_webservice("http://localhost:8080/drop", "computePoints", {"mission": 1}))
+nb_points_after = requests.get("http://localhost:5000/users/Erick").json().get("points", None)
+assert_equals(True, nb_points_after > nb_points_before)

@@ -5,8 +5,9 @@ app = Flask(__name__)
 api = Api(app)
 
 USERS = {
-    'Stephane': {'points': 4},
-    'Jerome': {'points': 10}
+    'Erick': {'points': 10},
+    'Johann': {'points': 5},
+    'Loic': {'points': 1}
 }
 
 

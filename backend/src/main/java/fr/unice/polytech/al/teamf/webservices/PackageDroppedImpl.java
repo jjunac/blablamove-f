@@ -20,15 +20,21 @@ import java.util.Map;
 public class PackageDroppedImpl implements PackageDropped {
 
     private final Logger logger = LoggerFactory.getLogger(PackageDroppedImpl.class);
+    private final Map<Integer, Mission> missions = new HashMap<>();
+    {
+        missions.put(1, new Mission(new User("Erick"), 20));
+    }
 
     @Autowired
     ComputePoints computePoints;
 
     @Override
-    public boolean computePoints(Mission mission) {
+    public boolean computePoints(int missionId) {
         logger.trace("PackageDroppedImpl.computePoints");
         try {
+            Mission mission = missions.get(missionId);
             computePoints.computePoints(mission);
+            return true;
         } catch (UnknownUserException e) {
             logger.error(e.getMessage());
         }

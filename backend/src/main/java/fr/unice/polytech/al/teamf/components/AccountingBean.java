@@ -36,13 +36,15 @@ public class AccountingBean implements ComputePoints {
                     clientHttpResponse -> clientHttpResponse);
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
                 return Integer.parseInt(new BufferedReader(new InputStreamReader(queryResponse.getBody())).readLine());
+            } else if (queryResponse.getStatusCode().is4xxClientError()){
+                throw new UnknownUserException(user);
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
             System.out.println("Impossible to reach accounting server.");
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new UnknownUserException(user);
+        return 0; // handle this properly
     }
 
 
