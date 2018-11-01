@@ -29,3 +29,6 @@ services:
     image: route_finder
     container_name: route_finder
     stdin_open: true
+  database:
+    image: 1000kit/h2
+    stdin_open: true
