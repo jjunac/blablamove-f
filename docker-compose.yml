@@ -9,6 +9,7 @@ services:
       - "insurance"
       - "point_pricing"
       - "route_finder"
+      - "database"
     expose:
       - "8080"
     ports:
