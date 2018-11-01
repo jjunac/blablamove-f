@@ -13,6 +13,8 @@ cache:
     - "$HOME/.m2/repository"
 install:
   - bash install.sh
+before_install:
+  - sudo apt-get -y install python3-pip python-dev
 after_install:
   - sudo apt-get -y install python3-pip python-dev
   - sudo rm /usr/local/bin/docker-compose
