@@ -15,24 +15,26 @@ import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @Import({AccountingBean.class, RestTemplate.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 5000)
 class AccountingBeanTest {
-
+    
     @Autowired
     private AccountingBean accountingBean;
-
+    
     @BeforeEach
     public void setUp() {
         /* Returns the value after modification */
-        stubFor(put(urlPathEqualTo("/users/Erick")).willReturn(aResponse().withBody("30").withStatus(201)));
-        stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse().withStatus(404)));
+        stubFor(put(urlPathEqualTo("/users/Erick")).willReturn(aResponse()
+                .withBody("30").withStatus(201)));
+        stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse()
+                .withStatus(404)));
+        accountingBean.point_pricing_url = "http://localhost:5000";
     }
-
+    
     @Test
     void shouldChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
         /* We suppose Erick has 10 points before the test */
@@ -40,7 +42,7 @@ class AccountingBeanTest {
         Mission mission = new Mission(user, 20);
         assertEquals(30, accountingBean.computePoints(mission));
     }
-
+    
     @Test
     void shouldNotChangeTheNumberOfPointsOfTheUser() throws UnknownUserException {
         User user = new User("Julien");
