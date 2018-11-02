@@ -1,5 +1,4 @@
 from time import sleep
-
 import requests
 from argparse import ArgumentParser
 
@@ -13,7 +12,8 @@ notification_url = f"{server_address}/notification"
 def rpc_call(url, method, params):
     global rpc_id
     rpc_id += 1
-    res = requests.post(url, json={"jsonrpc": "2.0", "method": method, "id": rpc_id, "params": params})
+    res = requests.post(
+        url, json={"jsonrpc": "2.0", "method": method, "id": rpc_id, "params": params})
     response_object = res.json()
     return response_object.get("result", None), response_object.get("error", None), res.status_code
 
@@ -38,7 +38,8 @@ def help():
 
 
 def notify_car_crash():
-    request_webservice(incident_url, "notifyCarCrash", {"username": username}, "You notified the car crash")
+    request_webservice(incident_url, "notifyCarCrash", {
+                       "username": username}, "You notified the car crash")
 
 
 def pull_notification_for_user():
@@ -49,7 +50,8 @@ def pull_notification_for_user():
 def wait_notifications():
     while True:
         try:
-            res, err, status = rpc_call(notification_url, "pullNotificationForUser", {"username": username})
+            res, err, status = rpc_call(
+                notification_url, "pullNotificationForUser", {"username": username})
             if err and status != 504:
                 print(f"Error {status:d}: {err}")
                 exit(status)
@@ -58,6 +60,11 @@ def wait_notifications():
             else:
                 print(f"#===== You received a notification =====#")
                 print(f"Response: {res}")
+                notification.notify(
+                    title='You received a notification',
+                    message=f'{res}',
+                    app_name='blablamove',
+                )
         except Exception as e:
             print(e)
             exit(1)
