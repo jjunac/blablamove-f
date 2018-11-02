@@ -27,7 +27,7 @@ public class AccountingBean implements ComputePoints {
 
     private int modifyPointsOfUser(User user, int nbPoints) throws UnknownUserException {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-                .fromHttpUrl(String.format("http://point_pricing:80/users/%s", user.getName()))
+                .fromHttpUrl(String.format("http://point_pricing:5000/users/%s", user.getName()))
                 .queryParam("points", nbPoints);
         try {
             ClientHttpResponse queryResponse = new RestTemplate().execute(uriComponentsBuilder.toUriString(),

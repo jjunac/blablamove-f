@@ -22,7 +22,7 @@ services:
     expose:
       - "5000"
     ports:
-      - "5000:80"
+      - "5000:5000"
     stdin_open: true
   point_pricing:
     build: ./external/PointPricing
@@ -31,7 +31,7 @@ services:
     expose:
       - "5001"
     ports:
-      - "5001:80"
+      - "5001:5000"
     stdin_open: true
   route_finder:
     build: ./external/RouteFinder
@@ -40,7 +40,7 @@ services:
     expose:
       - "5002"
     ports:
-      - "5002:80"
+      - "5002:5000"
     stdin_open: true
   database:
     image: 1000kit/h2
