@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 @Component
@@ -22,7 +21,7 @@ public class AccountingBean implements ComputePoints {
     @Override
     public int computePoints(Mission mission) throws UnknownUserException {
         int newNbPoints = mission.getRetribution();
-        return modifyPointsOfUser(mission.getDriver(), newNbPoints);
+        return modifyPointsOfUser(mission.getTransporter(), newNbPoints);
     }
 
     private int modifyPointsOfUser(User user, int nbPoints) throws UnknownUserException {

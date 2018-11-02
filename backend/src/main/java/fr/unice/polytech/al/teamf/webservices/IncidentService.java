@@ -5,5 +5,7 @@ import com.googlecode.jsonrpc4j.JsonRpcService;
 
 @JsonRpcService("/incident")
 public interface IncidentService {
-    boolean notifyCarCrash(@JsonRpcParam(value = "username") String username);
+    boolean notifyCarCrash(@JsonRpcParam(value = "username") String username,
+                           @JsonRpcParam(value = "latitude") double latitude,
+                           @JsonRpcParam(value = "longitude") double longitude);
 }

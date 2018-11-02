@@ -19,10 +19,10 @@ public class User implements Serializable {
     private int id;
 
     @OneToMany(mappedBy = "transporter")
-    private List <Parcel> transportedPackages = new LinkedList <>();
+    private List <Mission> transportedMissions = new LinkedList <>();
 
     @OneToMany(mappedBy = "owner")
-    private List <Parcel> ownedPackages = new LinkedList <>();
+    private List <Mission> ownedMissions = new LinkedList <>();
 
     @OneToMany(mappedBy = "user")
     private List <Notification> notifications = new LinkedList <>();
@@ -33,25 +33,25 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public boolean addTransportedPackage(Parcel parcel) {
-        parcel.setTransporter(this);
-        return transportedPackages.add(parcel);
+    public boolean addTransportedMission(Mission mission) {
+        mission.setTransporter(this);
+        return transportedMissions.add(mission);
     }
 
-    public boolean removeTransportedPackage(Parcel parcel) {
-        return transportedPackages.remove(parcel);
+    public boolean removeTransportedMission(Mission mission) {
+        return transportedMissions.remove(mission);
     }
 
-    public List <User> getUsersOwningPackages() {
-        return transportedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
+    public List <User> getUsersOwningMissions() {
+        return transportedMissions.stream().map(Mission::getOwner).distinct().collect(Collectors.toList());
     }
 
-    public boolean addOwnedPackage(Parcel parcel) {
-        return ownedPackages.add(parcel);
+    public boolean addOwnedMission(Mission mission) {
+        return ownedMissions.add(mission);
     }
 
-    public boolean removeOwnedPackage(Parcel parcel) {
-        return ownedPackages.remove(parcel);
+    public boolean removeOwnedMission(Mission mission) {
+        return ownedMissions.remove(mission);
     }
 
     public boolean addNotification(Notification notification) {
@@ -66,7 +66,7 @@ public class User implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
         sb.append("id=").append(id);
-        sb.append(", transportedPackages=").append(transportedPackages.stream().map(parcel -> parcel.getOwner().getName() + "'s parcel").collect(Collectors.toList()));
+        sb.append(", transportedMissions=").append(transportedMissions.stream().map(mission -> mission.getOwner().getName() + "'s mission").collect(Collectors.toList()));
         sb.append(", name='").append(name).append('\'');
         sb.append('}');
         return sb.toString();

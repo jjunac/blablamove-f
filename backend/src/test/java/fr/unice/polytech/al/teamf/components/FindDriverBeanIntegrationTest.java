@@ -27,7 +27,7 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
         System.out.println(driverFinder);
         User philippe = createAndSaveUser("Philippe");
         User benjamin = createAndSaveUser("Benjamin");
-        // Get the mocked new driver
+        // Get the mocked new transporter
         User erick = userRepository.findByName("Erick").get(0);
         driverFinder.findNewDriver(benjamin, createAndSaveParcel(philippe, benjamin));
 
