@@ -1,4 +1,4 @@
 #!/bin/bash
 
 set -e
-mvn install
+mvn install -DskipTests

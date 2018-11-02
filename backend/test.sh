@@ -2,6 +2,7 @@
 
 set -e
 
+docker-compose -f ../docker-compose.yml up -d 
 mvn package
 java -jar target/blablamove-1.0-SNAPSHOT.jar &
 sleep 10

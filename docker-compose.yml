@@ -9,6 +9,7 @@ services:
       - "insurance"
       - "point_pricing"
       - "route_finder"
+      - "database"
     expose:
       - "8080"
     ports:
@@ -18,16 +19,28 @@ services:
     build: ./external/Insurance
     image: insurance
     container_name: insurance
+    expose:
+      - "5000"
+    ports:
+      - "5000:5000"
     stdin_open: true
   point_pricing:
     build: ./external/PointPricing
     image: point_pricing
     container_name: point_pricing
+    expose:
+      - "5001"
+    ports:
+      - "5001:5000"
     stdin_open: true
   route_finder:
     build: ./external/RouteFinder
     image: route_finder
     container_name: route_finder
+    expose:
+      - "5002"
+    ports:
+      - "5002:5000"
     stdin_open: true
   database:
     image: 1000kit/h2

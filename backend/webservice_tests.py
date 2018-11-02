@@ -30,6 +30,7 @@ def step(title): print_color("#=== %s ===#" % title, YELLOW)
 
 def assert_equals(expected, actual):
     res = expected == actual
+    # print(f"\tExpected {expected} got {actual}")
     print("\tResult:", end="")
     if res:
         print_color("OK", GREEN)
