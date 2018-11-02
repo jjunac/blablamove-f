@@ -19,18 +19,21 @@ public class Mission implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    User driver;
+    @ManyToOne
+    User transporter;
+    @ManyToOne
     User owner;
+
     @Embedded
-    GPSCoordinate driverCoordinate;
+    GPSCoordinate transporterCoordinate;
     @Embedded
     GPSCoordinate ownerCoordinate;
 
-    @OneToMany(mappedBy = "mission")
-    List <Parcel> parcels = new LinkedList <>();
+    @OneToOne(mappedBy = "mission")
+    Parcel parcel;
 
     public int computeRetribution() {
-        return (int) (Math.ceil(driverCoordinate.getDistanceTo(ownerCoordinate))) * 100;
+        return (int) (Math.ceil(transporterCoordinate.getDistanceTo(ownerCoordinate))) * 100;
     }
 
 }

@@ -26,7 +26,7 @@ public class FindPackageHostBean implements FindPackageHost {
     }
 
     static String buildOwnerMessage(String hostName) {
-        return String.format("%s will host your package until a new driver arrives !", hostName);
+        return String.format("%s will host your package until a new transporter arrives !", hostName);
     }
 
     static String buildHostMessage(String ownerName) {

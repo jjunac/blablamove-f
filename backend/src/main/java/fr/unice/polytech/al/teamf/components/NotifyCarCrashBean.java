@@ -3,6 +3,8 @@ package fr.unice.polytech.al.teamf.components;
 import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.slf4j.Logger;
@@ -26,11 +28,11 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
      * @param user User transporting the packages
      */
     @Override
-    public void notifyCrash(User user) {
+    public void notifyCrash(User user, GPSCoordinate coordinate) {
         logger.trace("NotifyCarCrashBean.notifyCrash");
         logger.debug(user.toString());
-        for (Parcel parcel : user.getTransportedPackages()){
-            notifyUser.notifyUser(parcel.getOwner(), buildMessage(user.getName()));
+        for (Mission mission : user.getTransportedMissions())
+            notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             findDriver.findNewDriver(user, parcel);
         }
     }
