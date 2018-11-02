@@ -19,6 +19,8 @@ public class Parcel implements Serializable {
     private User owner;
     @ManyToOne
     private User transporter;
+    @ManyToOne
+    private Mission mission;
 
     public Parcel(User owner) {
         this.owner = owner;
