@@ -31,15 +31,17 @@ class AccountingBeanTest {
     WireMockRule wm = new WireMockRule(options().bindAddress("http://point_pricing"));
     @Rule
     WireMockRule wm2 = new WireMockRule(options().port(5000));
-
     @Autowired
     private AccountingBean accountingBean;
 
     @BeforeEach
     public void setUp() {
         /* Returns the value after modification */
-        stubFor(put(urlPathEqualTo("/users/Erick")).willReturn(aResponse().withBody("20").withStatus(201)));
-        stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse().withStatus(404)));
+        stubFor(put(urlPathEqualTo("/users/Erick")).willReturn(aResponse()
+                .withBody("20").withStatus(201)));
+        stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse()
+                .withStatus(404)));
+        accountingBean.point_pricing_url = "http://localhost:5000";
     }
 
     @Test
