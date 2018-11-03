@@ -4,16 +4,16 @@ import requests
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--skip-externals", help="skip external service tests")
+parser.add_argument("--skip-externals", help="skip external service tests", action="store_true")
 args = parser.parse_args()
 
 DEFAULT = "\033[00m"
-RED = "\033[31m"
-GREEN = "\033[32m"
-YELLOW = "\033[33m"
-BLUE = "\033[34m"
-MAGENTA = "\035[35m"
-CYAN = "\033[36m"
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+BLUE = "\033[94m"
+MAGENTA = "\035[95m"
+CYAN = "\033[96m"
 
 rpc_id = 0
 
@@ -39,6 +39,7 @@ def step(title): print_color("#=== %s ===#" % title, BLUE)
 def skipped():
     print("\tResult:", end="")
     print_color("SKIPPED", YELLOW)
+    print()
 
 def assert_equals(expected, actual):
     res = expected == actual
@@ -55,7 +56,11 @@ def assert_equals(expected, actual):
 step("Johann notify a car crash")
 assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann", "latitude": 10, "longitude": 25}))
 
-assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
+step("Johann's insurance has been notified")
+if args.skip_externals:
+    skipped()
+else:
+    assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
 
 step("Johann is notified that Erick will take the packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
@@ -69,8 +74,14 @@ assert_equals(2, len(request_webservice("http://localhost:8080/notification", "p
 step("Thomas is notified that Johann had an accident and that Erick will take his package")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
-step("The package is dropped and Erick earns points")
-nb_points_before = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
+if not args.skip_externals:
+    nb_points_before = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
+
+step("The package is dropped")
 assert_equals(True, request_webservice("http://localhost:8080/drop", "computePoints", {"mission": 1}))
-nb_points_after = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
-assert_equals(True, nb_points_after > nb_points_before)
+
+if args.skip_externals:
+    skipped()
+else:
+    nb_points_after = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
+    assert_equals(True, nb_points_after > nb_points_before)
