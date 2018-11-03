@@ -34,10 +34,12 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
 
         assertThat(pullNotifications.pullNotificationForUser(paulette))
                 .asList()
+                .extracting("message")
                 .hasSize(1)
                 .contains(FindPackageHostBean.buildOwnerMessage("Julien"));
         assertThat(pullNotifications.pullNotificationForUser(julien))
                 .asList()
+                .extracting("message")
                 .hasSize(1)
                 .contains(FindPackageHostBean.buildHostMessage("Paulette"));
     }

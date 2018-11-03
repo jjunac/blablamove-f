@@ -37,14 +37,17 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
+                .extracting("message")
                 .hasSize(1)
                 .contains(FindDriverBean.buildOwnerMessage("Erick"));
         assertThat(pullNotifications.pullNotificationForUser(benjamin))
                 .asList()
+                .extracting("message")
                 .hasSize(1)
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"));
         assertThat(pullNotifications.pullNotificationForUser(erick))
                 .asList()
+                .extracting("message")
                 .hasSize(1)
                 .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"));
     }

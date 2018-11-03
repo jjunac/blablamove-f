@@ -43,23 +43,27 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
+                .extracting("message")
                 .hasSize(2)
                 .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
                 .contains(FindDriverBean.buildOwnerMessage("Erick"));
 
         assertThat(pullNotifications.pullNotificationForUser(sebastien))
                 .asList()
+                .extracting("message")
                 .hasSize(2)
                 .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
                 .contains(FindDriverBean.buildOwnerMessage("Erick"));
 
         assertThat(pullNotifications.pullNotificationForUser(benjamin))
                 .asList()
+                .extracting("message")
                 .hasSize(2)
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"))
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Sebastien"));
         assertThat(pullNotifications.pullNotificationForUser(erick))
                 .asList()
+                .extracting("message")
                 .hasSize(2)
                 .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"))
                 .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
