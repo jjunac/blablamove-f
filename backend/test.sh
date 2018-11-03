@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
-
+function cleanup {
+    docker-compose -f ../docker-compose.yml down
+}
+trap cleanup EXIT
 mvn package
 docker-compose -f ../docker-compose.yml up -d
 sleep 5
