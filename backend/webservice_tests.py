@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 
 import requests
+import argparse
 
-RED = "\033[91m"
-GREEN = "\033[92m"
-WHITE = "\033[00m"
-YELLOW = "\033[93m"
+parser = argparse.ArgumentParser()
+parser.add_argument("--skip-externals", help="skip external service tests")
+args = parser.parse_args()
+
+DEFAULT = "\033[00m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+MAGENTA = "\035[35m"
+CYAN = "\033[36m"
 
 rpc_id = 0
 
@@ -24,9 +32,13 @@ def request_webservice(url, method, params):
     print("\tResponse: %s" % res)
     return res
 
-def print_color(text, color): print(color, text, WHITE)
+def print_color(text, color): print(color, text, DEFAULT)
 
-def step(title): print_color("#=== %s ===#" % title, YELLOW)
+def step(title): print_color("#=== %s ===#" % title, BLUE)
+
+def skipped():
+    print("\tResult:", end="")
+    print_color("SKIPPED", YELLOW)
 
 def assert_equals(expected, actual):
     res = expected == actual
@@ -42,6 +54,8 @@ def assert_equals(expected, actual):
 
 step("Johann notify a car crash")
 assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann", "latitude": 10, "longitude": 25}))
+
+assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
 
 step("Johann is notified that Erick will take the packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))

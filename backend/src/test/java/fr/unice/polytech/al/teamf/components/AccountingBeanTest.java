@@ -1,12 +1,10 @@
 package fr.unice.polytech.al.teamf.components;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 @ExtendWith(SpringExtension.class)
 @Import({AccountingBean.class, RestTemplate.class})
@@ -27,10 +24,6 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 @AutoConfigureWireMock(port = 5000)
 class AccountingBeanTest {
 
-    @Rule
-    WireMockRule wm = new WireMockRule(options().bindAddress("http://point_pricing"));
-    @Rule
-    WireMockRule wm2 = new WireMockRule(options().port(5000));
     @Autowired
     private AccountingBean accountingBean;
 
