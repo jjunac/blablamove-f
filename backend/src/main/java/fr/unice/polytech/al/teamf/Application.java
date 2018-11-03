@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.components.NotifyCarCrashBean;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
@@ -43,11 +44,11 @@ public class Application implements CommandLineRunner {
         User julien = new User("Julien");
         userRepository.save(julien);
 
-        Parcel parcel1 = new Parcel(jeremy);
-        johann.addTransportedPackage(parcel1);
+        Parcel parcel1 = new Parcel();
+        johann.addTransportedMission(new Mission(johann, jeremy, parcel1));
         parcelRepository.save(parcel1);
-        Parcel parcel2 = new Parcel(thomas);
-        johann.addTransportedPackage(parcel2);
+        Parcel parcel2 = new Parcel();
+        johann.addTransportedMission(new Mission(johann, thomas, parcel2));
         parcelRepository.save(parcel2);
 
         logger.debug(johann.toString());

@@ -20,7 +20,7 @@ public class AccountingBean implements ComputePoints {
 
     @Override
     public int computePoints(Mission mission) throws UnknownUserException {
-        int newNbPoints = mission.getRetribution();
+        int newNbPoints = mission.computeRetribution();
         return modifyPointsOfUser(mission.getTransporter(), newNbPoints);
     }
 
@@ -40,6 +40,7 @@ public class AccountingBean implements ComputePoints {
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
             System.out.println("Impossible to reach accounting server.");
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

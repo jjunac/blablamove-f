@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.webservices;
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
@@ -32,8 +33,8 @@ public class IncidentServiceImpl implements IncidentService {
         User jeremy = new User("Jeremy");
         users.put("Jeremy", jeremy);
         User johann = new User("Johann");
-        johann.addTransportedPackage(new Parcel(jeremy));
-        johann.addTransportedPackage(new Parcel(thomas));
+        johann.addTransportedMission(new Mission(johann, jeremy, new Parcel()));
+        johann.addTransportedMission(new Mission(johann, thomas, new Parcel()));
         users.put("Johann", johann);
     }
 

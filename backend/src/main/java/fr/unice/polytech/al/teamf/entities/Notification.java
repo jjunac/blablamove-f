@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Notification implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @ManyToOne
     private User user;

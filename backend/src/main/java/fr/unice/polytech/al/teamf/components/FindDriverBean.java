@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
@@ -21,13 +22,13 @@ public class FindDriverBean implements FindDriver {
     UserRepository userRepository;
 
     @Override
-    public User findNewDriver(User currentDriver, Parcel parcel) {
+    public User findNewDriver(User currentDriver, Mission mission) {
         logger.info("FindDriverBean.findNewDriver");
         // Mocking new user
         User newDriver = userRepository.findByName("Erick").get(0);
-        notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newDriver.getName()));
-        notifyUser.notifyUser(currentDriver, buildCurrentDriverMessage(newDriver.getName(), parcel.getOwner().getName()));
-        notifyUser.notifyUser(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()));
+        notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
+        notifyUser.notifyUser(currentDriver, buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
+        notifyUser.notifyUser(newDriver, buildNewDriverMessage(currentDriver.getName(), mission.getOwner().getName()));
         return newDriver;
 
     }

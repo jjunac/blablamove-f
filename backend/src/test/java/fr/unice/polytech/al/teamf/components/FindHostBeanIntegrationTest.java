@@ -2,7 +2,6 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
-import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +28,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User paulette = createAndSaveUser("Paulette");
         User georgette = createAndSaveUser("Georgette");
         User julien = userRepository.findByName("Julien").get(0);
-        hostFinder.findHost(createAndSaveParcel(paulette, georgette));
+        hostFinder.findHost(createAndSaveMissionWithParcel(paulette, georgette));
 
         // FIXME test that the current transporter is notified
 

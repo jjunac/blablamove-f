@@ -7,5 +7,5 @@ import fr.unice.polytech.al.teamf.entities.User;
 
 @JsonRpcService("/drop")
 public interface PackageDropped {
-    boolean computePoints(@JsonRpcParam(value = "mission") int missionId);
+    boolean computePoints(@JsonRpcParam(value = "mission") long missionId);
 }

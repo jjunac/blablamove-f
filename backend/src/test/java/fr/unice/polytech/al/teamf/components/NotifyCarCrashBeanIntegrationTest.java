@@ -2,6 +2,8 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
@@ -10,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -33,10 +33,10 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
         User philippe = createAndSaveUser("Philippe");
         User sebastien = createAndSaveUser("Sebastien");
         User erick = userRepository.findByName("Erick").get(0);
-        Parcel p1 = createAndSaveParcel(philippe, benjamin);
-        Parcel p2 = createAndSaveParcel(sebastien, benjamin);
+        Mission m1 = createAndSaveMissionWithParcel(philippe, benjamin);
+        Mission m2 = createAndSaveMissionWithParcel(sebastien, benjamin);
 
-        carCrash.notifyCrash(benjamin);
+        carCrash.notifyCrash(benjamin, new GPSCoordinate(10, 20));
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

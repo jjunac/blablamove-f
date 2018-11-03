@@ -16,7 +16,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @OneToMany(mappedBy = "transporter")
     private List <Mission> transportedMissions = new LinkedList <>();
