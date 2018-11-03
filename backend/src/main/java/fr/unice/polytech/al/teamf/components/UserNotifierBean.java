@@ -5,36 +5,41 @@ import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.NotificationRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class UserNotifierBean implements NotifyUser, PullNotifications {
 
     @Autowired
     NotificationRepository notificationRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(UserNotifierBean.class);
-
     @Override
     public void notifyUser(User user, String message) {
-        Notification notification = new Notification(user, message);
-        user.addNotification(notification);
-        notificationRepository.save(notification);
-        logger.info(String.format("Send message to %s: %s", user.getName(), message));
+        sendNotification(new Notification(user, message, false));
     }
 
     @Override
-    public List<String> pullNotificationForUser(User user) {
-        logger.info(String.format("%s is pulling its notifications", user.getName()));
+    public void notifyUserWithAnswer(User user, String message) {
+        sendNotification(new Notification(user, message, true));
+    }
+
+    private void sendNotification(Notification notification) {
+        notification.getUser().addNotification(notification);
+        notificationRepository.save(notification);
+        log.info(String.format("Send message to %s: %s", notification.getUser().getName(), notification.getMessage()));
+    }
+
+    @Override
+    public List<Notification> pullNotificationForUser(User user) {
+        log.info(String.format("%s is pulling its notifications", user.getName()));
         List<Notification> res = notificationRepository.findByUser(user);
         user.clearNotifications();
-        return res.stream().map(Notification::getMessage).collect(Collectors.toList());
+        return res;
     }
+
 }

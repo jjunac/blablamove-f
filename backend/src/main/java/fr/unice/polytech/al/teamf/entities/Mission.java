@@ -26,26 +26,28 @@ public class Mission implements Serializable {
             @AttributeOverride(name="latitude", column= @Column(name="transporterLatitude")),
             @AttributeOverride(name="longitude", column= @Column(name="transporterLongitude"))
     })
-    public GPSCoordinate transporterCoordinate;
+    public GPSCoordinate departure;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="latitude", column= @Column(name="ownerLatitude")),
             @AttributeOverride(name="longitude", column= @Column(name="ownerLongitude"))
     })
-    public GPSCoordinate ownerCoordinate;
+    public GPSCoordinate arrival;
 
     @OneToOne(mappedBy = "mission")
     public Parcel parcel;
 
-    public Mission(User transporter, User owner, Parcel parcel) {
+    public Mission(User transporter, User owner, GPSCoordinate departure, GPSCoordinate arrival, Parcel parcel) {
         this.transporter = transporter;
         this.owner = owner;
+        this.departure = departure;
+        this.arrival = arrival;
         this.parcel = parcel;
     }
 
     public int computeRetribution() {
-        return (int) (Math.ceil(transporterCoordinate.getDistanceTo(ownerCoordinate))) * 100;
+        return (int) (Math.ceil(departure.getDistanceTo(arrival))) * 100;
     }
 
 }

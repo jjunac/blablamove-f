@@ -6,6 +6,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 
 public interface FindPackageHost {
 
-    User findHost(Mission mission);
+    User findHost(Parcel parcel);
 
 }

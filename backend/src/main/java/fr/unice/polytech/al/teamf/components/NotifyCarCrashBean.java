@@ -33,7 +33,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
         logger.debug(user.toString());
         for (Mission mission : user.getTransportedMissions()) {
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
-            findDriver.findNewDriver(user, mission);
+            findDriver.findNewDriver(user, mission, coordinate);
         }
     }
 

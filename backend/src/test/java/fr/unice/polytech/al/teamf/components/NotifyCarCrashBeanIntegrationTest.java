@@ -29,14 +29,17 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
     @Test
     void shouldNotifyOwnersWhenADriverHasACarCrash() {
 
+        // We don't care about coordinates here
+        GPSCoordinate gps = new GPSCoordinate(10, 20);
+
         User benjamin = createAndSaveUser("Benjamin");
         User philippe = createAndSaveUser("Philippe");
         User sebastien = createAndSaveUser("Sebastien");
         User erick = userRepository.findByName("Erick").get(0);
-        Mission m1 = createAndSaveMissionWithParcel(philippe, benjamin);
-        Mission m2 = createAndSaveMissionWithParcel(sebastien, benjamin);
+        Mission m1 = createAndSaveMissionWithParcel(philippe, benjamin, gps, gps);
+        Mission m2 = createAndSaveMissionWithParcel(sebastien, benjamin, gps, gps);
 
-        carCrash.notifyCrash(benjamin, new GPSCoordinate(10, 20));
+        carCrash.notifyCrash(benjamin, gps);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

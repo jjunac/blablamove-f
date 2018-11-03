@@ -30,17 +30,18 @@ def step(title): print_color("#=== %s ===#" % title, YELLOW)
 
 def assert_equals(expected, actual):
     res = expected == actual
-    # print(f"\tExpected {expected} got {actual}")
     print("\tResult:", end="")
     if res:
         print_color("OK", GREEN)
         print()
     else:
         print_color("ERROR", RED)
+        print("\tExpected:", expected)
+        print("\tActual:  ", actual)
         exit(1)
 
 step("Johann notify a car crash")
-assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann"}))
+assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann", "latitude": 10, "longitude": 25}))
 
 step("Johann is notified that Erick will take the packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))

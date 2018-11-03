@@ -1,5 +1,6 @@
 package fr.unice.polytech.al.teamf;
 
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
@@ -23,9 +24,16 @@ public abstract class IntegrationTest {
         return user;
     }
 
-    public Mission createAndSaveMissionWithParcel(User owner, User transporter) {
+    public Parcel createAndSaveParcel(User owner) {
+        Parcel parcel = new Parcel(owner);
+        parcelRepository.save(parcel);
+        return parcel;
+    }
+
+        public Mission createAndSaveMissionWithParcel(User owner, User transporter, GPSCoordinate departure, GPSCoordinate arrival) {
+        // FIXME pass arguments to parcel
         Parcel parcel = new Parcel();
-        Mission mission = new Mission(transporter, owner, parcel);
+        Mission mission = new Mission(transporter, owner, departure, arrival, parcel);
         transporter.addTransportedMission(mission);
         parcelRepository.save(parcel);
         missionRepository.save(mission);

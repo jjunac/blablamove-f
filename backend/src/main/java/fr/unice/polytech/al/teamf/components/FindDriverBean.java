@@ -2,8 +2,8 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
-import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.slf4j.Logger;
@@ -22,8 +22,9 @@ public class FindDriverBean implements FindDriver {
     UserRepository userRepository;
 
     @Override
-    public User findNewDriver(User currentDriver, Mission mission) {
+    public User findNewDriver(User currentDriver, Mission mission, GPSCoordinate coordinate) {
         logger.info("FindDriverBean.findNewDriver");
+        // TODO call external webservice
         // Mocking new user
         User newDriver = userRepository.findByName("Erick").get(0);
         notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));

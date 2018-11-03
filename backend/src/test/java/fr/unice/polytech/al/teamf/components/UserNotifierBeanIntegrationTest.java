@@ -26,6 +26,6 @@ public class UserNotifierBeanIntegrationTest extends IntegrationTest {
     void shouldNotifyUser() {
         User jyd = createAndSaveUser("Jean-Yves (Delmotte)");
         userNotifierBean.notifyUser(jyd, "This is a test message");
-        assertThat(userNotifierBean.pullNotificationForUser(jyd)).contains("This is a test message");
+        assertThat(userNotifierBean.pullNotificationForUser(jyd)).extracting("message").contains("This is a test message");
     }
 }

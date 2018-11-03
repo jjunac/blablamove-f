@@ -18,7 +18,7 @@ public class FindPackageHostBean implements FindPackageHost {
     UserRepository userRepository;
 
     @Override
-    public User findHost(Mission mission) {
+    public User findHost(Parcel mission) {
         // Mocking new Host user
         User newHost = userRepository.findByName("Julien").get(0);
         notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newHost.getName()));

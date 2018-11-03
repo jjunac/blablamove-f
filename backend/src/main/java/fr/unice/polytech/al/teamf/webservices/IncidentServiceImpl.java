@@ -23,21 +23,6 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Autowired
     UserRepository userRepository;
-
-    Map<String, User> users = new HashMap<>();
-    {
-        User thomas = new User("Thomas");
-        users.put("Thomas", thomas);
-        User loic = new User("Loic");
-        users.put("Loic", loic);
-        User jeremy = new User("Jeremy");
-        users.put("Jeremy", jeremy);
-        User johann = new User("Johann");
-        johann.addTransportedMission(new Mission(johann, jeremy, new Parcel()));
-        johann.addTransportedMission(new Mission(johann, thomas, new Parcel()));
-        users.put("Johann", johann);
-    }
-
     @Autowired
     NotifyCarCrash notifyCarCrash;
 

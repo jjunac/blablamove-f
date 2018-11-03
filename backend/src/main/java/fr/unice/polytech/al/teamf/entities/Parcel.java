@@ -16,6 +16,14 @@ public class Parcel implements Serializable {
     private long id;
 
     @ManyToOne
+    private User owner;
+    @ManyToOne
+    private User host;
+    @ManyToOne
     private Mission mission;
+
+    public Parcel(User owner) {
+        this.owner = owner;
+    }
 
 }

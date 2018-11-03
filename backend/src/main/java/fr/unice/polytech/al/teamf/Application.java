@@ -1,9 +1,11 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.components.NotifyCarCrashBean;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import fr.unice.polytech.al.teamf.webservices.IncidentServiceImpl;
@@ -24,6 +26,8 @@ public class Application implements CommandLineRunner {
     UserRepository userRepository;
     @Autowired
     ParcelRepository parcelRepository;
+    @Autowired
+    MissionRepository missionRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -45,15 +49,18 @@ public class Application implements CommandLineRunner {
         userRepository.save(julien);
 
         Parcel parcel1 = new Parcel();
-        johann.addTransportedMission(new Mission(johann, jeremy, parcel1));
         parcelRepository.save(parcel1);
+        Mission jeremysMission = new Mission(johann, jeremy, new GPSCoordinate(10, 12), new GPSCoordinate(10, 42), parcel1);
+        missionRepository.save(jeremysMission);
+        johann.addTransportedMission(jeremysMission);
+
         Parcel parcel2 = new Parcel();
-        johann.addTransportedMission(new Mission(johann, thomas, parcel2));
         parcelRepository.save(parcel2);
+        Mission thomasMission = new Mission(johann, thomas, new GPSCoordinate(10, 12), new GPSCoordinate(10, 69), parcel2);
+        missionRepository.save(thomasMission);
+        johann.addTransportedMission(thomasMission);
 
         logger.debug(johann.toString());
-        logger.debug(parcel1.toString());
-        logger.debug(parcel2.toString());
 
     }
 

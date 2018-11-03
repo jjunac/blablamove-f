@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,12 +25,15 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
 
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
-        System.out.println(driverFinder);
+
+        // We don't care about coordinates here
+        GPSCoordinate gps = new GPSCoordinate(10, 20);
+
         User philippe = createAndSaveUser("Philippe");
         User benjamin = createAndSaveUser("Benjamin");
         // Get the mocked new transporter
         User erick = userRepository.findByName("Erick").get(0);
-        driverFinder.findNewDriver(benjamin, createAndSaveMissionWithParcel(philippe, benjamin));
+        driverFinder.findNewDriver(benjamin, createAndSaveMissionWithParcel(philippe, benjamin, gps, gps), gps);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

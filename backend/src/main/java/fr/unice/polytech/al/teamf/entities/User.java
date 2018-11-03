@@ -24,6 +24,12 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private List <Mission> ownedMissions = new LinkedList <>();
 
+    @OneToMany(mappedBy = "host")
+    private List <Parcel> hostedPackages = new LinkedList <>();
+
+    @OneToMany(mappedBy = "owner")
+    private List <Parcel> ownedPackages = new LinkedList <>();
+
     @OneToMany(mappedBy = "user")
     private List <Notification> notifications = new LinkedList <>();
 
@@ -52,6 +58,27 @@ public class User implements Serializable {
 
     public boolean removeOwnedMission(Mission mission) {
         return ownedMissions.remove(mission);
+    }
+
+    public boolean addHostedPackage(Parcel parcel) {
+        parcel.setHost(this);
+        return hostedPackages.add(parcel);
+    }
+
+    public boolean removeHostedPackage(Parcel parcel) {
+        return hostedPackages.remove(parcel);
+    }
+
+    public List <User> getUsersOwningPackages() {
+        return hostedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
+    }
+
+    public boolean addOwnedPackage(Parcel parcel) {
+        return ownedPackages.add(parcel);
+    }
+
+    public boolean removeOwnedPackage(Parcel parcel) {
+        return ownedPackages.remove(parcel);
     }
 
     public boolean addNotification(Notification notification) {

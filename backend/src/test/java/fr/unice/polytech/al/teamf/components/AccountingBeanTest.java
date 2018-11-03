@@ -52,9 +52,7 @@ class AccountingBeanTest {
         GPSCoordinate transporterCoordinate = new GPSCoordinate(0, 10);
         GPSCoordinate ownerCoordinate = new GPSCoordinate(0, 20);
         Parcel parcel = new Parcel();
-        Mission mission = new Mission(transporter, owner, parcel);
-        mission.setTransporterCoordinate(transporterCoordinate);
-        mission.setOwnerCoordinate(ownerCoordinate);
+        Mission mission = new Mission(transporter, owner, transporterCoordinate, ownerCoordinate, parcel);
         assertEquals(20, accountingBean.computePoints(mission));
     }
 
@@ -66,9 +64,7 @@ class AccountingBeanTest {
         GPSCoordinate transporterCoordinate = new GPSCoordinate(10, 20);
         GPSCoordinate ownerCoordinate = new GPSCoordinate(40, 50);
         Parcel parcel = new Parcel();
-        Mission mission = new Mission(transporter, owner, parcel);
-        mission.setTransporterCoordinate(transporterCoordinate);
-        mission.setOwnerCoordinate(ownerCoordinate);
+        Mission mission = new Mission(transporter, owner, transporterCoordinate, ownerCoordinate, parcel);
         assertEquals(0, accountingBean.computePoints(mission));
     }
 

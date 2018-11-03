@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.webservices;
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class NotificationServiceImpl implements NotificationService {
     PullNotifications pullNotifications;
 
     @Override
-    public List<String> pullNotificationForUser(String username) {
+    public List<Notification> pullNotificationForUser(String username) {
         return pullNotifications.pullNotificationForUser(userRepository.findByName(username).get(0));
     }
 }
