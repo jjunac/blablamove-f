@@ -27,9 +27,11 @@ public class FindDriverBean implements FindDriver {
         // TODO call external webservice
         // Mocking new user
         User newDriver = userRepository.findByName("Erick").get(0);
+        notifyUser.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), mission.getOwner().getName()));
+
+
         notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
         notifyUser.notifyUser(currentDriver, buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
-        notifyUser.notifyUser(newDriver, buildNewDriverMessage(currentDriver.getName(), mission.getOwner().getName()));
         return newDriver;
 
     }

@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.entities.Answer;
 import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.NotificationRepository;
@@ -20,12 +21,12 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
 
     @Override
     public void notifyUser(User user, String message) {
-        sendNotification(new Notification(user, message, false));
+        sendNotification(new Notification(user, message, null));
     }
 
     @Override
-    public void notifyUserWithAnswer(User user, String message) {
-        sendNotification(new Notification(user, message, true));
+    public void notifyUserWithAnswer(User user, String message, Answer answer) {
+        sendNotification(new Notification(user, message, answer));
     }
 
     private void sendNotification(Notification notification) {
