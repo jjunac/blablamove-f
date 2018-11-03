@@ -40,7 +40,9 @@ def assert_equals(expected, actual):
         exit(1)
 
 step("Johann notify a car crash")
+assert_equals(False, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
 assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann"}))
+assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
 
 step("Johann is notified that Erick will take the packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
