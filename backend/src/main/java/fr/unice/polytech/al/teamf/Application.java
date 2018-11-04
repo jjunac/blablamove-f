@@ -51,12 +51,14 @@ public class Application implements CommandLineRunner {
         Parcel parcel1 = new Parcel();
         parcelRepository.save(parcel1);
         Mission jeremysMission = new Mission(johann, jeremy, new GPSCoordinate(10, 12), new GPSCoordinate(10, 42), parcel1);
+        jeremysMission.setOngoing();
         missionRepository.save(jeremysMission);
         johann.addTransportedMission(jeremysMission);
 
         Parcel parcel2 = new Parcel();
         parcelRepository.save(parcel2);
         Mission thomasMission = new Mission(johann, thomas, new GPSCoordinate(10, 12), new GPSCoordinate(10, 69), parcel2);
+        thomasMission.setOngoing();
         missionRepository.save(thomasMission);
         johann.addTransportedMission(thomasMission);
 

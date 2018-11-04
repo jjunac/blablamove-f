@@ -4,7 +4,6 @@ import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
-import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,8 +35,8 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
         User philippe = createAndSaveUser("Philippe");
         User sebastien = createAndSaveUser("Sebastien");
         User erick = userRepository.findByName("Erick").get(0);
-        Mission m1 = createAndSaveMissionWithParcel(philippe, benjamin, gps, gps);
-        Mission m2 = createAndSaveMissionWithParcel(sebastien, benjamin, gps, gps);
+        Mission m1 = createAndSaveOngoingdMissionWithParcel(philippe, benjamin, gps, gps);
+        Mission m2 = createAndSaveOngoingdMissionWithParcel(sebastien, benjamin, gps, gps);
 
         carCrash.notifyCrash(benjamin, gps);
 

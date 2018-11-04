@@ -32,7 +32,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
 
     private final Logger logger = LoggerFactory.getLogger(NotifyCarCrashBean.class);
 
-    String insurance_url = "http://insurance:5001";
+    String insurance_url = "http://insurance:5000";
 
     @Autowired
     NotifyUser notifyUser;
@@ -47,10 +47,11 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
     public void notifyCrash(User user, GPSCoordinate coordinate) {
         logger.trace("NotifyCarCrashBean.notifyCrash");
         logger.debug(user.toString());
-        for (Mission mission : user.getTransportedMissions()) {
+        boolean reachedInsurance = contactInsurance(user);
+        log.debug(Boolean.toString(reachedInsurance));
+        for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             findDriver.findNewDriver(user, mission, coordinate);
-            log.debug(""+contactInsurance(user));
         }
     }
 

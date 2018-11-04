@@ -30,10 +30,11 @@ public abstract class IntegrationTest {
         return parcel;
     }
 
-        public Mission createAndSaveMissionWithParcel(User owner, User transporter, GPSCoordinate departure, GPSCoordinate arrival) {
-        // FIXME pass arguments to parcel
-        Parcel parcel = new Parcel();
+        public Mission createAndSaveOngoingdMissionWithParcel(User owner, User transporter, GPSCoordinate departure, GPSCoordinate arrival) {
+        Parcel parcel = new Parcel(owner);
         Mission mission = new Mission(transporter, owner, departure, arrival, parcel);
+        mission.setOngoing();
+        parcel.setMission(mission);
         transporter.addTransportedMission(mission);
         parcelRepository.save(parcel);
         missionRepository.save(mission);
