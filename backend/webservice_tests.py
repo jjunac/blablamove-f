@@ -62,11 +62,13 @@ if args.skip_externals:
 else:
     assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
 
+step("Erick is asked to take Johann's packages")
+assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})))
+
+
+
 step("Johann is notified that Erick will take the packages")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
-
-step("Erick is notified that he will take Johann's packages")
-assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})))
 
 step("Jeremy is notified that Johann had an accident and that Erick will take his package")
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))

@@ -33,7 +33,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List <Notification> notifications = new LinkedList <>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "askedUser")
     private List <Notification> pendingNotificationsWithAnswer = new LinkedList <>();
 
     private String name;

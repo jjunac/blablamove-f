@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +27,9 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
 
     @Override
     public void notifyUserWithAnswer(User user, String message, Answer answer) {
-        sendNotification(new Notification(user, message, answer));
+        Notification notification = new Notification(user, message, answer);
+        user.addPendingNotificationsWithAnswer(notification);
+        sendNotification(notification);
     }
 
     private void sendNotification(Notification notification) {
@@ -38,9 +41,9 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
     @Override
     public List<Notification> pullNotificationForUser(User user) {
         log.info(String.format("%s is pulling its notifications", user.getName()));
-        List<Notification> res = notificationRepository.findByUser(user);
+        List<Notification> notifications = new LinkedList<>(user.getNotifications());
         user.clearNotifications();
-        return res;
+        return notifications;
     }
 
 }

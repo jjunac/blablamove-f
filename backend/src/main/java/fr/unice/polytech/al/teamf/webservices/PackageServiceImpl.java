@@ -48,6 +48,6 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public boolean answerToPendingMission(long missionId, String username, boolean answer) {
         log.trace("PackageServiceImpl.answerToPendingMission");
-        findDriver.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
+        return findDriver.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
     }
 }

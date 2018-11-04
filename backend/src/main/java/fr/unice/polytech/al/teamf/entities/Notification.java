@@ -18,6 +18,9 @@ public class Notification implements Serializable {
     @ManyToOne
     @JsonIgnore
     private User user;
+    @ManyToOne
+    @JsonIgnore
+    private User askedUser;
 
     private String message;
 
@@ -28,5 +31,6 @@ public class Notification implements Serializable {
         this.user = user;
         this.message = message;
         this.answer = answer;
+        this.askedUser = user;
     }
 }

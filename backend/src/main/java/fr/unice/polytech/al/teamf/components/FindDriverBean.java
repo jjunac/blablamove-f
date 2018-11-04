@@ -7,6 +7,7 @@ import fr.unice.polytech.al.teamf.entities.Answer;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ public class FindDriverBean implements FindDriver {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    MissionRepository missionRepository;
+    @Autowired
     FindPackageHost findPackageHost;
 
     @Override
@@ -40,6 +43,7 @@ public class FindDriverBean implements FindDriver {
 
         Mission newMission = new Mission(newDriver, mission.getOwner(), coordinate, mission.getArrival(), mission.getParcel());
         newDriver.addTransportedMission(newMission);
+        missionRepository.save(newMission);
 
         Map<String, Serializable> parameters = new HashMap<>();
         parameters.put("missionId", newMission.getId());
@@ -50,7 +54,7 @@ public class FindDriverBean implements FindDriver {
     }
 
     @Override
-    public void answerToPendingMission(Mission mission, User newDriver, boolean answer) {
+    public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if(answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
             notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
@@ -58,6 +62,7 @@ public class FindDriverBean implements FindDriver {
             // TODO Pass the localisation
             findPackageHost.findHost(mission.getParcel());
         }
+        return true;
     }
 
 
