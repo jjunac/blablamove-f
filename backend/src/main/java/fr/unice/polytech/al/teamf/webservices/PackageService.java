@@ -5,7 +5,12 @@ import com.googlecode.jsonrpc4j.JsonRpcService;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.User;
 
-@JsonRpcService("/drop")
-public interface PackageDropped {
+@JsonRpcService("/package")
+public interface PackageService {
     boolean computePoints(@JsonRpcParam(value = "mission") long missionId);
+    boolean answerToPendingMission(@JsonRpcParam(value = "missionId") long missionId,
+                                   @JsonRpcParam(value = "username") String username,
+                                   @JsonRpcParam(value="answer") boolean answer);
+
+
 }

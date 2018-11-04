@@ -18,7 +18,7 @@ public class Parcel implements Serializable {
     @ManyToOne
     private User owner;
     @ManyToOne
-    private User host;
+    private User keeper;
     @ManyToOne
     private Mission mission;
 

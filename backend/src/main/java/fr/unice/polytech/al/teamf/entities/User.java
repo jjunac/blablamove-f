@@ -24,14 +24,17 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private List <Mission> ownedMissions = new LinkedList <>();
 
-    @OneToMany(mappedBy = "host")
-    private List <Parcel> hostedPackages = new LinkedList <>();
+    @OneToMany(mappedBy = "keeper")
+    private List <Parcel> keepedPackages = new LinkedList <>();
 
     @OneToMany(mappedBy = "owner")
     private List <Parcel> ownedPackages = new LinkedList <>();
 
     @OneToMany(mappedBy = "user")
     private List <Notification> notifications = new LinkedList <>();
+
+    @OneToMany(mappedBy = "user")
+    private List <Notification> pendingNotificationsWithAnswer = new LinkedList <>();
 
     private String name;
 
@@ -66,17 +69,17 @@ public class User implements Serializable {
         return ownedMissions.remove(mission);
     }
 
-    public boolean addHostedPackage(Parcel parcel) {
-        parcel.setHost(this);
-        return hostedPackages.add(parcel);
+    public boolean addKeepedPackage(Parcel parcel) {
+        parcel.setKeeper(this);
+        return keepedPackages.add(parcel);
     }
 
-    public boolean removeHostedPackage(Parcel parcel) {
-        return hostedPackages.remove(parcel);
+    public boolean removeKeepedPackage(Parcel parcel) {
+        return keepedPackages.remove(parcel);
     }
 
     public List <User> getUsersOwningPackages() {
-        return hostedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
+        return keepedPackages.stream().map(Parcel::getOwner).distinct().collect(Collectors.toList());
     }
 
     public boolean addOwnedPackage(Parcel parcel) {
@@ -94,6 +97,15 @@ public class User implements Serializable {
     public void clearNotifications() {
         notifications.clear();
     }
+
+    public boolean addPendingNotificationsWithAnswer(Notification notification) {
+        return pendingNotificationsWithAnswer.add(notification);
+    }
+
+    public boolean removePendingNotificationsWithAnswer(Notification notification) {
+        return pendingNotificationsWithAnswer.remove(notification);
+    }
+
 
     @Override
     public String toString() {
