@@ -4,6 +4,7 @@ import fr.unice.polytech.al.teamf.ComputePoints;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
@@ -16,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-
+@Slf4j
 @Component
 public class AccountingBean implements ComputePoints {
     String point_pricing_url="http://point_pricing:5001";
@@ -42,8 +43,8 @@ public class AccountingBean implements ComputePoints {
                 throw new UnknownUserException(user);
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
-            System.out.println("Impossible to reach accounting server.");
-            System.out.println(e.getMessage());
+            log.error("Impossible to reach accounting server.");
+            log.error(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
