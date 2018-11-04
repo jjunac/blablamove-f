@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 
 @Component
 public class AccountingBean implements ComputePoints {
-    String point_pricing_url="http://point_pricing:5000";
+    String point_pricing_url="http://point_pricing:5001";
     
     @Override
     public int computePoints(Mission mission) throws UnknownUserException {
