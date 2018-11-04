@@ -75,7 +75,7 @@ step("Thomas is notified that Johann had an accident and that Erick will take hi
 assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 if not args.skip_externals:
-    nb_points_before = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
+    nb_points_before = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
 
 step("The package is dropped")
 assert_equals(True, request_webservice("http://localhost:8080/drop", "computePoints", {"mission": 8}))
@@ -83,5 +83,5 @@ assert_equals(True, request_webservice("http://localhost:8080/drop", "computePoi
 if args.skip_externals:
     skipped()
 else:
-    nb_points_after = requests.get("http://localhost:5001/users/Erick").json().get("points", None)
+    nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
     assert_equals(True, nb_points_after > nb_points_before)
