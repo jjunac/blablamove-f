@@ -53,6 +53,7 @@ public class Application implements CommandLineRunner {
         Mission jeremysMission = new Mission(johann, jeremy, new GPSCoordinate(10, 12), new GPSCoordinate(10, 42), parcel1);
         jeremysMission.setOngoing();
         missionRepository.save(jeremysMission);
+        //parcel1.setMission(jeremysMission);
         johann.addTransportedMission(jeremysMission);
 
         Parcel parcel2 = new Parcel();
@@ -60,6 +61,7 @@ public class Application implements CommandLineRunner {
         Mission thomasMission = new Mission(johann, thomas, new GPSCoordinate(10, 12), new GPSCoordinate(10, 69), parcel2);
         thomasMission.setOngoing();
         missionRepository.save(thomasMission);
+        //parcel2.setMission(thomasMission);
         johann.addTransportedMission(thomasMission);
 
         logger.debug(johann.toString());

@@ -55,6 +55,7 @@ public class Mission implements Serializable {
 
     public void setOngoing(){
         this.status = Status.ONGOING;
+        parcel.setKeeper(transporter);
     }
 
     public enum Status {

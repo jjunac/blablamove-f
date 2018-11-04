@@ -51,7 +51,10 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
         log.debug(Boolean.toString(reachedInsurance));
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
-            findDriver.findNewDriver(user, mission, coordinate);
+            Parcel parcel = mission.getParcel();
+            mission.setParcel(null);
+            parcel.setMission(null);
+            findDriver.findNewDriver(user, parcel, coordinate, mission.getArrival());
         }
     }
 

@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,9 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
         User benjamin = createAndSaveUser("Benjamin");
         // Get the mocked new transporter
         User erick = userRepository.findByName("Erick").get(0);
-        driverFinder.findNewDriver(benjamin, createAndSaveOngoingdMissionWithParcel(philippe, benjamin, gps, gps), gps);
+        Parcel parcel = createAndSaveParcel(philippe);
+        parcel.setKeeper(benjamin);
+        driverFinder.findNewDriver(benjamin, parcel, gps, gps);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

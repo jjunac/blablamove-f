@@ -30,11 +30,8 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private List <Parcel> ownedPackages = new LinkedList <>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List <Notification> notifications = new LinkedList <>();
-
-    @OneToMany(mappedBy = "askedUser")
-    private List <Notification> pendingNotificationsWithAnswer = new LinkedList <>();
 
     private String name;
 
@@ -97,15 +94,6 @@ public class User implements Serializable {
     public void clearNotifications() {
         notifications.clear();
     }
-
-    public boolean addPendingNotificationsWithAnswer(Notification notification) {
-        return pendingNotificationsWithAnswer.add(notification);
-    }
-
-    public boolean removePendingNotificationsWithAnswer(Notification notification) {
-        return pendingNotificationsWithAnswer.remove(notification);
-    }
-
 
     @Override
     public String toString() {

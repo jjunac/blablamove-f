@@ -6,6 +6,7 @@ import fr.unice.polytech.al.teamf.entities.Answer;
 import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.NotificationRepository;
+import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,9 +28,7 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
 
     @Override
     public void notifyUserWithAnswer(User user, String message, Answer answer) {
-        Notification notification = new Notification(user, message, answer);
-        user.addPendingNotificationsWithAnswer(notification);
-        sendNotification(notification);
+        sendNotification(new Notification(user, message, answer));
     }
 
     private void sendNotification(Notification notification) {
@@ -41,7 +40,7 @@ public class UserNotifierBean implements NotifyUser, PullNotifications {
     @Override
     public List<Notification> pullNotificationForUser(User user) {
         log.info(String.format("%s is pulling its notifications", user.getName()));
-        List<Notification> notifications = new LinkedList<>(user.getNotifications());
+        List<Notification> notifications = notificationRepository.findByUser(user);
         user.clearNotifications();
         return notifications;
     }
