@@ -21,6 +21,8 @@ public class Mission implements Serializable {
     @ManyToOne
     public User owner;
 
+    public Status status;
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="latitude", column= @Column(name="transporterLatitude")),
@@ -44,10 +46,19 @@ public class Mission implements Serializable {
         this.departure = departure;
         this.arrival = arrival;
         this.parcel = parcel;
+        this.status = Status.PENDING;
     }
 
     public int computeRetribution() {
         return (int) (Math.ceil(departure.getDistanceTo(arrival))) * 100;
+    }
+
+    public void setOngoing(){
+        this.status = Status.ONGOING;
+    }
+
+    public enum Status {
+        PENDING, ONGOING
     }
 
 }

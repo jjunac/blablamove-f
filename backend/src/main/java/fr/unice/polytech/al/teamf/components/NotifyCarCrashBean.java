@@ -47,10 +47,10 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
     public void notifyCrash(User user, GPSCoordinate coordinate) {
         logger.trace("NotifyCarCrashBean.notifyCrash");
         logger.debug(user.toString());
-        for (Mission mission : user.getTransportedMissions()) {
+        for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             findDriver.findNewDriver(user, mission, coordinate);
-            log.debug(""+contactInsurance(user));
+            log.debug("" + contactInsurance(user));
         }
     }
 

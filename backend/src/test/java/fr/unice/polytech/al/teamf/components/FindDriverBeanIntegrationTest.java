@@ -33,7 +33,7 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
         User benjamin = createAndSaveUser("Benjamin");
         // Get the mocked new transporter
         User erick = userRepository.findByName("Erick").get(0);
-        driverFinder.findNewDriver(benjamin, createAndSaveMissionWithParcel(philippe, benjamin, gps, gps), gps);
+        driverFinder.findNewDriver(benjamin, createAndSaveOngoingdMissionWithParcel(philippe, benjamin, gps, gps), gps);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

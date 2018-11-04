@@ -48,6 +48,12 @@ public class User implements Serializable {
         return transportedMissions.remove(mission);
     }
 
+    public List <Mission> getTransportedMissionsWithStatus(Mission.Status status) {
+        return transportedMissions.stream()
+                .filter(mission -> mission.status.equals(status))
+                .collect(Collectors.toList());
+    }
+
     public List <User> getUsersOwningMissions() {
         return transportedMissions.stream().map(Mission::getOwner).distinct().collect(Collectors.toList());
     }
