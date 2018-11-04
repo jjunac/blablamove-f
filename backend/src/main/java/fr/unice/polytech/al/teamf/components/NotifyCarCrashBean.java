@@ -32,7 +32,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
 
     private final Logger logger = LoggerFactory.getLogger(NotifyCarCrashBean.class);
 
-    String insurance_url = "http://insurance:5001";
+    String insurance_url = "http://insurance:5000";
 
     @Autowired
     NotifyUser notifyUser;
