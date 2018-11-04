@@ -84,4 +84,6 @@ if args.skip_externals:
     skipped()
 else:
     nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
+    print("Points before : "+str(nb_points_before))
+    print("Points after : "+str(nb_points_after))
     assert_equals(True, nb_points_after > nb_points_before)
