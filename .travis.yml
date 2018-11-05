@@ -8,13 +8,24 @@ jdk:
   - oraclejdk8
 python:
   - "3.6"
+before_cache:
+  # Save tagged docker images
+  - >
+    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
+    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
 cache:
+  bundler: true
   directories:
     - "$HOME/.m2/repository"
+    - "$HOME/docker"
+
 install:
   - bash install.sh
+
 before_install:
   - sudo apt-get -y install python3-pip python-dev
+  # Load cached docker images
+  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 after_install:
   - sudo apt-get -y install python3-pip python-dev
   - sudo rm /usr/local/bin/docker-compose
