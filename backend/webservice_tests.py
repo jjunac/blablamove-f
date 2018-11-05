@@ -17,12 +17,14 @@ CYAN = "\033[96m"
 
 rpc_id = 0
 
+
 def rpc_call(url, method, params):
     global rpc_id
     rpc_id += 1
     res = requests.post(url, json={"jsonrpc": "2.0", "method": method, "id": rpc_id, "params": params})
     response_object = res.json()
     return response_object.get("result", None), response_object.get("error", None), res.status_code
+
 
 def request_webservice(url, method, params):
     res, err, status = rpc_call(url, method, params)
@@ -32,14 +34,18 @@ def request_webservice(url, method, params):
     print("\tResponse: %s" % res)
     return res
 
+
 def print_color(text, color): print(color, text, DEFAULT)
 
+
 def step(title): print_color("#=== %s ===#" % title, BLUE)
+
 
 def skipped():
     print("\tResult:", end="")
     print_color("SKIPPED", YELLOW)
     print()
+
 
 def assert_equals(expected, actual):
     res = expected == actual
@@ -53,8 +59,10 @@ def assert_equals(expected, actual):
         print("\tActual:  ", actual)
         exit(1)
 
+
 step("Johann notify a car crash")
-assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash", {"username": "Johann", "latitude": 10, "longitude": 25}))
+assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash",
+                                       {"username": "Johann", "latitude": 10, "longitude": 25}))
 
 step("Johann's insurance has been notified")
 if args.skip_externals:
@@ -75,13 +83,16 @@ parameters = {"missionId": notifications[1]["answer"]["parameters"]["missionId"]
 assert_equals(True, request_webservice("http://localhost:8080/package", "answerToPendingMission", parameters))
 
 step("Johann is notified that Erick will take the packages")
-assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
+assert_equals(2, len(
+    request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
 
 step("Jeremy is notified that Johann had an accident and that Erick will take his package")
-assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(2, len(
+    request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Thomas is notified that Johann had an accident and that Erick will take his package")
-assert_equals(2, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+assert_equals(2, len(
+    request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 if not args.skip_externals:
     nb_points_before = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
@@ -93,4 +104,6 @@ if args.skip_externals:
     skipped()
 else:
     nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
+    print("Points before : " + str(nb_points_before))
+    print("Points after : " + str(nb_points_after))
     assert_equals(True, nb_points_after > nb_points_before)

@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @Import({NotifyCarCrashBean.class, RestTemplate.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 5001)
+@AutoConfigureWireMock(port = 5000)
 class NotifyCarCrashBeanTest {
 
     @Autowired
@@ -32,7 +32,7 @@ class NotifyCarCrashBeanTest {
                 .withBody("{\n \"insuranceInvolvement\": true\n}").withStatus(200)));
         stubFor(get(urlPathEqualTo("/insurance/Johann")).willReturn(aResponse()
                 .withBody("{\n \"insuranceInvolvement\": false\n}").withStatus(200)));
-        carCrash.insurance_url = "http://localhost:5001";
+        carCrash.insurance_url = "http://localhost:5000";
     }
 
     @Test

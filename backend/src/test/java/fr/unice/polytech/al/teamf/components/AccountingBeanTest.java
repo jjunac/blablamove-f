@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SpringExtension.class)
 @Import({AccountingBean.class, RestTemplate.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 5000)
+@AutoConfigureWireMock(port = 5001)
 class AccountingBeanTest {
 
     @Autowired
@@ -34,7 +34,7 @@ class AccountingBeanTest {
                 .withBody("20").withStatus(201)));
         stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse()
                 .withStatus(404)));
-        accountingBean.point_pricing_url = "http://localhost:5000";
+        accountingBean.point_pricing_url = "http://localhost:5001";
     }
 
     @Test
