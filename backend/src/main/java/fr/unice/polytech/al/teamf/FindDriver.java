@@ -10,4 +10,6 @@ public interface FindDriver {
     boolean answerToPendingMission(Mission mission, User driver, boolean answer);
 
     User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival);
+
+    void takePackage(User newDriver, Mission mission);
 }
