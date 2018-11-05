@@ -5,14 +5,14 @@ app = Flask(__name__)
 
 @app.route('/find_driver')
 def get():
-    print(f"Start latitude: {start_lat}")
-    print(f"Start longitude: {start_long}")
-    print(f"End latitude: {end_lat}")
-    print(f"End longitude: {end_long}")
     start_lat = request.args["start_lat"]
     start_long = request.args["start_long"]
     end_lat = request.args["end_lat"]
     end_long = request.args["end_long"]
+    print(f"Start latitude: {start_lat}")
+    print(f"Start longitude: {start_long}")
+    print(f"End latitude: {end_lat}")
+    print(f"End longitude: {end_long}")
     drivers = [{
         "name": "Erick",
         "from": f'{start_lat},{start_long}',
