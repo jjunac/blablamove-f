@@ -8,8 +8,6 @@ import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +35,10 @@ public class PackageServiceImpl implements PackageService {
         if (mission.isPresent()) {
             try {
                 computePoints.computePoints(mission.get());
+                mission.get().setFinished(); // useless for the moment, but may be useful if we want to keep a history
+                mission.get().getTransporter().removeTransportedMission(mission.get());
+                mission.get().getOwner().removeOwnedMission(mission.get());
+                missionRepository.delete(mission.get());
                 return true;
             } catch (UnknownUserException e) {
                 log.error(e.getMessage());

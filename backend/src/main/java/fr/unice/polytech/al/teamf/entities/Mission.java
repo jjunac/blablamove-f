@@ -58,8 +58,12 @@ public class Mission implements Serializable {
         parcel.setKeeper(transporter);
     }
 
+    public void setFinished(){
+        this.status = Status.FINISHED;
+    }
+
     public enum Status {
-        PENDING, ONGOING
+        PENDING, ONGOING, FINISHED
     }
 
 }
