@@ -121,4 +121,16 @@ step("Erick take Jeremy's package and Jeremy is notified")
 request_webservice("http://localhost:8080/package",
                    "takePackage",
                    {"missionId": notifications[0]["answer"]["parameters"]["missionId"], "username": "Erick"})
-assert_equals(3, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+
+step("Johann drops Thomas' package to Julien's house and Thomas is notified")
+request_webservice("http://localhost:8080/package",
+                   "dropPackageToHost",
+                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Julien"})
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+
+step("Loic takes Thomas' package from Julien's house and Thomas is notified")
+request_webservice("http://localhost:8080/package",
+                   "takePackageFromHost",
+                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Loic"})
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))

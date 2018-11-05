@@ -16,5 +16,9 @@ public interface PackageService {
     void takePackage(@JsonRpcParam(value = "missionId") long missionId,
                         @JsonRpcParam(value = "username") String username);
 
+    void dropPackageToHost(@JsonRpcParam(value = "missionId") long missionId,
+                     @JsonRpcParam(value = "username") String username);
 
+    void takePackageFromHost(@JsonRpcParam(value = "missionId") long missionId,
+                           @JsonRpcParam(value = "username") String username);
 }
