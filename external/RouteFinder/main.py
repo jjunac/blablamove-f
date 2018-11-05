@@ -5,7 +5,6 @@ app = Flask(__name__)
 
 @app.route('/find_driver')
 def get():
-    print("==============YOLO==============", request.args)
     start_lat = request.args["start_lat"]
     start_long = request.args["start_long"]
     end_lat = request.args["end_lat"]

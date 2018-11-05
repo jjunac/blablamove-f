@@ -107,3 +107,13 @@ else:
     print("Points before : " + str(nb_points_before))
     print("Points after : " + str(nb_points_after))
     assert_equals(True, nb_points_after > nb_points_before)
+
+if args.skip_externals:
+    skipped()
+else:
+    response = requests.get("http://localhost:5002/find_driver?start_lat=10.0&start_long=12.0"
+                            "&end_lat=10.0&end_long=42.0").json()
+    driver = response["drivers"][0]
+    assert_equals("Erick", driver["name"])
+    assert_equals("10.0,12.0", driver["from"])
+    assert_equals("10.0,42.0", driver["to"])
