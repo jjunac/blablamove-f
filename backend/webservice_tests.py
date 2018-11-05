@@ -94,3 +94,9 @@ if args.skip_externals:
 else:
     nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
     assert_equals(True, nb_points_after > nb_points_before)
+
+step("Erick take Jeremy's package and Jeremy is notified")
+request_webservice("http://localhost:8080/package",
+                   "takePackage",
+                   {"missionId": notifications[0]["answer"]["parameters"]["missionId"], "username": "Erick"})
+assert_equals(3, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))

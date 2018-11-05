@@ -13,5 +13,8 @@ public interface PackageService {
                                    @JsonRpcParam(value = "username") String username,
                                    @JsonRpcParam(value="answer") boolean answer);
 
+    void takePackage(@JsonRpcParam(value = "missionId") long missionId,
+                        @JsonRpcParam(value = "username") String username);
+
 
 }

@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
+import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
@@ -53,5 +54,25 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
                 .extracting("message")
                 .hasSize(1)
                 .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"));
+    }
+
+    @Test
+    void shouldNotifyOwnersWhenTheNewDriverTakeThePackage() {
+
+        // We don't care about coordinates here
+        GPSCoordinate gps = new GPSCoordinate(10, 20);
+
+        User owner = createAndSaveUser("Philippe");
+        // Get the mocked new transporter
+        User erick = userRepository.findByName("Erick").get(0);
+        Parcel parcel = createAndSaveParcel(owner);
+        Mission mission = new Mission(erick, owner, gps, gps, parcel);
+        driverFinder.takePackage(erick, mission);
+
+        assertThat(pullNotifications.pullNotificationForUser(owner))
+                .asList()
+                .extracting("message")
+                .hasSize(1)
+                .contains(FindDriverBean.buildChangeDriverMessage("Erick"));
     }
 }

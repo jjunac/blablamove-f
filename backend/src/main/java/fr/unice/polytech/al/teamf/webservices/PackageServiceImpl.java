@@ -50,4 +50,10 @@ public class PackageServiceImpl implements PackageService {
         log.trace("PackageServiceImpl.answerToPendingMission");
         return findDriver.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
     }
+
+    @Override
+    public void takePackage(long missionId, String username) {
+        log.trace("PackageServiceImpl.takePackage");
+        findDriver.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+    }
 }

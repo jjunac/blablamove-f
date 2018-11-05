@@ -52,6 +52,12 @@ public class FindDriverBean implements FindDriver {
     }
 
     @Override
+    public void takePackage(User newDriver, Mission mission) {
+        log.trace("FindDriverBean.takePackage");
+        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
+    }
+
+    @Override
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if(answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
@@ -75,7 +81,11 @@ public class FindDriverBean implements FindDriver {
     }
 
     static String buildNewDriverMessage(String currentDriverName, String ownerName) {
-        return String.format("You will take %s's package in %s's car !", ownerName, currentDriverName);
+        return String.format("You will take %s's package from %s's car !", ownerName, currentDriverName);
+    }
+
+    static String buildChangeDriverMessage(String newDriverName) {
+        return String.format("%s has taken your package !", newDriverName);
     }
 
 }
