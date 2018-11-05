@@ -57,8 +57,12 @@ public class Mission implements Serializable {
         this.status = Status.ONGOING;
     }
 
+    public void setFinished(){
+        this.status = Status.FINISHED;
+    }
+
     public enum Status {
-        PENDING, ONGOING
+        PENDING, ONGOING, FINISHED
     }
 
 }
