@@ -98,7 +98,7 @@ if not args.skip_externals:
     nb_points_before = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
 
 step("The package is dropped")
-assert_equals(True, request_webservice("http://localhost:8080/drop", "missionFinished", {"mission": 8}))
+assert_equals(True, request_webservice("http://localhost:8080/package", "missionFinished", {"mission": 8}))
 
 if args.skip_externals:
     skipped()
