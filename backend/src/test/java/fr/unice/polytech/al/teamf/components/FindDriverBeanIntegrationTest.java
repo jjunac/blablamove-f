@@ -31,32 +31,23 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @AutoConfigureWireMock(port = 5000)
 @Import({FindDriverBean.class, UserNotifierBean.class, FindPackageHostBean.class})
 class FindDriverBeanIntegrationTest extends IntegrationTest {
-
+    
     @Autowired
     private FindDriverBean driverFinder;
     @Autowired
     private PullNotifications pullNotifications;
-
+    
     @BeforeEach
     void setUp() {
-        driverFinder.route_finder_url = "http://localhost:5000";
-
-        Map<String, StringValuePattern> params = new HashMap<>();
-        StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");
-        params.put("start_lat", number);
-        params.put("start_long", number);
-        params.put("end_lat", number);
-        params.put("end_long", number);
-        stubFor(get(urlPathEqualTo("/find_driver")).withQueryParams(params).willReturn(aResponse()
-                .withBody("{\"drivers\":[{\"name\":\"Erick\"}]}").withStatus(200)));
+        IntegrationTest.setupDriverFinder(driverFinder);
     }
-
+    
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
-
+        
         // We don't care about coordinates here
         GPSCoordinate gps = new GPSCoordinate(10, 20);
-
+        
         User philippe = createAndSaveUser("Philippe");
         User benjamin = createAndSaveUser("Benjamin");
         // Get the mocked new transporter
@@ -82,5 +73,25 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
                 .hasSize(1)
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"));
 
+    }
+
+    @Test
+    void shouldNotifyOwnersWhenTheNewDriverTakeThePackage() {
+
+        // We don't care about coordinates here
+        GPSCoordinate gps = new GPSCoordinate(10, 20);
+
+        User owner = createAndSaveUser("Philippe");
+        // Get the mocked new transporter
+        User erick = userRepository.findByName("Erick").get(0);
+        Parcel parcel = createAndSaveParcel(owner);
+        Mission mission = new Mission(erick, owner, gps, gps, parcel);
+        driverFinder.takePackage(erick, mission);
+
+        assertThat(pullNotifications.pullNotificationForUser(owner))
+                .asList()
+                .extracting("message")
+                .hasSize(1)
+                .contains(FindDriverBean.buildChangeDriverMessage("Erick"));
     }
 }

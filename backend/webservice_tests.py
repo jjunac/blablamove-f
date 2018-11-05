@@ -104,8 +104,6 @@ if args.skip_externals:
     skipped()
 else:
     nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
-    print("Points before : " + str(nb_points_before))
-    print("Points after : " + str(nb_points_after))
     assert_equals(True, nb_points_after > nb_points_before)
 
 if args.skip_externals:
@@ -117,3 +115,22 @@ else:
     assert_equals("Erick", driver["name"])
     assert_equals("10.0,12.0", driver["from"])
     assert_equals("10.0,42.0", driver["to"])
+
+
+step("Erick take Jeremy's package and Jeremy is notified")
+request_webservice("http://localhost:8080/package",
+                   "takePackage",
+                   {"missionId": notifications[0]["answer"]["parameters"]["missionId"], "username": "Erick"})
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+
+step("Johann drops Thomas' package to Julien's house and Thomas is notified")
+request_webservice("http://localhost:8080/package",
+                   "dropPackageToHost",
+                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Julien"})
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+
+step("Loic takes Thomas' package from Julien's house and Thomas is notified")
+request_webservice("http://localhost:8080/package",
+                   "takePackageFromHost",
+                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Loic"})
+assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))

@@ -8,15 +8,13 @@ import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -36,8 +34,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class FindDriverBean implements FindDriver {
-
-    String route_finder_url = "http://route_finder:5000";
+    @Getter
+    @Setter
+    public String routeFinderUrl = "http://route_finder:5000";
 
     @Autowired
     NotifyUser notifyUser;
@@ -47,6 +46,7 @@ public class FindDriverBean implements FindDriver {
     MissionRepository missionRepository;
     @Autowired
     FindPackageHost findPackageHost;
+
     @Override
     public User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival) {
         log.trace("FindDriverBean.findNewDriver");
@@ -74,7 +74,7 @@ public class FindDriverBean implements FindDriver {
     private String findUserForRoute(GPSCoordinate departure, GPSCoordinate arrival) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = String.format("%s/find_driver", route_finder_url);
+            String url = String.format("%s/find_driver", routeFinderUrl);
             HashMap<String, Double> params = new HashMap<>();
             UriComponentsBuilder builder = UriComponentsBuilder
                     .fromUriString(url)
@@ -102,8 +102,14 @@ public class FindDriverBean implements FindDriver {
     }
 
     @Override
+    public void takePackage(User newDriver, Mission mission) {
+        log.trace("FindDriverBean.takePackage");
+        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
+    }
+
+    @Override
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
-        if(answer) {
+        if (answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
             //log.debug(mission.toString());
             //log.debug(mission.getParcel().toString());
@@ -126,6 +132,11 @@ public class FindDriverBean implements FindDriver {
 
     static String buildNewDriverMessage(String currentDriverName, String ownerName) {
         return String.format("Could you please take %s's package in %s's car ?", ownerName, currentDriverName);
+    }
+
+    static String buildChangeDriverMessage(String newDriverName) {
+        return String.format("%s has taken your package !", newDriverName);
+
     }
 
 }
