@@ -55,8 +55,8 @@ public class FindDriverBean implements FindDriver {
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if(answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
-            log.debug(mission.toString());
-            log.debug(mission.getParcel().toString());
+            //log.debug(mission.toString());
+            //log.debug(mission.getParcel().toString());
             notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
         } else {
             // TODO Pass the localisation

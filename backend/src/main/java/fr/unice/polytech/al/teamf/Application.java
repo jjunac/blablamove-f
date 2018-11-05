@@ -16,6 +16,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.transaction.Transactional;
+
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -34,6 +36,7 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... arg0) throws Exception {
         User thomas = new User("Thomas");
         userRepository.save(thomas);
@@ -48,23 +51,23 @@ public class Application implements CommandLineRunner {
         User julien = new User("Julien");
         userRepository.save(julien);
 
-        Parcel parcel1 = new Parcel();
+        Parcel parcel1 = new Parcel(jeremy);
         parcelRepository.save(parcel1);
         Mission jeremysMission = new Mission(johann, jeremy, new GPSCoordinate(10, 12), new GPSCoordinate(10, 42), parcel1);
         jeremysMission.setOngoing();
+        parcel1.setMission(jeremysMission);
         missionRepository.save(jeremysMission);
-        //parcel1.setMission(jeremysMission);
         johann.addTransportedMission(jeremysMission);
 
-        Parcel parcel2 = new Parcel();
+        Parcel parcel2 = new Parcel(thomas);
         parcelRepository.save(parcel2);
         Mission thomasMission = new Mission(johann, thomas, new GPSCoordinate(10, 12), new GPSCoordinate(10, 69), parcel2);
         thomasMission.setOngoing();
+        parcel2.setMission(thomasMission);
         missionRepository.save(thomasMission);
-        //parcel2.setMission(thomasMission);
         johann.addTransportedMission(thomasMission);
 
-        logger.debug(johann.toString());
+        //logger.debug(johann.toString());
 
     }
 

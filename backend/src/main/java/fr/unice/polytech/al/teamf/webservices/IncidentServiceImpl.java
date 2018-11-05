@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +30,10 @@ public class IncidentServiceImpl implements IncidentService {
     @Override
     public boolean notifyCarCrash(String username, double latitude, double longitude) {
         logger.trace("IncidentServiceImpl.notifyCarCrash");
-        logger.debug(userRepository.findAll().toString());
+        //logger.debug(userRepository.findAll().toString());
         // For the POC, assume the existence and the unicity
         User user = userRepository.findByName(username).get(0);
-        logger.debug(user.toString());
+        //logger.debug(user.toString());
         notifyCarCrash.notifyCrash(user, new GPSCoordinate(latitude, longitude));
         return true;
     }

@@ -19,7 +19,7 @@ public class Parcel implements Serializable {
     private User owner;
     @ManyToOne
     private User keeper;
-    @ManyToOne
+    @OneToOne
     private Mission mission;
 
     public Parcel(User owner) {

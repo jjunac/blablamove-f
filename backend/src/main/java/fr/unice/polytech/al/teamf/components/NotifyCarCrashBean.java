@@ -46,14 +46,14 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
     @Override
     public void notifyCrash(User user, GPSCoordinate coordinate) {
         logger.trace("NotifyCarCrashBean.notifyCrash");
-        logger.debug(user.toString());
+        //logger.debug(user.toString());
         boolean reachedInsurance = contactInsurance(user);
         log.debug(Boolean.toString(reachedInsurance));
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             Parcel parcel = mission.getParcel();
-            mission.setParcel(null);
             parcel.setMission(null);
+            mission.setParcel(null);
             findDriver.findNewDriver(user, parcel, coordinate, mission.getArrival());
         }
     }

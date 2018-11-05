@@ -17,28 +17,28 @@ public class Mission implements Serializable {
     private long id;
 
     @ManyToOne
-    public User transporter;
+    private User transporter;
     @ManyToOne
-    public User owner;
+    private User owner;
 
-    public Status status;
+    private Status status;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="latitude", column= @Column(name="transporterLatitude")),
             @AttributeOverride(name="longitude", column= @Column(name="transporterLongitude"))
     })
-    public GPSCoordinate departure;
+    private GPSCoordinate departure;
 
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name="latitude", column= @Column(name="ownerLatitude")),
             @AttributeOverride(name="longitude", column= @Column(name="ownerLongitude"))
     })
-    public GPSCoordinate arrival;
+    private GPSCoordinate arrival;
 
     @OneToOne(mappedBy = "mission")
-    public Parcel parcel;
+    private Parcel parcel;
 
     public Mission(User transporter, User owner, GPSCoordinate departure, GPSCoordinate arrival, Parcel parcel) {
         this.transporter = transporter;

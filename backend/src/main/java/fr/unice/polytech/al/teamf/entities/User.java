@@ -50,7 +50,7 @@ public class User implements Serializable {
 
     public List <Mission> getTransportedMissionsWithStatus(Mission.Status status) {
         return transportedMissions.stream()
-                .filter(mission -> mission.status.equals(status))
+                .filter(mission -> mission.getStatus().equals(status))
                 .collect(Collectors.toList());
     }
 
@@ -99,9 +99,21 @@ public class User implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("User{");
         sb.append("id=").append(id);
-        sb.append(", transportedMissions=").append(transportedMissions.stream().map(mission -> mission.getOwner().getName() + "'s mission").collect(Collectors.toList()));
+        sb.append(", transportedMissions=").append(transportedMissions.stream().map(User::missionToString).collect(Collectors.toList()));
+        sb.append(", ownedMissions=").append(ownedMissions.stream().map(User::missionToString).collect(Collectors.toList()));
+        sb.append(", keepedPackages=").append(keepedPackages.stream().map(User::pacakgeToString).collect(Collectors.toList()));
+        sb.append(", ownedPackages=").append(ownedPackages.stream().map(User::pacakgeToString).collect(Collectors.toList()));
+        sb.append(", notifications=").append(notifications.stream().map(Notification::getMessage));
         sb.append(", name='").append(name).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    private static String missionToString(Mission mission) {
+        return mission.getOwner().getName() + "'s mission";
+    }
+
+    private static String pacakgeToString(Parcel parcel) {
+        return parcel.getOwner().getName() + "'s mission";
     }
 }
