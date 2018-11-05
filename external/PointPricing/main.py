@@ -23,12 +23,14 @@ parser.add_argument('points')
 class User(Resource):
     def get(self, user_name):
         abort_if_user_doesnt_exist(user_name)
+        print(f"getting points of {user_name}:{USERS[user_name]}")
         return USERS[user_name], 200
 
     def put(self, user_name):
         args = parser.parse_args()
         abort_if_user_doesnt_exist(user_name)
         USERS[user_name]["points"] += int(args["points"])
+        print(f"adding points to {user_name} {args['points']} final points {USERS[user_name]['points']}")
         return USERS[user_name]["points"], 201
 
 

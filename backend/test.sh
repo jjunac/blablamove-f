@@ -5,7 +5,7 @@ function cleanup {
     docker-compose -f ../docker-compose.yml down
 }
 trap cleanup EXIT
-# mvn package
+mvn package
 docker-compose -f ../docker-compose.yml up -d --force-recreate
 sleep 30
 echo "===== Starting integration test ====="
