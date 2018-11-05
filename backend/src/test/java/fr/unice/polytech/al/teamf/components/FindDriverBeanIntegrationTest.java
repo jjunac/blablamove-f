@@ -4,25 +4,37 @@ import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
 @Import({FindDriverBean.class, UserNotifierBean.class})
+@AutoConfigureWireMock(port = 5000)
 class FindDriverBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private FindDriverBean driverFinder;
     @Autowired
     private PullNotifications pullNotifications;
-
+    
+    @BeforeEach
+    void setUp() {
+        driverFinder.route_finder_url = "http://localhost:5000";
+        stubFor(get(urlPathEqualTo("/find_driver")).willReturn(aResponse()
+                .withBody("{\"name\":\"Erick\"}").withStatus(201)));
+    }
+    
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
 
@@ -33,8 +45,8 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
         User benjamin = createAndSaveUser("Benjamin");
         // Get the mocked new transporter
         User erick = userRepository.findByName("Erick").get(0);
-        driverFinder.findNewDriver(benjamin, createAndSaveOngoingdMissionWithParcel(philippe, benjamin, gps, gps), gps);
-
+        User newDriver = driverFinder.findNewDriver(benjamin, createAndSaveOngoingdMissionWithParcel(philippe, benjamin, gps, gps), gps);
+    
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
                 .extracting("message")

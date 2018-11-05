@@ -1,17 +1,21 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
 
-@app.route('/find_route/<start>/<end>')
+@app.route('/find_driver')
 def get(start, end):
+    start_lat = request.args["start_lat"]
+    start_long = request.args["start_long"]
+    end_lat = request.args["end_lat"]
+    end_long = request.args["end_long"]
     drivers = [{
-        "name": "Joseph",
-        "from": start,
-        "to": end
+        "name": "Erick",
+        "from": f'{start_lat},{start_long}',
+        "to":  f'{end_lat},{end_long}'
     }]
     return jsonify({"drivers": drivers})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=8000)  # Used just for dev, default docker image port is 80
+    app.run(host='0.0.0.0', debug=True, port=8000)  # Used just for dev
