@@ -39,7 +39,7 @@ public class FindPackageHostBean implements FindPackageHost {
 
     @Override
     public void takePackage(User newDriver, Mission mission) {
-        log.trace("FindPackageHostBean.dropPackage");
+        log.trace("FindPackageHostBean.takePackage");
         mission.setTransporter(newDriver);
         mission.getParcel().setKeeper(newDriver);
         notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));

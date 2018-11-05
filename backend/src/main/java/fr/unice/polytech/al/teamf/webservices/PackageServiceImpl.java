@@ -69,6 +69,6 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void takePackageFromHost(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
-
+        findPackageHost.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 }
