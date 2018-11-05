@@ -8,37 +8,29 @@ import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
 public class FindDriverBean implements FindDriver {
-
-    String route_finder_url = "http://route_finder:5000";
-
+    @Getter
+    @Setter
+    public String routeFinderUrl = "http://route_finder:5000";
+    
     @Autowired
     NotifyUser notifyUser;
     @Autowired
@@ -47,11 +39,12 @@ public class FindDriverBean implements FindDriver {
     MissionRepository missionRepository;
     @Autowired
     FindPackageHost findPackageHost;
+    
     @Override
     public User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival) {
         log.trace("FindDriverBean.findNewDriver");
-
-
+        
+        
         String username = findUserForRoute(coordinate, arrival);
         if (username != null) {
             User newDriver = userRepository.findByName(username).get(0);
@@ -59,7 +52,7 @@ public class FindDriverBean implements FindDriver {
             missionRepository.save(newMission);
             newDriver.addTransportedMission(newMission);
             parcel.setMission(newMission);
-
+            
             Map<String, Serializable> parameters = new HashMap<>();
             parameters.put("missionId", newMission.getId());
             parameters.put("username", newDriver.getName());
@@ -70,11 +63,11 @@ public class FindDriverBean implements FindDriver {
         // TODO call  temporary location
         return null;
     }
-
+    
     private String findUserForRoute(GPSCoordinate departure, GPSCoordinate arrival) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = String.format("%s/find_driver", route_finder_url);
+            String url = String.format("%s/find_driver", routeFinderUrl);
             HashMap<String, Double> params = new HashMap<>();
             UriComponentsBuilder builder = UriComponentsBuilder
                     .fromUriString(url)
@@ -82,7 +75,7 @@ public class FindDriverBean implements FindDriver {
                     .queryParam("start_long", departure.getLongitude())
                     .queryParam("end_lat", arrival.getLatitude())
                     .queryParam("end_long", arrival.getLongitude());
-
+            
             log.debug("trying to get " + builder.toUriString());
             ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class, params);
             if (response != null && response.getStatusCode().is2xxSuccessful()) {
@@ -100,7 +93,7 @@ public class FindDriverBean implements FindDriver {
         }
         return "Erick";
     }
-
+    
     @Override
     public void takePackage(User newDriver, Mission mission) {
         log.trace("FindDriverBean.takePackage");
@@ -109,7 +102,7 @@ public class FindDriverBean implements FindDriver {
 
     @Override
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
-        if(answer) {
+        if (answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
             //log.debug(mission.toString());
             //log.debug(mission.getParcel().toString());
@@ -120,16 +113,16 @@ public class FindDriverBean implements FindDriver {
         }
         return true;
     }
-
-
+    
+    
     static String buildOwnerMessage(String newDriverName) {
         return String.format("%s is taking your package !", newDriverName);
     }
-
+    
     static String buildCurrentDriverMessage(String newDriverName, String ownerName) {
         return String.format("%s is taking %s's package !", newDriverName, ownerName);
     }
-
+    
     static String buildNewDriverMessage(String currentDriverName, String ownerName) {
         return String.format("You will take %s's package from %s's car !", ownerName, currentDriverName);
     }
@@ -137,5 +130,5 @@ public class FindDriverBean implements FindDriver {
     static String buildChangeDriverMessage(String newDriverName) {
         return String.format("%s has taken your package !", newDriverName);
     }
-
+    
 }
