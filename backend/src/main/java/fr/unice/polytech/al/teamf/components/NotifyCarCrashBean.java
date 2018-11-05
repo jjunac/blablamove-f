@@ -29,17 +29,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class NotifyCarCrashBean implements NotifyCarCrash {
-
+    
     private final Logger logger = LoggerFactory.getLogger(NotifyCarCrashBean.class);
-
+    
     String insurance_url = "http://insurance:5000";
-
+    
     @Autowired
     NotifyUser notifyUser;
-
+    
     @Autowired
     FindDriver findDriver;
-
+    
     /**
      * @param user User transporting the packages
      */
@@ -54,7 +54,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
             findDriver.findNewDriver(user, mission, coordinate);
         }
     }
-
+    
     boolean contactInsurance(User user) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
                 .fromHttpUrl(String.format("%s/insurance/%s", insurance_url, user.getName()));
@@ -63,12 +63,10 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
                     HttpMethod.GET,
                     null,
                     clientHttpResponse -> clientHttpResponse);
+            logger.debug("contacting insurance with user " + user.getName());
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
                 return new ObjectMapper()
-                        .readTree(new BufferedReader(
-                                new InputStreamReader(queryResponse.getBody()))
-                                .lines()
-                                .collect(Collectors.joining("")))
+                        .readTree(queryResponse.getBody())
                         .get("insuranceInvolvement")
                         .asBoolean();
             }
@@ -80,9 +78,9 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
         }
         return false; // handle this properly
     }
-
+    
     static String buildMessage(String username) {
         return String.format("%s had an accident while transporting your package !", username);
     }
-
+    
 }

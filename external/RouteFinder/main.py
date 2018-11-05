@@ -4,7 +4,8 @@ app = Flask(__name__)
 
 
 @app.route('/find_driver')
-def get(start, end):
+def get():
+    print("==============YOLO==============", request.args)
     start_lat = request.args["start_lat"]
     start_long = request.args["start_long"]
     end_lat = request.args["end_lat"]
@@ -12,8 +13,9 @@ def get(start, end):
     drivers = [{
         "name": "Erick",
         "from": f'{start_lat},{start_long}',
-        "to":  f'{end_lat},{end_long}'
+        "to": f'{end_lat},{end_long}'
     }]
+    print(f"returning {drivers}")
     return jsonify({"drivers": drivers})
 
 

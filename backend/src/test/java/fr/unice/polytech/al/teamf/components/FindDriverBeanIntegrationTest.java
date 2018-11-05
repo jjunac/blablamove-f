@@ -32,7 +32,7 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
     void setUp() {
         driverFinder.route_finder_url = "http://localhost:5000";
         stubFor(get(urlPathEqualTo("/find_driver")).willReturn(aResponse()
-                .withBody("{\"name\":\"Erick\"}").withStatus(201)));
+                .withBody("{\"name\":\"Erick\"}").withStatus(200)));
     }
     
     @Test

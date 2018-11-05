@@ -59,20 +59,21 @@ public class FindDriverBean implements FindDriver {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String url = String.format("%s/find_driver", route_finder_url);
-            
             HashMap<String, Double> params = new HashMap<>();
-            params.put("start_lat", mission.getDeparture().getLatitude());
-            params.put("start_long", mission.getDeparture().getLongitude());
-            params.put("end_lat", mission.getArrival().getLatitude());
-            params.put("end_long", mission.getArrival().getLongitude());
+            UriComponentsBuilder builder = UriComponentsBuilder
+                    .fromUriString(url)
+                    .queryParam("start_lat", mission.getDeparture().getLatitude())
+                    .queryParam("start_long", mission.getDeparture().getLongitude())
+                    .queryParam("end_lat", mission.getArrival().getLatitude())
+                    .queryParam("end_long", mission.getArrival().getLongitude());
             
-            
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, params);
+            logger.debug("trying to get " + builder.toUriString());
+            ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class, params);
             if (response != null && response.getStatusCode().is2xxSuccessful()) {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(response.getBody());
-                JsonNode name = root.path("name");
-                logger.debug(String.format("received: %s, from find_route", root));
+                JsonNode name = root.get("drivers").get(0).get("name");
+                logger.debug(String.format("received: %s, from find_route name=%s", root, name));
                 return name.asText();
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
