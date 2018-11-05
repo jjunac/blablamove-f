@@ -125,7 +125,7 @@ public class FindDriverBean implements FindDriver {
     }
 
     static String buildNewDriverMessage(String currentDriverName, String ownerName) {
-        return String.format("You will take %s's package in %s's car !", ownerName, currentDriverName);
+        return String.format("Could you please take %s's package in %s's car ?", ownerName, currentDriverName);
     }
 
 }
