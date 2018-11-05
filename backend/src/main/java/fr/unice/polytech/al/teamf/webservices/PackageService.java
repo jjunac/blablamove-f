@@ -9,9 +9,14 @@ import fr.unice.polytech.al.teamf.entities.User;
 public interface PackageService {
     // TODO why not drop package ?
     boolean computePoints(@JsonRpcParam(value = "mission") long missionId);
+
     boolean answerToPendingMission(@JsonRpcParam(value = "missionId") long missionId,
                                    @JsonRpcParam(value = "username") String username,
                                    @JsonRpcParam(value="answer") boolean answer);
+
+    boolean answerToPendingPackageHosting(@JsonRpcParam(value = "parcelId") long parcelId,
+                                          @JsonRpcParam(value = "username") String username,
+                                          @JsonRpcParam(value="answer") boolean answer);
 
 
 }

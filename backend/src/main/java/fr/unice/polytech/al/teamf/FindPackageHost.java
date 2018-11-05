@@ -9,4 +9,6 @@ public interface FindPackageHost {
 
     User findHost(Parcel parcel, GPSCoordinate coordinate);
 
+    boolean answerToPendingPackageHosting(Parcel parcel, User user, boolean answer);
+
 }
