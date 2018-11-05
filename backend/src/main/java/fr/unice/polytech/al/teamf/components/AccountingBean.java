@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 @Slf4j
 @Component
 public class AccountingBean implements ComputePoints {
-    String point_pricing_url="http://point_pricing:5001";
+    String point_pricing_url="http://point_pricing:5000";
     
     @Override
     public int computePoints(Mission mission) throws UnknownUserException {
