@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,7 +93,12 @@ public class User implements Serializable {
     }
 
     public void clearNotifications() {
-        notifications.clear();
+        for(Iterator<Notification> notificationIterator = notifications.iterator();
+            notificationIterator.hasNext(); ) {
+            Notification notification = notificationIterator .next();
+            notification.setUser(null);
+            notificationIterator.remove();
+        }
     }
 
     @Override

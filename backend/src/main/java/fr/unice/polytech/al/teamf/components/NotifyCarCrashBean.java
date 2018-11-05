@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 @Component
 public class NotifyCarCrashBean implements NotifyCarCrash {
     
-    private final Logger logger = LoggerFactory.getLogger(NotifyCarCrashBean.class);
-    
     String insurance_url = "http://insurance:5000";
     
     @Autowired
@@ -45,8 +43,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
      */
     @Override
     public void notifyCrash(User user, GPSCoordinate coordinate) {
-        logger.trace("NotifyCarCrashBean.notifyCrash");
-        //logger.debug(user.toString());
+        log.trace("NotifyCarCrashBean.notifyCrash");
         boolean reachedInsurance = contactInsurance(user);
         log.debug(Boolean.toString(reachedInsurance));
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
@@ -66,7 +63,7 @@ public class NotifyCarCrashBean implements NotifyCarCrash {
                     HttpMethod.GET,
                     null,
                     clientHttpResponse -> clientHttpResponse);
-            logger.debug("contacting insurance with user " + user.getName());
+            log.debug("contacting insurance with user " + user.getName());
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
                 return new ObjectMapper()
                         .readTree(queryResponse.getBody())

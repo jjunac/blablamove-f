@@ -5,6 +5,7 @@ import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
+import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -24,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({NotifyCarCrashBean.class, UserNotifierBean.class, FindDriverBean.class})
+@Import({NotifyCarCrashBean.class, UserNotifierBean.class, FindDriverBean.class, FindPackageHostBean.class})
 @AutoConfigureWireMock(port = 5000)
 class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
     
@@ -65,32 +67,50 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
         Mission m2 = createAndSaveOngoingdMissionWithParcel(sebastien, benjamin, gps, gps);
         
         carCrash.notifyCrash(benjamin, gps);
-        
+
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
                 .extracting("message")
-                .hasSize(2)
-                .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
-                .contains(FindDriverBean.buildOwnerMessage("Erick"));
-        
+                .hasSize(1)
+                .contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+
         assertThat(pullNotifications.pullNotificationForUser(sebastien))
                 .asList()
                 .extracting("message")
+                .hasSize(1)
+                .contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+
+        List<Notification> notifications = pullNotifications.pullNotificationForUser(erick);
+        assertThat(notifications)
+                .asList()
+                .extracting("message")
                 .hasSize(2)
-                .contains(NotifyCarCrashBean.buildMessage("Benjamin"))
+                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"))
+                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
+
+        Mission mission1 = missionRepository.findById((Long) notifications.get(0).getAnswer().getParameters().get("missionId")).get();
+        findDriverBean.answerToPendingMission(mission1, erick, true);
+        Mission mission2 = missionRepository.findById((Long) notifications.get(1).getAnswer().getParameters().get("missionId")).get();
+        findDriverBean.answerToPendingMission(mission2, erick, true);
+
+        assertThat(pullNotifications.pullNotificationForUser(philippe))
+                .asList()
+                .extracting("message")
+                .hasSize(1)
                 .contains(FindDriverBean.buildOwnerMessage("Erick"));
-        
+
+        assertThat(pullNotifications.pullNotificationForUser(sebastien))
+                .asList()
+                .extracting("message")
+                .hasSize(1)
+                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+
         assertThat(pullNotifications.pullNotificationForUser(benjamin))
                 .asList()
                 .extracting("message")
                 .hasSize(2)
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"))
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Sebastien"));
-        assertThat(pullNotifications.pullNotificationForUser(erick))
-                .asList()
-                .extracting("message")
-                .hasSize(2)
-                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"))
-                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
+
     }
 }
