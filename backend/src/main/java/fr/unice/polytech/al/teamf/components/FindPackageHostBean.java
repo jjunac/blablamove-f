@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
@@ -18,7 +19,7 @@ public class FindPackageHostBean implements FindPackageHost {
     UserRepository userRepository;
 
     @Override
-    public User findHost(Parcel mission) {
+    public User findHost(Parcel mission, GPSCoordinate coordinate) {
         // Mocking new Host user
         User newHost = userRepository.findByName("Julien").get(0);
         notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newHost.getName()));
