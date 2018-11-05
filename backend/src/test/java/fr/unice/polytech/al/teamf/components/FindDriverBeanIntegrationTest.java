@@ -83,4 +83,24 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
                 .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"));
 
     }
+
+    @Test
+    void shouldNotifyOwnersWhenTheNewDriverTakeThePackage() {
+
+        // We don't care about coordinates here
+        GPSCoordinate gps = new GPSCoordinate(10, 20);
+
+        User owner = createAndSaveUser("Philippe");
+        // Get the mocked new transporter
+        User erick = userRepository.findByName("Erick").get(0);
+        Parcel parcel = createAndSaveParcel(owner);
+        Mission mission = new Mission(erick, owner, gps, gps, parcel);
+        driverFinder.takePackage(erick, mission);
+
+        assertThat(pullNotifications.pullNotificationForUser(owner))
+                .asList()
+                .extracting("message")
+                .hasSize(1)
+                .contains(FindDriverBean.buildChangeDriverMessage("Erick"));
+    }
 }
