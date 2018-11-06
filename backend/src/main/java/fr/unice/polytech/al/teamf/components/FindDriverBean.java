@@ -2,12 +2,15 @@ package fr.unice.polytech.al.teamf.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.unice.polytech.al.teamf.AnswerMission;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +38,10 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FindDriverBean implements FindDriver {
-
-    String route_finder_url = "http://route_finder:5000";
-
+public class FindDriverBean implements FindDriver, AnswerMission {
+    @Getter
+    @Setter
+    public String routeFinderUrl = "http://route_finder:5000";
     @Autowired
     NotifyUser notifyUser;
     @Autowired
@@ -76,7 +79,7 @@ public class FindDriverBean implements FindDriver {
     private String findUserForRoute(GPSCoordinate departure, GPSCoordinate arrival) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = String.format("%s/find_driver", route_finder_url);
+            String url = String.format("%s/find_driver", routeFinderUrl);
             HashMap<String, Double> params = new HashMap<>();
             UriComponentsBuilder builder = UriComponentsBuilder
                     .fromUriString(url)

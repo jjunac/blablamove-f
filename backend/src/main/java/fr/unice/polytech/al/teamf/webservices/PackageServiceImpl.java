@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf.webservices;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
+import fr.unice.polytech.al.teamf.AnswerMission;
 import fr.unice.polytech.al.teamf.ComputePoints;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
@@ -31,6 +32,8 @@ public class PackageServiceImpl implements PackageService {
     @Autowired
     FindDriver findDriver;
     @Autowired
+    AnswerMission answerMission;
+    @Autowired
     FindPackageHost findPackageHost;
     @Autowired
     ParcelRepository parcelRepository;
@@ -54,7 +57,7 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public boolean answerToPendingMission(long missionId, String username, boolean answer) {
         log.trace("PackageServiceImpl.answerToPendingMission");
-        return findDriver.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
+        return answerMission.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
     }
 
     @Override
