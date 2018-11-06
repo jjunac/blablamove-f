@@ -32,8 +32,8 @@ public class PackageServiceImpl implements PackageService {
 
 
     @Override
-    public boolean computePoints(long missionId) {
-        log.trace("PackageDroppedImpl.computePoints");
+    public boolean missionFinished(long missionId) {
+        log.trace("PackageDroppedImpl.missionFinished");
         Optional <Mission> mission = missionRepository.findById(missionId);
         if (mission.isPresent()) {
             try {
