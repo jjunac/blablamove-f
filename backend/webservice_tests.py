@@ -96,8 +96,8 @@ assert_equals(1, len(notifications))
 step("Jeremy is notified that Erick will take his package")
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
-step("Thomas is notified that Johann had an accident and that Erick will take his package")
-assert_equals(2, len(
+step("Thomas is notified that Julien will host his package")
+assert_equals(1, len(
     request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 if not args.skip_externals:
