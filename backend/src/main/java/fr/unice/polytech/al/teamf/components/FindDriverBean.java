@@ -68,7 +68,7 @@ public class FindDriverBean implements FindDriver, AnswerMission {
             return newDriver;
         }
 
-        findPackageHost.findHost(parcel, coordinate);
+        findPackageHost.findHost(parcel);
 
         return null;
     }
@@ -115,7 +115,7 @@ public class FindDriverBean implements FindDriver, AnswerMission {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
             notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
         } else {
-            findPackageHost.findHost(mission.getParcel(), mission.getArrival());
+            findPackageHost.findHost(mission.getParcel());
         }
         return true;
     }

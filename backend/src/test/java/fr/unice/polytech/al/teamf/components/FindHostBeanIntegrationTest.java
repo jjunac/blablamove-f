@@ -35,7 +35,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User paulette = createAndSaveUser("Paulette");
         User georgette = createAndSaveUser("Georgette");
         User julien = userRepository.findByName("Julien").get(0);
-        hostFinder.findHost(createAndSaveParcel(paulette), new GPSCoordinate(32, 32));
+        hostFinder.findHost(createAndSaveParcel(paulette));
 
         // FIXME test that the current transporter is notified
 

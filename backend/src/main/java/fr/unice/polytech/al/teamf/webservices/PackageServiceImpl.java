@@ -65,12 +65,6 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public boolean answerToPendingPackageHosting(long parcelId, String username, boolean answer) {
-        log.trace("PackageServiceImpl.answerToPendingPackageHosting");
-        return answerPackageHosting.answerToPendingPackageHosting(parcelRepository.findById(parcelId).get(), userRepository.findByName(username).get(0), answer);
-    }
-
-    @Override
     public void takePackage(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackage");
         findDriver.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());

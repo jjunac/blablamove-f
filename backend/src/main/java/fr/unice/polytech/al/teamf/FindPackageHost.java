@@ -7,7 +7,7 @@ import fr.unice.polytech.al.teamf.entities.User;
 
 public interface FindPackageHost {
 
-    User findHost(Parcel parcel, GPSCoordinate coordinate);
+    User findHost(Parcel parcel);
 
     void dropPackage(User host, Mission mission);
 

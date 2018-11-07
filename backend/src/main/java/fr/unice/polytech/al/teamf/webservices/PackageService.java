@@ -8,7 +8,7 @@ import fr.unice.polytech.al.teamf.entities.User;
 @JsonRpcService("/package")
 public interface PackageService {
     // TODO why not drop package ?
-    boolean computePoints(@JsonRpcParam(value = "mission") long missionId);
+    boolean missionFinished(@JsonRpcParam(value = "mission") long missionId);
 
     boolean answerToPendingMission(@JsonRpcParam(value = "missionId") long missionId,
                                    @JsonRpcParam(value = "username") String username,

@@ -23,11 +23,12 @@ public class FindPackageHostBean implements FindPackageHost, AnswerPackageHostin
     UserRepository userRepository;
 
     @Override
-    public User findHost(Parcel parcel, GPSCoordinate coordinate) {
+    public User findHost(Parcel parcel) {
         log.trace("FindPackageHostBean.findHost");
         // Mocking new Host user
         User newHost = userRepository.findByName("Julien").get(0);
 
+        notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newHost.getName()));
         Map<String, Serializable> parameters = new HashMap<>();
         parameters.put("parcelId", parcel.getId());
         parameters.put("username", newHost.getName());
