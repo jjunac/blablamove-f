@@ -9,8 +9,4 @@ public interface FindPackageHost {
 
     User findHost(Parcel parcel);
 
-    void dropPackage(User host, Mission mission);
-
-    void takePackage(User newDriver, Mission mission);
-
 }

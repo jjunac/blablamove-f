@@ -8,6 +8,4 @@ import fr.unice.polytech.al.teamf.entities.User;
 public interface FindDriver {
 
     User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival);
-
-    void takePackage(User newDriver, Mission mission);
 }

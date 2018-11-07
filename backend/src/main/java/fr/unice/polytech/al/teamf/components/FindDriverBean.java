@@ -2,18 +2,13 @@ package fr.unice.polytech.al.teamf.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.unice.polytech.al.teamf.AnswerMission;
-import fr.unice.polytech.al.teamf.FindDriver;
-import fr.unice.polytech.al.teamf.FindPackageHost;
-import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -22,19 +17,14 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Component
-public class FindDriverBean implements FindDriver, AnswerMission {
+public class FindDriverBean implements FindDriver, AnswerMission, ChangePackageKeeperDriver {
     @Getter
     @Setter
     public String routeFinderUrl = "http://route_finder:5000";
@@ -104,9 +94,9 @@ public class FindDriverBean implements FindDriver, AnswerMission {
     }
 
     @Override
-    public void takePackage(User newDriver, Mission mission) {
+    public void takePackage(User newHost, Mission mission) {
         log.trace("FindDriverBean.takePackage");
-        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
+        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newHost.getName()));
     }
 
     @Override

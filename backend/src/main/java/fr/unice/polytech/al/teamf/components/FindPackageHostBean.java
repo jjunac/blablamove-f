@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.AnswerPackageHosting;
+import fr.unice.polytech.al.teamf.ChangePackageKeeperHost;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting {
+public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting, ChangePackageKeeperHost {
 
     @Autowired
     NotifyUser notifyUser;
@@ -47,11 +48,11 @@ public class FindPackageHostBean implements FindPackageHost, AnswerPackageHostin
     }
 
     @Override
-    public void takePackage(User newDriver, Mission mission) {
+    public void takePackage(User newHost, Mission mission) {
         log.trace("FindPackageHostBean.takePackage");
-        mission.setTransporter(newDriver);
-        mission.getParcel().setKeeper(newDriver);
-        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));
+        mission.setTransporter(newHost);
+        mission.getParcel().setKeeper(newHost);
+        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newHost.getName()));
     }
 
     @Override

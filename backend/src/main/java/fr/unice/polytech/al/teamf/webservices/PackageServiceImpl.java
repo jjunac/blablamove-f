@@ -37,6 +37,10 @@ public class PackageServiceImpl implements PackageService {
     FindPackageHost findPackageHost;
     @Autowired
     ParcelRepository parcelRepository;
+    @Autowired
+    ChangePackageKeeperHost changePackageKeeperHost;
+    @Autowired
+    ChangePackageKeeperDriver changePackageKeeperDriver;
 
 
     @Override
@@ -67,18 +71,18 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void takePackage(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackage");
-        findDriver.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        changePackageKeeperDriver.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 
     @Override
     public void dropPackageToHost(long missionId, String username) {
         log.trace("PackageServiceImpl.dropPackageToHost");
-        findPackageHost.dropPackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        changePackageKeeperHost.dropPackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 
     @Override
     public void takePackageFromHost(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
-        findPackageHost.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        changePackageKeeperHost.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 }
