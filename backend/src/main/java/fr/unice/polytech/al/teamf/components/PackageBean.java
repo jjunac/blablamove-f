@@ -38,7 +38,6 @@ public class PackageBean implements ManagePackage {
     @Override
     public void takePackageFromDriver(User newDriver, Mission mission) {
         log.trace("PackageBean.takePackage");
-        mission.setOngoing();
         notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
     }
 
