@@ -68,6 +68,12 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
+    public boolean answerToPendingPackageHosting(long parcelId, String username, boolean answer) {
+        log.trace("PackageServiceImpl.answerToPendingPackageHosting");
+        return answerPackageHosting.answerToPendingPackageHosting(parcelRepository.findById(parcelId).get(), userRepository.findByName(username).get(0), answer);
+    }
+
+    @Override
     public void takePackage(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackage");
         managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
@@ -75,6 +81,7 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public void dropPackageToHost(long missionId, String username) {
+        // TODO change to parcelId
         log.trace("PackageServiceImpl.dropPackageToHost");
         managePackage.dropPackageToHost(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
