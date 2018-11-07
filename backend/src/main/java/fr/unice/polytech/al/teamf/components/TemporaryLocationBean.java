@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting {
+public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHosting {
 
     @Autowired
     NotifyUser notifyUser;

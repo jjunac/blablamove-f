@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class NotifyCarCrashBean implements NotifyCarCrash {
+public class CarCrashBean implements NotifyCarCrash {
     
     String insurance_url = "http://insurance:5000";
     

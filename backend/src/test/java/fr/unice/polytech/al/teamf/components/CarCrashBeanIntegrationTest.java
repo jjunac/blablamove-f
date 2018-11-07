@@ -26,22 +26,22 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({NotifyCarCrashBean.class, UserNotifierBean.class, FindDriverBean.class, FindPackageHostBean.class})
+@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class})
 @AutoConfigureWireMock(port = 5000)
-class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
+class CarCrashBeanIntegrationTest extends IntegrationTest {
     
     @Autowired
-    private NotifyCarCrashBean carCrash;
+    private CarCrashBean carCrash;
     
     @Autowired
-    private FindDriverBean findDriverBean;
+    private DriverFinderBean driverFinderBean;
     
     @Autowired
     private PullNotifications pullNotifications;
     
     @BeforeEach
     void setUp() {
-        findDriverBean.routeFinderUrl = "http://localhost:5000";
+        driverFinderBean.routeFinderUrl = "http://localhost:5000";
     
         Map<String, StringValuePattern> params = new HashMap<>();
         StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");
@@ -72,45 +72,45 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+                .contains(CarCrashBean.buildMessage("Benjamin"));
 
         assertThat(pullNotifications.pullNotificationForUser(sebastien))
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(NotifyCarCrashBean.buildMessage("Benjamin"));
+                .contains(CarCrashBean.buildMessage("Benjamin"));
 
         List<Notification> notifications = pullNotifications.pullNotificationForUser(erick);
         assertThat(notifications)
                 .asList()
                 .extracting("message")
                 .hasSize(2)
-                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Philippe"))
-                .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
+                .contains(DriverFinderBean.buildNewDriverMessage("Benjamin", "Philippe"))
+                .contains(DriverFinderBean.buildNewDriverMessage("Benjamin", "Sebastien"));
 
         Mission mission1 = missionRepository.findById((Long) notifications.get(0).getAnswer().getParameters().get("missionId")).get();
-        findDriverBean.answerToPendingMission(mission1, erick, true);
+        driverFinderBean.answerToPendingMission(mission1, erick, true);
         Mission mission2 = missionRepository.findById((Long) notifications.get(1).getAnswer().getParameters().get("missionId")).get();
-        findDriverBean.answerToPendingMission(mission2, erick, true);
+        driverFinderBean.answerToPendingMission(mission2, erick, true);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+                .contains(DriverFinderBean.buildOwnerMessage("Erick"));
 
         assertThat(pullNotifications.pullNotificationForUser(sebastien))
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindDriverBean.buildOwnerMessage("Erick"));
+                .contains(DriverFinderBean.buildOwnerMessage("Erick"));
 
         assertThat(pullNotifications.pullNotificationForUser(benjamin))
                 .asList()
                 .extracting("message")
                 .hasSize(2)
-                .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Philippe"))
-                .contains(FindDriverBean.buildCurrentDriverMessage("Erick", "Sebastien"));
+                .contains(DriverFinderBean.buildCurrentDriverMessage("Erick", "Philippe"))
+                .contains(DriverFinderBean.buildCurrentDriverMessage("Erick", "Sebastien"));
 
     }
 }

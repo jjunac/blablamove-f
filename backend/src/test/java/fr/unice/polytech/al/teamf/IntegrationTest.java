@@ -1,7 +1,7 @@
 package fr.unice.polytech.al.teamf;
 
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import fr.unice.polytech.al.teamf.components.FindDriverBean;
+import fr.unice.polytech.al.teamf.components.DriverFinderBean;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -26,7 +26,7 @@ public abstract class IntegrationTest {
     protected MissionRepository missionRepository;
     
     
-    public static void setupDriverFinder(FindDriverBean driverFinder) {
+    public static void setupDriverFinder(DriverFinderBean driverFinder) {
         driverFinder.setRouteFinderUrl("http://localhost:5000");
         
         Map<String, StringValuePattern> params = new HashMap<>();

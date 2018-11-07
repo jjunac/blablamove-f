@@ -1,6 +1,5 @@
 package fr.unice.polytech.al.teamf;
 
-import fr.unice.polytech.al.teamf.components.NotifyCarCrashBean;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -8,7 +7,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
-import fr.unice.polytech.al.teamf.webservices.IncidentServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

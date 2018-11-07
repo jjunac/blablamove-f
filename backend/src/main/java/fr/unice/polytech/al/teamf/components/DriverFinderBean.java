@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 @Slf4j
 @Component
-public class FindDriverBean implements FindDriver, AnswerMission {
+public class DriverFinderBean implements FindDriver, AnswerMission {
     @Getter
     @Setter
     public String routeFinderUrl = "http://route_finder:5000";

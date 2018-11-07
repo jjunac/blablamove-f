@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@Import({NotifyCarCrashBean.class, RestTemplate.class})
+@Import({CarCrashBean.class, RestTemplate.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 5000)
-class NotifyCarCrashBeanTest {
+class CarCrashBeanTest {
 
     @Autowired
-    private NotifyCarCrashBean carCrash;
+    private CarCrashBean carCrash;
 
     @BeforeEach
     public void setUp() {

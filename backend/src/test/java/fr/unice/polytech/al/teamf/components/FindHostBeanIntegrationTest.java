@@ -1,7 +1,6 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.IntegrationTest;
-import fr.unice.polytech.al.teamf.ManagePackage;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
@@ -21,11 +20,11 @@ import static org.junit.Assert.assertEquals;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({FindPackageHostBean.class, UserNotifierBean.class, PackageBean.class})
+@Import({TemporaryLocationBean.class, UserNotifierBean.class, PackageBean.class})
 class FindHostBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private FindPackageHostBean hostFinder;
+    private TemporaryLocationBean hostFinder;
     @Autowired
     private PackageBean managePackage;
     @Autowired
@@ -44,12 +43,12 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindPackageHostBean.buildOwnerMessage("Julien"));
+                .contains(TemporaryLocationBean.buildOwnerMessage("Julien"));
         assertThat(pullNotifications.pullNotificationForUser(julien))
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindPackageHostBean.buildHostMessage("Paulette"));
+                .contains(TemporaryLocationBean.buildHostMessage("Paulette"));
     }
 
     @Test
