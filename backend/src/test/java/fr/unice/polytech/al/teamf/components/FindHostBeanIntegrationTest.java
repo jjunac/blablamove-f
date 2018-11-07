@@ -33,17 +33,12 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
         User paulette = createAndSaveUser("Paulette");
-        User georgette = createAndSaveUser("Georgette");
         User julien = userRepository.findByName("Julien").get(0);
         hostFinder.findHost(createAndSaveParcel(paulette));
 
         // FIXME test that the current transporter is notified
 
-        assertThat(pullNotifications.pullNotificationForUser(paulette))
-                .asList()
-                .extracting("message")
-                .hasSize(1)
-                .contains(TemporaryLocationBean.buildOwnerMessage("Julien"));
+
         assertThat(pullNotifications.pullNotificationForUser(julien))
                 .asList()
                 .extracting("message")

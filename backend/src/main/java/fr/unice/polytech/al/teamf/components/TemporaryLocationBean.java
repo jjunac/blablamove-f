@@ -28,7 +28,6 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
         // Mocking new Host user
         User newHost = userRepository.findByName("Julien").get(0);
 
-        notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(newHost.getName()));
         Map<String, Serializable> parameters = new HashMap<>();
         parameters.put("parcelId", parcel.getId());
         parameters.put("username", newHost.getName());
