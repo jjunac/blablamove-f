@@ -1,5 +1,6 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.AnswerPackageHosting;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class FindPackageHostBean implements FindPackageHost {
+public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting {
 
     @Autowired
     NotifyUser notifyUser;

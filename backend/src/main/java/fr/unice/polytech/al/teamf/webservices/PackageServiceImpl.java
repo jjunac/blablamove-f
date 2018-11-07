@@ -1,10 +1,7 @@
 package fr.unice.polytech.al.teamf.webservices;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
-import fr.unice.polytech.al.teamf.AnswerMission;
-import fr.unice.polytech.al.teamf.ComputePoints;
-import fr.unice.polytech.al.teamf.FindDriver;
-import fr.unice.polytech.al.teamf.FindPackageHost;
+import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
@@ -33,6 +30,8 @@ public class PackageServiceImpl implements PackageService {
     FindDriver findDriver;
     @Autowired
     AnswerMission answerMission;
+    @Autowired
+    AnswerPackageHosting answerPackageHosting;
     @Autowired
     FindPackageHost findPackageHost;
     @Autowired
@@ -63,6 +62,6 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public boolean answerToPendingPackageHosting(long parcelId, String username, boolean answer) {
         log.trace("PackageServiceImpl.answerToPendingPackageHosting");
-        return findPackageHost.answerToPendingPackageHosting(parcelRepository.findById(parcelId).get(), userRepository.findByName(username).get(0), answer);
+        return answerPackageHosting.answerToPendingPackageHosting(parcelRepository.findById(parcelId).get(), userRepository.findByName(username).get(0), answer);
     }
 }
