@@ -13,6 +13,9 @@ public interface PackageService {
     boolean answerToPendingMission(@JsonRpcParam(value = "missionId") long missionId,
                                    @JsonRpcParam(value = "username") String username,
                                    @JsonRpcParam(value="answer") boolean answer);
+    boolean answerToPendingPackageHosting(@JsonRpcParam(value = "parcelId") long parcelId,
+                                   @JsonRpcParam(value = "username") String username,
+                                   @JsonRpcParam(value="answer") boolean answer);
 
     void takePackage(@JsonRpcParam(value = "missionId") long missionId,
                         @JsonRpcParam(value = "username") String username);
