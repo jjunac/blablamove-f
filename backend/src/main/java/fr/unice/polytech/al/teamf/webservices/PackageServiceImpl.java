@@ -80,8 +80,8 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public void takePackageFromHost(long missionId, String username) {
+    public void takePackageFromHost(long parcelId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
-        managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        managePackage.takePackageFromHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
     }
 }

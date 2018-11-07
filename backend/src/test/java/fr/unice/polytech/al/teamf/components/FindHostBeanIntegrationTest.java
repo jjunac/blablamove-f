@@ -78,11 +78,10 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User paulette = createAndSaveUser("Paulette");
         User georgette = createAndSaveUser("Georgette");
         Parcel parcel = createAndSaveParcel(georgette);
-        Mission mission = new Mission(null, georgette, gps, gps, parcel);
-        managePackage.takePackageFromHost(paulette, mission);
+        int transportedMissionsAmount = paulette.getTransportedMissions().size();
+        managePackage.takePackageFromHost(paulette, parcel);
 
-        assertEquals(paulette, mission.getTransporter());
-        assertEquals(paulette, mission.getParcel().getKeeper());
+        assertEquals(transportedMissionsAmount + 1, paulette.getTransportedMissions().size());
         assertThat(pullNotifications.pullNotificationForUser(georgette))
                 .asList()
                 .extracting("message")

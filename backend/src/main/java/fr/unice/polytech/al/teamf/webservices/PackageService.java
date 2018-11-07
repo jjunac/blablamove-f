@@ -20,6 +20,6 @@ public interface PackageService {
     void dropPackageToHost(@JsonRpcParam(value = "missionId") long missionId,
                      @JsonRpcParam(value = "username") String username);
 
-    void takePackageFromHost(@JsonRpcParam(value = "missionId") long missionId,
+    void takePackageFromHost(@JsonRpcParam(value = "parcelId") long parcelId,
                            @JsonRpcParam(value = "username") String username);
 }

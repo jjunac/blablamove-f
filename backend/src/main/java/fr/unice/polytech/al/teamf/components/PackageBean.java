@@ -2,7 +2,9 @@ package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.ManagePackage;
 import fr.unice.polytech.al.teamf.NotifyUser;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +26,19 @@ public class PackageBean implements ManagePackage {
     }
 
     @Override
-    public void takePackageFromHost(User newHost, Mission mission) {
+    public void takePackageFromHost(User newDriver, Parcel parcel) {
         log.trace("PackageBean.takePackage");
-        mission.setTransporter(newHost);
-        mission.getParcel().setKeeper(newHost);
-        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newHost.getName()));
+        // We dont care about coordinates here
+        Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(42,42), parcel);
+        mission.setOngoing();
+        newDriver.addTransportedMission(mission);
+        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));
     }
 
     @Override
     public void takePackageFromDriver(User newDriver, Mission mission) {
         log.trace("PackageBean.takePackage");
+        mission.setOngoing();
         notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
     }
 
