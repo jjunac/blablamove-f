@@ -39,7 +39,7 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        driverFinder.route_finder_url = "http://localhost:5000";
+        driverFinder.routeFinderUrl = "http://localhost:5000";
 
         Map<String, StringValuePattern> params = new HashMap<>();
         StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");
