@@ -6,6 +6,7 @@ import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.Mission;
+import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
@@ -38,9 +39,7 @@ public class PackageServiceImpl implements PackageService {
     @Autowired
     ParcelRepository parcelRepository;
     @Autowired
-    ChangePackageKeeperHost changePackageKeeperHost;
-    @Autowired
-    ChangePackageKeeperDriver changePackageKeeperDriver;
+    ManagePackage managePackage;
 
 
     @Override
@@ -71,18 +70,18 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public void takePackage(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackage");
-        changePackageKeeperDriver.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 
     @Override
     public void dropPackageToHost(long missionId, String username) {
         log.trace("PackageServiceImpl.dropPackageToHost");
-        changePackageKeeperHost.dropPackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        managePackage.dropPackageToHost(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 
     @Override
     public void takePackageFromHost(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
-        changePackageKeeperHost.takePackage(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 }

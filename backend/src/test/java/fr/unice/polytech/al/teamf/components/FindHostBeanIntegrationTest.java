@@ -1,11 +1,11 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.IntegrationTest;
+import fr.unice.polytech.al.teamf.ManagePackage;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
-import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +21,13 @@ import static org.junit.Assert.assertEquals;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({FindPackageHostBean.class, UserNotifierBean.class})
+@Import({FindPackageHostBean.class, UserNotifierBean.class, PackageBean.class})
 class FindHostBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private FindPackageHostBean hostFinder;
-
+    @Autowired
+    private PackageBean managePackage;
     @Autowired
     private PullNotifications pullNotifications;
 
@@ -60,7 +61,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User julien = userRepository.findByName("Julien").get(0);
         Parcel parcel = createAndSaveParcel(georgette);
         Mission mission = new Mission(paulette, georgette, gps, gps, parcel);
-        hostFinder.dropPackage(julien, mission);
+        managePackage.dropPackageToHost(julien, mission);
 
         assertNull(mission.getTransporter());
         assertEquals(julien, mission.getParcel().getKeeper());
@@ -68,7 +69,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindPackageHostBean.buildDroppedPackageMessage("Julien"));
+                .contains(PackageBean.buildDroppedPackageMessage("Julien"));
     }
 
     @Test
@@ -79,7 +80,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User georgette = createAndSaveUser("Georgette");
         Parcel parcel = createAndSaveParcel(georgette);
         Mission mission = new Mission(null, georgette, gps, gps, parcel);
-        hostFinder.takePackage(paulette, mission);
+        managePackage.takePackageFromHost(paulette, mission);
 
         assertEquals(paulette, mission.getTransporter());
         assertEquals(paulette, mission.getParcel().getKeeper());
@@ -87,6 +88,6 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindPackageHostBean.buildTakenPackageMessage("Paulette"));
+                .contains(PackageBean.buildTakenPackageMessage("Paulette"));
     }
 }

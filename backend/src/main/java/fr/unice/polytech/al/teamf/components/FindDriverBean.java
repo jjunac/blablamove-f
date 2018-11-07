@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 @Slf4j
 @Component
-public class FindDriverBean implements FindDriver, AnswerMission, ChangePackageKeeperDriver {
+public class FindDriverBean implements FindDriver, AnswerMission {
     @Getter
     @Setter
     public String routeFinderUrl = "http://route_finder:5000";
@@ -94,12 +94,6 @@ public class FindDriverBean implements FindDriver, AnswerMission, ChangePackageK
     }
 
     @Override
-    public void takePackage(User newHost, Mission mission) {
-        log.trace("FindDriverBean.takePackage");
-        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newHost.getName()));
-    }
-
-    @Override
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if (answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
@@ -121,11 +115,6 @@ public class FindDriverBean implements FindDriver, AnswerMission, ChangePackageK
 
     static String buildNewDriverMessage(String currentDriverName, String ownerName) {
         return String.format("Could you please take %s's package in %s's car ?", ownerName, currentDriverName);
-    }
-
-    static String buildChangeDriverMessage(String newDriverName) {
-        return String.format("%s has taken your package !", newDriverName);
-
     }
 
 }

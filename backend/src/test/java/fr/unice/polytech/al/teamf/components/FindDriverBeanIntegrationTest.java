@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import fr.unice.polytech.al.teamf.IntegrationTest;
+import fr.unice.polytech.al.teamf.ManagePackage;
 import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +30,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
 @AutoConfigureWireMock(port = 5000)
-@Import({FindDriverBean.class, UserNotifierBean.class, FindPackageHostBean.class})
+@Import({FindDriverBean.class, UserNotifierBean.class, FindPackageHostBean.class, PackageBean.class})
 class FindDriverBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
     private FindDriverBean driverFinder;
+    @Autowired
+    private PackageBean managePackage;
     @Autowired
     private PullNotifications pullNotifications;
 
@@ -95,12 +98,12 @@ class FindDriverBeanIntegrationTest extends IntegrationTest {
         User erick = userRepository.findByName("Erick").get(0);
         Parcel parcel = createAndSaveParcel(owner);
         Mission mission = new Mission(erick, owner, gps, gps, parcel);
-        driverFinder.takePackage(erick, mission);
+        managePackage.takePackageFromDriver(erick, mission);
 
         assertThat(pullNotifications.pullNotificationForUser(owner))
                 .asList()
                 .extracting("message")
                 .hasSize(1)
-                .contains(FindDriverBean.buildChangeDriverMessage("Erick"));
+                .contains(PackageBean.buildChangeDriverMessage("Erick"));
     }
 }

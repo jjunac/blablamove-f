@@ -1,7 +1,6 @@
 package fr.unice.polytech.al.teamf.components;
 
 import fr.unice.polytech.al.teamf.AnswerPackageHosting;
-import fr.unice.polytech.al.teamf.ChangePackageKeeperHost;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting, ChangePackageKeeperHost {
+public class FindPackageHostBean implements FindPackageHost, AnswerPackageHosting {
 
     @Autowired
     NotifyUser notifyUser;
@@ -40,22 +39,6 @@ public class FindPackageHostBean implements FindPackageHost, AnswerPackageHostin
     }
 
     @Override
-    public void dropPackage(User host, Mission mission) {
-        log.trace("FindPackageHostBean.dropPackage");
-        mission.setTransporter(null);
-        mission.getParcel().setKeeper(host);
-        notifyUser.notifyUser(mission.getParcel().getOwner(), buildDroppedPackageMessage(host.getName()));
-    }
-
-    @Override
-    public void takePackage(User newHost, Mission mission) {
-        log.trace("FindPackageHostBean.takePackage");
-        mission.setTransporter(newHost);
-        mission.getParcel().setKeeper(newHost);
-        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newHost.getName()));
-    }
-
-    @Override
     public boolean answerToPendingPackageHosting(Parcel parcel, User user, boolean answer) {
         if(answer) {
             notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(user.getName()));
@@ -75,13 +58,5 @@ public class FindPackageHostBean implements FindPackageHost, AnswerPackageHostin
 
     static String buildKeeperMessage(String hostName, String keeperName) {
         return String.format("%s will host %s package !", hostName, keeperName);
-    }
-
-    static String buildDroppedPackageMessage(String hostName) {
-        return String.format("Your package has been dropped to %s's house !", hostName);
-    }
-
-    static String buildTakenPackageMessage(String newDriverName) {
-        return String.format("Your package has been taken by %s from the temporary location !", newDriverName);
     }
 }
