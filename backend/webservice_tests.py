@@ -78,6 +78,10 @@ step("Erick is asked to take packages transported by Johann")
 notifications = request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})
 assert_equals(2, len(notifications))
 
+jeremysMissionId = notifications[0]["answer"]["parameters"]["missionId"]
+thomasMissionId = notifications[1]["answer"]["parameters"]["missionId"]
+
+
 step("Erick accept to take Jeremy's package")
 parameters = {"missionId": notifications[0]["answer"]["parameters"]["missionId"], "username": "Erick", "answer": True}
 assert_equals(True, request_webservice("http://localhost:8080/package", "answerToPendingMission", parameters))
@@ -126,17 +130,17 @@ else:
 step("Erick take Jeremy's package and Jeremy is notified")
 request_webservice("http://localhost:8080/package",
                    "takePackage",
-                   {"missionId": notifications[0]["answer"]["parameters"]["missionId"], "username": "Erick"})
+                   {"missionId": jeremysMissionId, "username": "Erick"})
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Johann drops Thomas' package to Julien's house and Thomas is notified")
 request_webservice("http://localhost:8080/package",
                    "dropPackageToHost",
-                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Julien"})
+                   {"missionId": thomasMissionId, "username": "Julien"})
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 step("Loic takes Thomas' package from Julien's house and Thomas is notified")
 request_webservice("http://localhost:8080/package",
                    "takePackageFromHost",
-                   {"missionId": notifications[1]["answer"]["parameters"]["missionId"], "username": "Loic"})
+                   {"missionId": thomasMissionId, "username": "Loic"})
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
