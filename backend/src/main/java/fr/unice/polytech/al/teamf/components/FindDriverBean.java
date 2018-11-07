@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.components;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.unice.polytech.al.teamf.AnswerMission;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
@@ -33,11 +34,10 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class FindDriverBean implements FindDriver {
+public class FindDriverBean implements FindDriver, AnswerMission {
     @Getter
     @Setter
     public String routeFinderUrl = "http://route_finder:5000";
-
     @Autowired
     NotifyUser notifyUser;
     @Autowired
@@ -67,7 +67,9 @@ public class FindDriverBean implements FindDriver {
                     new Answer("/package", "answerToPendingMission", parameters));
             return newDriver;
         }
-        // TODO call  temporary location
+
+        findPackageHost.findHost(parcel, coordinate);
+
         return null;
     }
 
@@ -111,12 +113,9 @@ public class FindDriverBean implements FindDriver {
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if (answer) {
             notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
-            //log.debug(mission.toString());
-            //log.debug(mission.getParcel().toString());
             notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
         } else {
-            // TODO Pass the localisation
-            findPackageHost.findHost(mission.getParcel());
+            findPackageHost.findHost(mission.getParcel(), mission.getArrival());
         }
         return true;
     }

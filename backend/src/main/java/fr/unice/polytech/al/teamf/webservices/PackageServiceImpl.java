@@ -4,9 +4,11 @@ import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import fr.unice.polytech.al.teamf.ComputePoints;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
+import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
+import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,13 @@ public class PackageServiceImpl implements PackageService {
     @Autowired
     FindDriver findDriver;
     @Autowired
+    AnswerMission answerMission;
+    @Autowired
+    AnswerPackageHosting answerPackageHosting;
+    @Autowired
     FindPackageHost findPackageHost;
+    @Autowired
+    ParcelRepository parcelRepository;
 
 
     @Override
@@ -53,7 +61,13 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public boolean answerToPendingMission(long missionId, String username, boolean answer) {
         log.trace("PackageServiceImpl.answerToPendingMission");
-        return findDriver.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
+        return answerMission.answerToPendingMission(missionRepository.findById(missionId).get(), userRepository.findByName(username).get(0), answer);
+    }
+
+    @Override
+    public boolean answerToPendingPackageHosting(long parcelId, String username, boolean answer) {
+        log.trace("PackageServiceImpl.answerToPendingPackageHosting");
+        return answerPackageHosting.answerToPendingPackageHosting(parcelRepository.findById(parcelId).get(), userRepository.findByName(username).get(0), answer);
     }
 
     @Override

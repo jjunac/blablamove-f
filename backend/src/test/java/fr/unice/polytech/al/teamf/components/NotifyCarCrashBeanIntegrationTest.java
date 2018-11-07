@@ -34,14 +34,23 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
     private NotifyCarCrashBean carCrash;
     
     @Autowired
-    private FindDriverBean driverFinder;
+    private FindDriverBean findDriverBean;
     
     @Autowired
     private PullNotifications pullNotifications;
     
     @BeforeEach
     void setUp() {
-        IntegrationTest.setupDriverFinder(driverFinder);
+        findDriverBean.routeFinderUrl = "http://localhost:5000";
+    
+        Map<String, StringValuePattern> params = new HashMap<>();
+        StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");
+        params.put("start_lat", number);
+        params.put("start_long", number);
+        params.put("end_lat", number);
+        params.put("end_long", number);
+        stubFor(get(urlPathEqualTo("/find_driver")).withQueryParams(params).willReturn(aResponse()
+                .withBody("{\"drivers\":[{\"name\":\"Erick\"}]}").withStatus(200)));
     }
     
     @Test
@@ -80,9 +89,9 @@ class NotifyCarCrashBeanIntegrationTest extends IntegrationTest {
                 .contains(FindDriverBean.buildNewDriverMessage("Benjamin", "Sebastien"));
 
         Mission mission1 = missionRepository.findById((Long) notifications.get(0).getAnswer().getParameters().get("missionId")).get();
-        driverFinder.answerToPendingMission(mission1, erick, true);
+        findDriverBean.answerToPendingMission(mission1, erick, true);
         Mission mission2 = missionRepository.findById((Long) notifications.get(1).getAnswer().getParameters().get("missionId")).get();
-        driverFinder.answerToPendingMission(mission2, erick, true);
+        findDriverBean.answerToPendingMission(mission2, erick, true);
 
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()

@@ -5,6 +5,7 @@ import fr.unice.polytech.al.teamf.PullNotifications;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
+import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User paulette = createAndSaveUser("Paulette");
         User georgette = createAndSaveUser("Georgette");
         User julien = userRepository.findByName("Julien").get(0);
-        hostFinder.findHost(createAndSaveParcel(paulette));
+        hostFinder.findHost(createAndSaveParcel(paulette), new GPSCoordinate(32, 32));
 
         // FIXME test that the current transporter is notified
 
