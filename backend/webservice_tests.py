@@ -5,6 +5,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-externals", help="skip external service tests", action="store_true")
+parser.add_argument("--host", help="Specify host. Default: localhost", type=str, default="localhost")
 args = parser.parse_args()
 
 DEFAULT = "\033[00m"
@@ -16,7 +17,6 @@ MAGENTA = "\035[95m"
 CYAN = "\033[96m"
 
 rpc_id = 0
-
 
 def rpc_call(url, method, params):
     global rpc_id
@@ -61,24 +61,24 @@ def assert_equals(expected, actual):
 
 
 step("Johann notify a car crash")
-assert_equals(True, request_webservice("http://localhost:8080/incident", "notifyCarCrash",
+assert_equals(True, request_webservice("http://" + args.host + ":8080/incident", "notifyCarCrash",
                                        {"username": "Johann", "latitude": 10, "longitude": 25}))
 
 step("Johann's insurance has been notified")
 if args.skip_externals:
     skipped()
 else:
-    assert_equals(True, requests.get("http://localhost:5000/insurances/Johann").json().get("requestedInsurance", None))
+    assert_equals(True, requests.get("http://" + args.host + ":5000/insurances/Johann").json().get("requestedInsurance", None))
 
 step("Jeremy and Thomas are notified that Johann had an accident")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 if args.skip_externals:
     skipped()
 else:
     step("Looking for a driver nearby who can take the packages")
-    response = requests.get("http://localhost:5002/find_driver?start_lat=10.0&start_long=12.0"
+    response = requests.get("http://" + args.host + ":5002/find_driver?start_lat=10.0&start_long=12.0"
                             "&end_lat=10.0&end_long=42.0").json()
     driver = response["drivers"][0]
     assert_equals("Erick", driver["name"])
@@ -86,7 +86,7 @@ else:
     assert_equals("10.0,42.0", driver["to"])
 
 step("Erick is asked to take packages transported by Johann")
-notifications = request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Erick"})
+notifications = request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Erick"})
 assert_equals(2, len(notifications))
 
 jeremysAnswer = notifications[0]["answer"]
@@ -96,20 +96,20 @@ thomasMissionId = thomasAnswer["parameters"]["missionId"]
 
 step("Erick accept to take Jeremy's package")
 parameters = {"missionId": jeremysMissionId, "username": jeremysAnswer["parameters"]["username"], "answer": True}
-assert_equals(True, request_webservice("http://localhost:8080/" + jeremysAnswer["route"], jeremysAnswer["methodName"], parameters))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/" + jeremysAnswer["route"], jeremysAnswer["methodName"], parameters))
 
 step("Johann is notified that Erick will take Jeremy's package")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Johann"})))
 
 step("Jeremy is notified that Erick will take his package")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Erick refuse to take Thomas' package")
 parameters = {"missionId": thomasMissionId, "username": thomasAnswer["parameters"]["username"], "answer": False}
-assert_equals(True, request_webservice("http://localhost:8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
 
 step("Julien is asked to host Thomas' package")
-notifications = request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Julien"})
+notifications = request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Julien"})
 assert_equals(1, len(notifications))
 
 thomasAnswer = notifications[0]["answer"]
@@ -117,41 +117,41 @@ thomasParcelId = thomasAnswer["parameters"]["parcelId"]
 
 step("Julien accept to take Thomas's package")
 parameters = {"parcelId": thomasParcelId, "username": thomasAnswer["parameters"]["username"], "answer": True}
-assert_equals(True, request_webservice("http://localhost:8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
 
 step("Johann is notified that Julien will host Thomas's package")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Johann"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Johann"})))
 
 step("Thomas is notified that Julien will host his package")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 step("Erick take Jeremy's package from Johann")
-assert_equals(True, request_webservice("http://localhost:8080/package", "takePackage", {"missionId": jeremysMissionId, "username": "Erick"}))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "takePackage", {"missionId": jeremysMissionId, "username": "Erick"}))
 
 step("Jeremy is notified that Erick took his package from Johann")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Johann drops Thomas' package to Julien's house")
-assert_equals(True, request_webservice("http://localhost:8080/package", "dropPackageToHost", {"parcelId": thomasParcelId, "username": "Julien"}))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "dropPackageToHost", {"parcelId": thomasParcelId, "username": "Julien"}))
 
 step("Thomas is notified that Johann dropped his package to Julien's house")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 # TODO test other actors
 if not args.skip_externals:
-    nb_points_before = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
+    nb_points_before = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
 
 step("Erick drop Jeremy's package to Jeremy's house")
-assert_equals(True, request_webservice("http://localhost:8080/package", "missionFinished", {"mission": jeremysMissionId}))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "missionFinished", {"mission": jeremysMissionId}))
 
 if args.skip_externals:
     skipped()
 else:
-    nb_points_after = requests.get("http://localhost:5001/users/Johann").json().get("points", None)
+    nb_points_after = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
     assert_equals(True, nb_points_after > nb_points_before)
 
 step("Loic takes Thomas' package from Julien's house")
-assert_equals(True, request_webservice("http://localhost:8080/package", "takePackageFromHost", {"parcelId": thomasParcelId, "username": "Loic"}))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "takePackageFromHost", {"parcelId": thomasParcelId, "username": "Loic"}))
 
 step("Thomas is notified that Loic took his package from Julien's house")
-assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
