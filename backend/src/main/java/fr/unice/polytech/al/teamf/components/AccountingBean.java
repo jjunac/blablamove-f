@@ -23,12 +23,18 @@ public class AccountingBean implements ComputePoints {
     String point_pricing_url="http://point_pricing:5000";
     
     @Override
-    public int computePoints(Mission mission) throws UnknownUserException {
+    public int computePoints(Mission mission) {
         int newNbPoints = mission.computeRetribution();
-        return modifyPointsOfUser(mission.getTransporter(), newNbPoints);
+        try {
+            return modifyPointsOfUser(mission.getTransporter(), newNbPoints);
+        } catch (UnknownUserException e) {
+            log.error(e.getMessage());
+        }
+        return 0;
     }
     
     private int modifyPointsOfUser(User user, int nbPoints) throws UnknownUserException {
+        log.info(String.format("Add %d points to %s", nbPoints, user.getName()));
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
                 .fromHttpUrl(String.format("%s/users/%s", point_pricing_url, user.getName()))
                 .queryParam("points", nbPoints);

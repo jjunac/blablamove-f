@@ -60,9 +60,22 @@ def assert_equals(expected, actual):
         exit(1)
 
 
-step("Johann notify a car crash")
+if not args.skip_externals:
+    johanns_points_before = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
+    ericks_points_before = requests.get("http://" + args.host + ":5001/users/Erick").json().get("points", None)
+    juliens_points_before = requests.get("http://" + args.host + ":5001/users/Julien").json().get("points", None)
+    loics_points_before = requests.get("http://" + args.host + ":5001/users/Loic").json().get("points", None)
+
+step("Johann notifies a car crash")
 assert_equals(True, request_webservice("http://" + args.host + ":8080/incident", "notifyCarCrash",
                                        {"username": "Johann", "latitude": 10, "longitude": 25}))
+
+step("Johann has been paid for his contribution")
+if args.skip_externals:
+    skipped()
+else:
+    johanns_points_after = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
+    assert_equals(True, johanns_points_after > johanns_points_before)
 
 step("Johann's insurance has been notified")
 if args.skip_externals:
@@ -94,7 +107,7 @@ jeremysMissionId = jeremysAnswer["parameters"]["missionId"]
 thomasAnswer = notifications[1]["answer"]
 thomasMissionId = thomasAnswer["parameters"]["missionId"]
 
-step("Erick accept to take Jeremy's package")
+step("Erick accepts to take Jeremy's package")
 parameters = {"missionId": jeremysMissionId, "username": jeremysAnswer["parameters"]["username"], "answer": True}
 assert_equals(True, request_webservice("http://" + args.host + ":8080/" + jeremysAnswer["route"], jeremysAnswer["methodName"], parameters))
 
@@ -104,7 +117,7 @@ assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notificat
 step("Jeremy is notified that Erick will take his package")
 assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
-step("Erick refuse to take Thomas' package")
+step("Erick refuses to take Thomas' package")
 parameters = {"missionId": thomasMissionId, "username": thomasAnswer["parameters"]["username"], "answer": False}
 assert_equals(True, request_webservice("http://" + args.host + ":8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
 
@@ -115,7 +128,7 @@ assert_equals(1, len(notifications))
 thomasAnswer = notifications[0]["answer"]
 thomasParcelId = thomasAnswer["parameters"]["parcelId"]
 
-step("Julien accept to take Thomas's package")
+step("Julien accepts to take Thomas's package")
 parameters = {"parcelId": thomasParcelId, "username": thomasAnswer["parameters"]["username"], "answer": True}
 assert_equals(True, request_webservice("http://" + args.host + ":8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
 
@@ -125,7 +138,7 @@ assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notificat
 step("Thomas is notified that Julien will host his package")
 assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
-step("Erick take Jeremy's package from Johann")
+step("Erick takes Jeremy's package from Johann")
 assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "takePackage", {"missionId": jeremysMissionId, "username": "Erick"}))
 
 step("Jeremy is notified that Erick took his package from Johann")
@@ -137,21 +150,29 @@ assert_equals(True, request_webservice("http://" + args.host + ":8080/package", 
 step("Thomas is notified that Johann dropped his package to Julien's house")
 assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
-# TODO test other actors
-if not args.skip_externals:
-    nb_points_before = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
-
-step("Erick drop Jeremy's package to Jeremy's house")
+step("Erick drops Jeremy's package to Jeremy's house")
 assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "missionFinished", {"mission": jeremysMissionId}))
 
+step("Erick has been paid for his contribution")
 if args.skip_externals:
     skipped()
 else:
-    nb_points_after = requests.get("http://" + args.host + ":5001/users/Johann").json().get("points", None)
-    assert_equals(True, nb_points_after > nb_points_before)
+    ericks_points_after = requests.get("http://" + args.host + ":5001/users/Erick").json().get("points", None)
+    assert_equals(True, ericks_points_after > ericks_points_before)
 
 step("Loic takes Thomas' package from Julien's house")
 assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "takePackageFromHost", {"parcelId": thomasParcelId, "username": "Loic"}))
 
 step("Thomas is notified that Loic took his package from Julien's house")
 assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
+
+step("Loic drops Jeremy's package to Jeremy's house")
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "missionFinished", {"mission": jeremysMissionId}))
+
+step("Loic has been paid for his contribution")
+if args.skip_externals:
+    skipped()
+else:
+    loics_points_after = requests.get("http://" + args.host + ":5001/users/Loic").json().get("points", None)
+    assert_equals(True, loics_points_after > loics_points_before)
+

@@ -1,24 +1,49 @@
 package fr.unice.polytech.al.teamf.components;
 
+import fr.unice.polytech.al.teamf.ComputePoints;
 import fr.unice.polytech.al.teamf.ManagePackage;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
+import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Files;
+
 @Slf4j
 @Component
 public class PackageBean implements ManagePackage {
+
+    @Autowired
+    ComputePoints computePoints;
     @Autowired
     NotifyUser notifyUser;
     @Autowired
     MissionRepository missionRepository;
+    @Autowired
+    ParcelRepository parcelRepository;
 
+    @Override
+    public boolean missionFinished(Mission mission) {
+        try {
+            computePoints.computePoints(mission);
+            mission.setFinished(); // useless for the moment, but may be useful if we want to keep a history
+            mission.getTransporter().removeTransportedMission(mission);
+            mission.getOwner().removeOwnedMission(mission);
+            parcelRepository.delete(mission.getParcel());
+            missionRepository.delete(mission);
+            return true;
+        } catch (UnknownUserException e) {
+            log.error(e.getMessage());
+        }
+        return false;
+    }
 
     @Override
     public boolean dropPackageToHost(User host, Parcel parcel) {

@@ -44,19 +44,12 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public boolean missionFinished(long missionId) {
         log.trace("PackageDroppedImpl.missionFinished");
-        Optional <Mission> mission = missionRepository.findById(missionId);
-        if (mission.isPresent()) {
-            try {
-                computePoints.computePoints(mission.get());
-                mission.get().setFinished(); // useless for the moment, but may be useful if we want to keep a history
-                mission.get().getTransporter().removeTransportedMission(mission.get());
-                mission.get().getOwner().removeOwnedMission(mission.get());
-                parcelRepository.delete(mission.get().getParcel());
-                missionRepository.delete(mission.get());
-                return true;
-            } catch (UnknownUserException e) {
-                log.error(e.getMessage());
-            }
+        Optional <Mission> missionOptional = missionRepository.findById(missionId);
+        if (missionOptional.isPresent()) {
+            Mission mission = missionOptional.get();
+            return managePackage.missionFinished(mission);
+        } else {
+            log.error(String.format("Mission %d is not in the database", missionId));
         }
         return false;
     }

@@ -34,10 +34,11 @@ public class CarCrashBean implements NotifyCarCrash {
     
     @Autowired
     NotifyUser notifyUser;
-    
     @Autowired
     FindDriver findDriver;
-    
+    @Autowired
+    AccountingBean accountingBean;
+
     /**
      * @param user User transporting the packages
      */
@@ -47,6 +48,7 @@ public class CarCrashBean implements NotifyCarCrash {
         boolean reachedInsurance = contactInsurance(user);
         log.debug(Boolean.toString(reachedInsurance));
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
+            accountingBean.computePoints(mission);
             notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             Parcel parcel = mission.getParcel();
             parcel.setMission(null);
