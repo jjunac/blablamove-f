@@ -51,6 +51,7 @@ public class PackageServiceImpl implements PackageService {
                 mission.get().setFinished(); // useless for the moment, but may be useful if we want to keep a history
                 mission.get().getTransporter().removeTransportedMission(mission.get());
                 mission.get().getOwner().removeOwnedMission(mission.get());
+                parcelRepository.delete(mission.get().getParcel());
                 missionRepository.delete(mission.get());
                 return true;
             } catch (UnknownUserException e) {
