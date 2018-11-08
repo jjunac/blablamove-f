@@ -62,7 +62,7 @@ def mission_finished(*args):
     print(args[0])
     if request_webservice(package_url, "missionFinished", {"mission": int(args[0])}):
         print(f"Mission {args[0]} finished")
-    
+
 
 @limit_arg_number(2)
 def notify_car_crash(*args):
@@ -82,7 +82,7 @@ def pull_notification_for_user(*args):
                 print("yes/no")
                 user_answer = input(notification["message"] + " ")
             if responses[user_answer]:
-                id = answer["parameters"]["missionId"] or answer["parameters"]["parcelId"]
+                id = answer["parameters"].get("missionId", None) or answer["parameters"].get("parcelId", None)
                 missions.append({"id": id, "message": notification["message"]})
                 print("id", id)
             parameters = answer["parameters"]
@@ -139,7 +139,8 @@ def list_missions(*args):
 commands = {"help": help, "exit": quit, "notify_car_crash": notify_car_crash,
             "pull_notifications": pull_notification_for_user,
             "wait_notifications": wait_notifications, "take_package": take_package, "drop_package": drop_package,
-            "mission_finished": mission_finished, "missions": list_missions, "take_package_from_host": take_package_from_host}
+            "mission_finished": mission_finished, "missions": list_missions,
+            "take_package_from_host": take_package_from_host}
 
 username = input("What is your username: ")
 while True:
