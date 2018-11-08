@@ -1,5 +1,13 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 44-45 
+
+:vertical_traffic_light: **Green** 
+
+ - Fin de la persistance
+ - Ajout de la BD dans le docker-compose
+ - Fin du client + tests _end-to-end_ (client → backend → external → backend → client)
+
 ## _Status_ semaine 43-44 
 
 :vertical_traffic_light: **Green** 
