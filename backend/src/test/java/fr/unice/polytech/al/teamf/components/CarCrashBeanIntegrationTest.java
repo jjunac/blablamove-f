@@ -26,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class})
+@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class, AccountingBean.class})
 @AutoConfigureWireMock(port = 5000)
 class CarCrashBeanIntegrationTest extends IntegrationTest {
     

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({TemporaryLocationBean.class, UserNotifierBean.class, PackageBean.class})
+@Import({TemporaryLocationBean.class, UserNotifierBean.class, PackageBean.class, AccountingBean.class})
 class FindHostBeanIntegrationTest extends IntegrationTest {
 
     @Autowired
