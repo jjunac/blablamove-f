@@ -167,7 +167,7 @@ step("Thomas is notified that Loic took his package from Julien's house")
 assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
 
 step("Loic drops Jeremy's package to Jeremy's house")
-assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "missionFinished", {"mission": jeremysMissionId}))
+assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "missionFinished", {"mission": 24}))
 
 step("Loic has been paid for his contribution")
 if args.skip_externals:

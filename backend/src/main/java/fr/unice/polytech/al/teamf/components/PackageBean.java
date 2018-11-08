@@ -57,7 +57,7 @@ public class PackageBean implements ManagePackage {
     public boolean takePackageFromHost(User newDriver, Parcel parcel) {
         log.trace("PackageBean.takePackage");
         // We dont care about coordinates here
-        Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(42,42), parcel);
+        Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(69,69), parcel);
         missionRepository.save(mission);
         parcel.setMission(mission);
         parcel.setKeeper(newDriver);
