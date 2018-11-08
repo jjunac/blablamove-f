@@ -30,6 +30,8 @@ public class PackageBean implements ManagePackage {
         log.trace("PackageBean.takePackage");
         // We dont care about coordinates here
         Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(42,42), parcel);
+        parcel.setMission(mission);
+        parcel.setKeeper(newDriver);
         mission.setOngoing();
         notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));
         return newDriver.addTransportedMission(mission);

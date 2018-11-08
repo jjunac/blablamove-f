@@ -80,7 +80,6 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public boolean dropPackageToHost(long parcelId, String username) {
-        // TODO change to parcelId
         log.trace("PackageServiceImpl.dropPackageToHost");
         return managePackage.dropPackageToHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
     }
