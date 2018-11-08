@@ -54,11 +54,9 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
         User georgette = createAndSaveUser("Georgette");
         User julien = userRepository.findByName("Julien").get(0);
         Parcel parcel = createAndSaveParcel(georgette);
-        Mission mission = new Mission(paulette, georgette, gps, gps, parcel);
-        managePackage.dropPackageToHost(julien, mission);
+        managePackage.dropPackageToHost(julien, parcel);
 
-        assertNull(mission.getTransporter());
-        assertEquals(julien, mission.getParcel().getKeeper());
+        assertEquals(julien, parcel.getKeeper());
         assertThat(pullNotifications.pullNotificationForUser(georgette))
                 .asList()
                 .extracting("message")

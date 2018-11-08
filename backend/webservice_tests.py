@@ -113,9 +113,10 @@ notifications = request_webservice("http://localhost:8080/notification", "pullNo
 assert_equals(1, len(notifications))
 
 thomasAnswer = notifications[0]["answer"]
+thomasParcelId = thomasAnswer["parameters"]["parcelId"]
 
 step("Julien accept to take Thomas's package")
-parameters = {"parcelId": thomasAnswer["parameters"]["parcelId"], "username": thomasAnswer["parameters"]["username"], "answer": True}
+parameters = {"parcelId": thomasParcelId, "username": thomasAnswer["parameters"]["username"], "answer": True}
 assert_equals(True, request_webservice("http://localhost:8080/" + thomasAnswer["route"], thomasAnswer["methodName"], parameters))
 
 step("Johann is notified that Julien will host Thomas's package")
@@ -131,7 +132,7 @@ step("Jeremy is notified that Erick took his package from Johann")
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Jeremy"})))
 
 step("Johann drops Thomas' package to Julien's house")
-assert_equals(True, request_webservice("http://localhost:8080/package", "dropPackageToHost", {"missionId": thomasMissionId, "username": "Julien"}))
+assert_equals(True, request_webservice("http://localhost:8080/package", "dropPackageToHost", {"parcelId": thomasParcelId, "username": "Julien"}))
 
 step("Thomas is notified that Johann dropped his package to Julien's house")
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))
@@ -150,7 +151,7 @@ else:
     assert_equals(True, nb_points_after > nb_points_before)
 
 step("Loic takes Thomas' package from Julien's house")
-assert_equals(True, request_webservice("http://localhost:8080/package", "takePackageFromHost", {"missionId": thomasMissionId, "username": "Loic"}))
+assert_equals(True, request_webservice("http://localhost:8080/package", "takePackageFromHost", {"parcelId": thomasParcelId, "username": "Loic"}))
 
 step("Thomas is notified that Loic took his package from Julien's house")
 assert_equals(1, len(request_webservice("http://localhost:8080/notification", "pullNotificationForUser", {"username": "Thomas"})))

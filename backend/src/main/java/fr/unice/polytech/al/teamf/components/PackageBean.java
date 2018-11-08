@@ -18,27 +18,29 @@ public class PackageBean implements ManagePackage {
 
 
     @Override
-    public void dropPackageToHost(User host, Mission mission) {
+    public boolean dropPackageToHost(User host, Parcel parcel) {
         log.trace("PackageBean.dropPackage");
-        mission.setTransporter(null);
-        mission.getParcel().setKeeper(host);
-        notifyUser.notifyUser(mission.getParcel().getOwner(), buildDroppedPackageMessage(host.getName()));
+        parcel.setKeeper(host);
+        notifyUser.notifyUser(parcel.getOwner(), buildDroppedPackageMessage(host.getName()));
+        return true;
     }
 
     @Override
-    public void takePackageFromHost(User newDriver, Parcel parcel) {
+    public boolean takePackageFromHost(User newDriver, Parcel parcel) {
         log.trace("PackageBean.takePackage");
         // We dont care about coordinates here
         Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(42,42), parcel);
         mission.setOngoing();
-        newDriver.addTransportedMission(mission);
         notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));
+        return newDriver.addTransportedMission(mission);
     }
 
     @Override
-    public void takePackageFromDriver(User newDriver, Mission mission) {
+    public boolean takePackageFromDriver(User newDriver, Mission mission) {
         log.trace("PackageBean.takePackage");
+        mission.setOngoing();
         notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
+        return true;
     }
 
     static String buildDroppedPackageMessage(String hostName) {

@@ -6,7 +6,6 @@ import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.Mission;
-import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
@@ -74,21 +73,21 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public void takePackage(long missionId, String username) {
+    public boolean takePackage(long missionId, String username) {
         log.trace("PackageServiceImpl.takePackage");
-        managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        return managePackage.takePackageFromDriver(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
     }
 
     @Override
-    public void dropPackageToHost(long missionId, String username) {
+    public boolean dropPackageToHost(long parcelId, String username) {
         // TODO change to parcelId
         log.trace("PackageServiceImpl.dropPackageToHost");
-        managePackage.dropPackageToHost(userRepository.findByName(username).get(0), missionRepository.findById(missionId).get());
+        return managePackage.dropPackageToHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
     }
 
     @Override
-    public void takePackageFromHost(long parcelId, String username) {
+    public boolean takePackageFromHost(long parcelId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
-        managePackage.takePackageFromHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
+        return managePackage.takePackageFromHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
     }
 }

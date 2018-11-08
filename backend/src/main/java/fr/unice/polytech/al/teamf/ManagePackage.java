@@ -5,9 +5,9 @@ import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
 
 public interface ManagePackage {
-    void dropPackageToHost(User host, Mission mission);
+    boolean dropPackageToHost(User host, Parcel parcel);
 
-    void takePackageFromHost(User newHost, Parcel parcel);
+    boolean takePackageFromHost(User newHost, Parcel parcel);
 
-    void takePackageFromDriver(User newDriver, Mission mission);
+    boolean takePackageFromDriver(User newDriver, Mission mission);
 }
