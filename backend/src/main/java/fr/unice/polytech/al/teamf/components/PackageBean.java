@@ -6,6 +6,7 @@ import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class PackageBean implements ManagePackage {
     @Autowired
     NotifyUser notifyUser;
+    @Autowired
+    MissionRepository missionRepository;
 
 
     @Override
@@ -30,6 +33,7 @@ public class PackageBean implements ManagePackage {
         log.trace("PackageBean.takePackage");
         // We dont care about coordinates here
         Mission mission = new Mission(newDriver, parcel.getOwner(), new GPSCoordinate(42,42), new GPSCoordinate(42,42), parcel);
+        missionRepository.save(mission);
         parcel.setMission(mission);
         parcel.setKeeper(newDriver);
         mission.setOngoing();
