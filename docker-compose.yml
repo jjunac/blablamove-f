@@ -45,3 +45,7 @@ services:
   database:
     image: 1000kit/h2
     stdin_open: true
+    expose:
+      - "8082"
+    ports:
+      - "8082:8082"
