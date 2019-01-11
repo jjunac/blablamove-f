@@ -42,6 +42,14 @@ services:
     ports:
       - "5002:5000"
     stdin_open: true
+  queue:
+    image: rabbitmq
+    hostname: main_queue
+    container_name: queue
+    expose:
+      - "5672"
+    ports:
+      - "5672:5672"
   database:
     image: 1000kit/h2
     stdin_open: true
