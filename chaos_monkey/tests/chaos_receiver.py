@@ -7,14 +7,9 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost')
 channel = connection.channel()
 
 channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
-channel.exchange_declare(exchange='confirm_chaos_settings', exchange_type='fanout')
 
 def callback(ch, method, properties, body):
     print(" [x] %r" % body)
-    channel.basic_publish(exchange='confirm_chaos_settings',
-                    routing_key='',
-                    body=body)
-    print("confirm sent")
 
 if __name__ == '__main__':
     result = channel.queue_declare(exclusive=True)
