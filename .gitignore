@@ -227,3 +227,10 @@ local.properties
 
 
 **/*.iml
+
+**/.history/*
+**/.vscode/*
+
+**/__pycache__/*
+**/*.pyc
+
