@@ -1,9 +1,8 @@
-import threading
+from threading import Thread
 from time import sleep
+
 import requests
-from argparse import ArgumentParser
-# import plyer
-import pprint
+import pika
 
 rpc_id = 0
 
@@ -142,6 +141,29 @@ commands = {"help": help, "exit": quit, "notify_car_crash": notify_car_crash,
             "mission_finished": mission_finished, "missions": list_missions,
             "take_package_from_host": take_package_from_host}
 
+
+def consumer_callback(channel, methods, properties, body):
+    print("Hello i am a callback")
+    print(f"body: {body}")
+
+
+def test_q(*args):
+    parameters = pika.ConnectionParameters(host="localhost", port=5672)
+    blocking_connection = pika.BlockingConnection(parameters)
+    channel = blocking_connection.channel()
+    channel.queue_declare(queue="hello")
+    channel.basic_publish(exchange='',
+                          routing_key='hello',
+                          body='Hello World!')
+    print(" [x] Sent 'Hello World!'")
+    channel.basic_consume(consumer_callback, queue="hello", no_ack=True)
+    channel.start_consuming()
+    channel.close()
+
+
+thread = Thread(target=test_q)
+thread.start()
+# thread.join()
 username = input("What is your username: ")
 while True:
     try:
