@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.TestConfig;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Notification;
@@ -10,9 +11,11 @@ import fr.unice.polytech.al.teamf.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -26,7 +29,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class, AccountingBean.class})
+@Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class, AccountingBean.class, TestConfig.class})
 @AutoConfigureWireMock(port = 5000)
 class CarCrashBeanIntegrationTest extends IntegrationTest {
     
@@ -41,6 +44,12 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
     
     @BeforeEach
     void setUp() {
+
+        carCrash.accountingBean.rabbitTemplate = queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+                "point-pricing",
+                "point-pricing-exchange",
+                "pointpricing.*");
+
         driverFinderBean.routeFinderUrl = "http://localhost:5000";
     
         Map<String, StringValuePattern> params = new HashMap<>();

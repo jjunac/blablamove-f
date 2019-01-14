@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf;
 
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import fr.unice.polytech.al.teamf.components.DriverFinderBean;
+import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -9,13 +10,21 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+@Import({TestConfig.class, MessageReceiver.class, Application.class})
 public abstract class IntegrationTest {
     
     @Autowired
@@ -60,6 +69,18 @@ public abstract class IntegrationTest {
         parcelRepository.save(parcel);
         missionRepository.save(mission);
         return mission;
+    }
+
+    protected RabbitTemplate queueAndExchangeSetup(BeanFactory context, String queueName, String exchangeName, String routingKey) {
+        RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
+
+        Queue queue = new Queue(queueName, false);
+        rabbitAdmin.declareQueue(queue);
+        TopicExchange exchange = new TopicExchange(exchangeName);
+        rabbitAdmin.declareExchange(exchange);
+        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with(routingKey));
+
+        return context.getBean(RabbitTemplate.class);
     }
     
 }

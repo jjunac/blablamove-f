@@ -20,7 +20,7 @@ public class Receiver {
 
     private final RabbitTemplate rabbitTemplate;
 
-    private String point_pricing_url = "http://localhost:5000";
+    private String point_pricing_url = "http://point_pricing:5000";
 
     public Receiver(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -49,7 +49,7 @@ public class Receiver {
                         .createObjectNode()
                         .put("points", nbPointsAfterModification)
                         .toString();
-                rabbitTemplate.convertAndSend(Application.topicExchangeName, "pointpricing.points", jsonContent);
+                rabbitTemplate.convertAndSend(Application.topicExchangeName, "external.pointpricing", jsonContent);
             } else if (queryResponse.getStatusCode().is4xxClientError()) {
                 throw new UnknownUserException(user);
             }

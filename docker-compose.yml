@@ -10,6 +10,7 @@ services:
       - "point_pricing"
       - "route_finder"
       - "database"
+      - "queue"
     expose:
       - "8080"
     ports:
@@ -32,6 +33,15 @@ services:
       - "5001"
     ports:
       - "5001:5000"
+    stdin_open: true
+  point_pricing_gateway:
+    build: ./gateways/PointPricingGateway
+    image: point_pricing_gateway
+    container_name: point_pricing_gateway
+    expose:
+      - "5673"
+    ports:
+      - "5673:5672"
     stdin_open: true
   route_finder:
     build: ./external/RouteFinder
