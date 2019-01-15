@@ -3,6 +3,7 @@ package fr.unice.polytech.al.teamf.components;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import fr.unice.polytech.al.teamf.IntegrationTest;
 import fr.unice.polytech.al.teamf.PullNotifications;
+import fr.unice.polytech.al.teamf.TestConfig;
 import fr.unice.polytech.al.teamf.entities.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,12 @@ class DriverFinderBeanIntegrationTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         driverFinder.routeFinderUrl = "http://localhost:5000";
+
+
+        driverFinder.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+                "route-finder",
+                "route-finder-exchange",
+                "routefinder.*");
 
         Map<String, StringValuePattern> params = new HashMap<>();
         StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");

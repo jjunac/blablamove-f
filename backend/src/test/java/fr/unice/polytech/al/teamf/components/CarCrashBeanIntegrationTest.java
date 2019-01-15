@@ -55,6 +55,11 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
                 "insurance-exchange",
                 "insurance.*");
 
+        driverFinderBean.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+                "route-finder",
+                "route-finder-exchange",
+                "routefinder.*");
+
         driverFinderBean.routeFinderUrl = "http://localhost:5000";
     
         Map<String, StringValuePattern> params = new HashMap<>();

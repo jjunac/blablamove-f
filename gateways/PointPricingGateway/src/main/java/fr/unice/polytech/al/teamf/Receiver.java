@@ -37,6 +37,7 @@ public class Receiver implements CommandLineRunner {
      * Example of returned message : {"points": 60}
      */
     public void receiveMessage(String message) throws UnknownUserException, IOException {
+        log.info("Received message : " + message);
         JsonNode node = new ObjectMapper().readTree(message);
         String user = node.get("user").asText();
         int nbPoints = node.get("points").asInt();
@@ -50,6 +51,7 @@ public class Receiver implements CommandLineRunner {
                     null,
                     clientHttpResponse -> clientHttpResponse);
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
+                log.info(queryResponse.getBody().toString());
                 int nbPointsAfterModification = new ObjectMapper().readTree(queryResponse.getBody()).get("points").asInt();
                 String jsonContent = new ObjectMapper()
                         .createObjectNode()

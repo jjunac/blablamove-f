@@ -10,12 +10,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
