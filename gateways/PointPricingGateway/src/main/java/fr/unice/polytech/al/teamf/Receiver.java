@@ -51,8 +51,7 @@ public class Receiver implements CommandLineRunner {
                     null,
                     clientHttpResponse -> clientHttpResponse);
             if (queryResponse.getStatusCode().is2xxSuccessful()) {
-                log.info(queryResponse.getBody().toString());
-                int nbPointsAfterModification = new ObjectMapper().readTree(queryResponse.getBody()).get("points").asInt();
+                int nbPointsAfterModification = new ObjectMapper().readTree(queryResponse.getBody()).asInt();
                 String jsonContent = new ObjectMapper()
                         .createObjectNode()
                         .put("points", nbPointsAfterModification)

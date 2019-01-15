@@ -2,6 +2,7 @@
 
 import requests
 import argparse
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-externals", help="skip external service tests", action="store_true")
@@ -38,7 +39,9 @@ def request_webservice(url, method, params):
 def print_color(text, color): print(color, text, DEFAULT)
 
 
-def step(title): print_color("#=== %s ===#" % title, BLUE)
+def step(title):
+	time.sleep(2)
+	print_color("#=== %s ===#" % title, BLUE)
 
 
 def skipped():
