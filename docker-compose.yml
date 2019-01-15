@@ -47,6 +47,15 @@ services:
     ports:
       - "5673:5672"
     stdin_open: true
+  insurance_gateway:
+      build: ./gateways/InsuranceGateway
+      image: insurance_gateway
+      container_name: insurance_gateway
+      expose:
+        - "5674"
+      ports:
+        - "5674:5672"
+      stdin_open: true
   route_finder:
     build: ./external/RouteFinder
     image: route_finder
