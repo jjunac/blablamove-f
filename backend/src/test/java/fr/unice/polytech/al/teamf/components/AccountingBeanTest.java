@@ -41,7 +41,7 @@ class AccountingBeanTest extends IntegrationTest {
         stubFor(put(urlPathEqualTo("/users/Julien")).willReturn(aResponse()
                 .withStatus(404)));
         accountingBean.point_pricing_url = "http://localhost:5001";
-        accountingBean.rabbitTemplate = queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+        accountingBean.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
                 "point-pricing",
                 "point-pricing-exchange",
                 "pointpricing.*");

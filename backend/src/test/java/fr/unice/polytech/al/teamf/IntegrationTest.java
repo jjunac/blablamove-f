@@ -71,16 +71,6 @@ public abstract class IntegrationTest {
         return mission;
     }
 
-    protected RabbitTemplate queueAndExchangeSetup(BeanFactory context, String queueName, String exchangeName, String routingKey) {
-        RabbitAdmin rabbitAdmin = context.getBean(RabbitAdmin.class);
 
-        Queue queue = new Queue(queueName, false);
-        rabbitAdmin.declareQueue(queue);
-        TopicExchange exchange = new TopicExchange(exchangeName);
-        rabbitAdmin.declareExchange(exchange);
-        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with(routingKey));
-
-        return context.getBean(RabbitTemplate.class);
-    }
     
 }

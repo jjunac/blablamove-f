@@ -45,10 +45,15 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
 
-        carCrash.accountingBean.rabbitTemplate = queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+        carCrash.accountingBean.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
                 "point-pricing",
                 "point-pricing-exchange",
                 "pointpricing.*");
+
+        carCrash.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+                "insurance",
+                "insurance-exchange",
+                "insurance.*");
 
         driverFinderBean.routeFinderUrl = "http://localhost:5000";
     
