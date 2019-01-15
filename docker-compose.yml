@@ -37,7 +37,11 @@ services:
   point_pricing_gateway:
     build: ./gateways/PointPricingGateway
     image: point_pricing_gateway
+    restart: unless-stopped
     container_name: point_pricing_gateway
+    depends_on:
+      - "point_pricing"
+      - "queue"
     expose:
       - "5673"
     ports:
