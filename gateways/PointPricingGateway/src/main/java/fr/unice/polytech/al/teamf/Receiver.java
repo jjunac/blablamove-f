@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class Receiver {
+public class Receiver implements CommandLineRunner {
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -24,6 +25,11 @@ public class Receiver {
 
     public Receiver(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        Thread.currentThread().join();
     }
 
     /**
