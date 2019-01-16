@@ -12,9 +12,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -22,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 public class ChaosMonkey {
 
     private static final ChaosMonkey INSTANCE = new ChaosMonkey();
+    private static final Logger log = LoggerFactory.getLogger(ChaosMonkey.class);
 
     private boolean initialized = false;
     private Map<String, Double> settings;
@@ -34,7 +38,7 @@ public class ChaosMonkey {
         return INSTANCE;
     }
 
-    public void intialize(String chaosMonkeyUrl) throws ConnectionException {
+    public void initialize(String chaosMonkeyUrl) throws ConnectionException {
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(chaosMonkeyUrl);
         try {
@@ -42,7 +46,8 @@ public class ChaosMonkey {
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject)jsonParser.parse(new InputStreamReader(response.getEntity().getContent()));
             jsonObject.forEach((k, v) -> settings.put((String)k, Double.valueOf(((String)v))));
-            System.out.println(settings);
+            log.info("Retrieved settings from server: " + settings.toString());
+            log.info(settings.size() + " settings retrieved from server");
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (ParseException e) {
@@ -51,7 +56,7 @@ public class ChaosMonkey {
 
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
+            factory.setHost("192.168.99.100");
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
@@ -59,25 +64,37 @@ public class ChaosMonkey {
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, "submit_chaos_settings", "");
 
-            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+            log.info("Listening 'submit_chaos_settings' messages...");
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
+                String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                JSONParser jsonParser = new JSONParser();
+                try {
+                    JSONObject jsonObject = (JSONObject)jsonParser.parse(message);
+                    jsonObject.forEach((k, v) -> settings.put((String)k, Double.valueOf(((String)v))));
+                    log.info("New settings received: " + settings.toString());
+                    log.info(settings.size() + " settings received");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
             };
-            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+            channel.basicConsume(queueName, false, deliverCallback, consumerTag -> { });
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
-
+        initialized = true;
     }
 
     public double getSetting(String name) {
+        if (!initialized)
+            throw new IllegalStateException("Chaos Monkey framework has not been initialized.");
         return settings.get(name);
     }
 
     public Draw draw(String setting) {
         return new Draw(getSetting(setting));
     }
+
 
 }

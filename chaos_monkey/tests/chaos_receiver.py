@@ -3,7 +3,7 @@
 import pika
 import json
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.99.100'))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')

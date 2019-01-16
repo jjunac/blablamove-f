@@ -21,7 +21,7 @@ settings = parse_properties("settings.properties")
 app.logger.info("Loaded settings: " + str(settings))
 app.logger.info("%d settings loaded" % len(settings))
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.99.100'))
 submit_channel = connection.channel()
 
 submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
