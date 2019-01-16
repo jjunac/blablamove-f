@@ -1,5 +1,9 @@
 package fr.unice.polytech.al.teamf.chaosmonkey;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DeliverCallback;
 import fr.unice.polytech.al.teamf.chaosmonkey.exceptions.ConnectionException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class ChaosMonkey {
 
@@ -43,6 +48,28 @@ public class ChaosMonkey {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        try {
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost("localhost");
+            Connection connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+
+            channel.exchangeDeclare("submit_chaos_settings", "fanout");
+            String queueName = channel.queueDeclare().getQueue();
+            channel.queueBind(queueName, "submit_chaos_settings", "");
+
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), "UTF-8");
+                System.out.println(" [x] Received '" + message + "'");
+            };
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+        } catch (IOException | TimeoutException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public double getSetting(String name) {

@@ -23,4 +23,13 @@ class ChaosMonkeyTest {
         System.out.println(ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed());
         System.out.println(ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed());
     }
+
+    @Test
+    void test2() throws Exception {
+        ChaosMonkey.getInstance().intialize("http://localhost:5008/settings");
+        while(true) {
+            System.out.println(ChaosMonkey.getInstance().draw("notify_package_hosting").hasFailed());
+            Thread.sleep(1000);
+        }
+    }
 }
