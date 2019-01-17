@@ -6,6 +6,7 @@ services:
     image: blablamove
     container_name: blablamove
     depends_on:
+      - "queue"
       - "insurance"
       - "point_pricing"
       - "route_finder"
@@ -50,6 +51,17 @@ services:
       - "5672"
     ports:
       - "5672:5672"
+  chaos_monkey:
+    build: ./chaos_monkey
+    image: chaos_monkey
+    container_name: chaos_monkey
+    expose:
+      - "5008"
+    ports:
+      - "5008:5008"
+    stdin_open: true
+    depends_on:
+      - "queue"
   database:
     image: 1000kit/h2
     stdin_open: true

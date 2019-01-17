@@ -56,7 +56,7 @@ public class ChaosMonkey {
 
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("192.168.99.100");
+            factory.setHost("queue");
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 

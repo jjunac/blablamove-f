@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, jsonify
 import pika
 import json
 import logging
+import time
 from utils import parse_properties
 
 app = Flask(__name__)
@@ -21,7 +22,9 @@ settings = parse_properties("settings.properties")
 app.logger.info("Loaded settings: " + str(settings))
 app.logger.info("%d settings loaded" % len(settings))
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='192.168.99.100'))
+time.sleep(40)
+
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='queue'))
 submit_channel = connection.channel()
 
 submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
