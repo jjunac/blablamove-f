@@ -10,6 +10,8 @@ from utils import parse_properties
 app = Flask(__name__)
 
 
+time.sleep(7)
+
 
 #######################
 ### S E T U P

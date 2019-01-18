@@ -37,7 +37,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize("http://localhost:5008/settings");
+        ChaosMonkey.getInstance().initialize("http://chaos_monkey:5008/settings");
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);
