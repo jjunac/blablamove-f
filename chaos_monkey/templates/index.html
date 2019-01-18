@@ -22,13 +22,23 @@
   </div>
   <div class="container">
     <h1 class="display-4 text-center title">CHAOS MONKEY SETTINGS</h1>
-    {% if status == "success" %}
+    {% if "status" in args %}
+    {% if args["status"] == "success" %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       <strong>Settings pushed successfully.</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    {% endif %}
+    {% elif args["status"] == "fail" %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Cannot push settings: {% if args["error"] %}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
     {% endif %}
     <form action="/settings" method="post">
       <table class="table table-striped settings">

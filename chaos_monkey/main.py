@@ -36,8 +36,8 @@ submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type=
 
 @app.route("/")
 def route_index():
-    status = request.args["status"] if "status" in request.args else ""
-    return render_template('index.html', settings=settings, status=status)
+    # status = request.args["status"] if "status" in request.args else ""
+    return render_template('index.html', settings=settings, args=request.args)
 
 
 @app.route("/settings", methods=['POST', 'GET'])
@@ -46,12 +46,15 @@ def route_settings():
     if request.method == 'GET':
         return jsonify(settings)
     else:
-        submit_channel.basic_publish(exchange='submit_chaos_settings',
-                            routing_key='',
-                            body=json.dumps(request.form))
-        settings = request.form
-        print("Sending new settings to the nodes")
-        return redirect("/?status=success")
+        try:
+            submit_channel.basic_publish(exchange='submit_chaos_settings',
+                                routing_key='',
+                                body=json.dumps(request.form))
+            settings = request.form
+            print("Sending new settings to the nodes")
+            return redirect("/?status=success")
+        except BaseException as e:
+            return redirect("/?status=fail&error=" + type(e).__name__)
 
 
 if __name__ == '__main__':
