@@ -1,8 +1,12 @@
-from threading import Thread
+import functools
+import uuid
+from threading import Thread, Barrier
 from time import sleep
 
-import requests
 import pika
+import requests
+
+QUEUE_HOST = "localhost"
 
 rpc_id = 0
 
@@ -135,43 +139,106 @@ def list_missions(*args):
         print(f"id: {mission['id']} , objective: {mission['message']}")
 
 
+@limit_arg_number(1)
+def send_message(*args):
+    queueWrapper.publish_message("test", args[0])
+
+
 commands = {"help": help, "exit": quit, "notify_car_crash": notify_car_crash,
             "pull_notifications": pull_notification_for_user,
             "wait_notifications": wait_notifications, "take_package": take_package, "drop_package": drop_package,
             "mission_finished": mission_finished, "missions": list_missions,
-            "take_package_from_host": take_package_from_host}
+            "take_package_from_host": take_package_from_host, "send": send_message}
 
 
-def consumer_callback(channel, methods, properties, body):
-    print("Hello i am a callback")
-    print(f"body: {body}")
+class QueueWrapper:
+
+    def __init__(self, host) -> None:
+        self.host = host
+        self.correlation_id = None
+        self.connection = None
+        self.channel = None
+        self.callbacks = {}
+        parameters = pika.ConnectionParameters(host=self.host)
+        if self.connection is not None:
+            self.connection.close()
+        blocking_connection = pika.BlockingConnection(parameters)
+        self.connection = blocking_connection
+        self.channel = blocking_connection.channel()
+        self.correlation_id = str(uuid.uuid4())
+        self.thread = None
+
+    def setup_wrapper(self):
+        self.channel.start_consuming()
+
+    def start_consuming(self):
+        self.thread = Thread(target=self.setup_wrapper)
+        self.thread.start()
+
+    def _add_consume_callback(self, queue_name, callback):
+        if queue_name not in self.callbacks:
+            raise Exception("You have to add the queue first")
+        self.channel.basic_consume(callback, queue=self.callbacks[queue_name])
+
+    def add_response_callback(self, queue_name, callback):
+        self._add_consume_callback(queue_name, callback)
+
+    def _add_queue(self, queue_name, **kwargs):
+        self.channel.queue_declare(queue=queue_name, **kwargs)
+        response = self.channel.queue_declare(exclusive=True)
+        self.callbacks[queue_name] = response.method.queue
+
+    def add_queue(self, queue_name, **kwargs):
+        self._add_queue(queue_name, **kwargs)
+
+    def add_callback_threadsafe(self, callback):
+        self.connection.add_callback_threadsafe(callback)
+
+    def _publish_message(self, queue_name, message):
+        if queue_name not in self.callbacks:
+            raise Exception("You have to add the queue first")
+        self.channel.basic_publish(exchange='',
+                                   routing_key=queue_name,
+                                   properties=pika.BasicProperties(reply_to=self.callbacks[queue_name],
+                                                                   correlation_id=self.correlation_id),
+                                   body=message)
+
+    def publish_message(self, queue_name, message):
+        self.add_callback_threadsafe(functools.partial(self._publish_message, queue_name, message))
 
 
-def test_q(*args):
-    parameters = pika.ConnectionParameters(host="localhost", port=5672)
-    blocking_connection = pika.BlockingConnection(parameters)
-    channel = blocking_connection.channel()
-    channel.queue_declare(queue="hello")
-    channel.basic_publish(exchange='',
-                          routing_key='hello',
-                          body='Hello World!')
-    print(" [x] Sent 'Hello World!'")
-    channel.basic_consume(consumer_callback, queue="hello", no_ack=True)
-    channel.start_consuming()
-    channel.close()
+def consumer_callback(channel, method, properties, body):
+    print(f"you connected successfully: {body.decode('utf8')}")
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+    b.wait()
 
 
-thread = Thread(target=test_q)
-thread.start()
-# thread.join()
-username = input("What is your username: ")
-while True:
+def consumer_callback2(channel, method, properties, body):
+    print(f"\rreceived: {body.decode('utf8')}")
+    print(f"({username}) command: ", end="", flush=True)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
+
+
+if __name__ == '__main__':
+    queueWrapper = QueueWrapper(QUEUE_HOST)
+    queueWrapper.add_queue("login")
+    queueWrapper.add_queue("test")
+    queueWrapper.add_response_callback("login", consumer_callback)
+    queueWrapper.add_response_callback("test", consumer_callback2)
+    queueWrapper.start_consuming()
+    b = Barrier(2)
     try:
-        line = input(f"({username}) command: ").split(" ")
-        command = line[0]
-        if command not in commands:
-            print("Command does not exist, type help to have the list of commands")
-        else:
-            commands[command](*line[1:])
+        username = input("What is your username: ")
+        queueWrapper.publish_message("login", username)
+        b.wait()
+        while True:
+            line = input(f"({username}) command: ").split(" ")
+            command = line[0]
+            if command not in commands:
+                print("Command does not exist, type help to have the list of commands")
+            else:
+                commands[command](*line[1:])
     except EOFError:
         exit(0)
+    finally:
+        queueWrapper.channel.stop_consuming()

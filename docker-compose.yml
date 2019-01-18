@@ -43,7 +43,7 @@ services:
       - "5002:5000"
     stdin_open: true
   queue:
-    image: rabbitmq
+    image: rabbitmq:3-management
     hostname: main_queue
     container_name: queue
     expose:
