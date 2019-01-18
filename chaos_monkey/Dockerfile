@@ -7,6 +7,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-EXPOSE 5000
+EXPOSE 5008
 
 CMD [ "python", "./main.py" ]
