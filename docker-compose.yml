@@ -4,6 +4,7 @@ services:
   blablamove:
     build: ./backend
     image: blablamove
+    restart: unless-stopped
     container_name: blablamove
     depends_on:
       - "queue"
@@ -11,6 +12,7 @@ services:
       - "point_pricing"
       - "route_finder"
       - "database"
+      - "chaos_monkey"
     expose:
       - "8080"
     ports:
@@ -54,6 +56,7 @@ services:
   chaos_monkey:
     build: ./chaos_monkey
     image: chaos_monkey
+    restart: unless-stopped
     container_name: chaos_monkey
     expose:
       - "5008"

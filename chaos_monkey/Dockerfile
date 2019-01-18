@@ -1,12 +1,7 @@
-FROM python:3-alpine
-
-COPY ./requirements.txt /app/requirements.txt
-WORKDIR /app
-
-RUN pip install -r requirements.txt
-
-COPY . /app
-
+FROM tiangolo/uwsgi-nginx-flask:python3.7
+ENV LISTEN_PORT 5008
+ENV UWSGI_CHEAPER 0
+ENV UWSGI_PROCESSES 1
 EXPOSE 5008
-
-CMD [ "python", "./main.py" ]
+COPY . /app/
+RUN pip install -r requirements.txt

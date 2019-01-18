@@ -22,8 +22,6 @@ settings = parse_properties("settings.properties")
 app.logger.info("Loaded settings: " + str(settings))
 app.logger.info("%d settings loaded" % len(settings))
 
-time.sleep(40)
-
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='queue'))
 submit_channel = connection.channel()
 
