@@ -1,10 +1,12 @@
 package fr.unice.polytech.al.teamf.chaosmonkey;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 class ChaosMonkeyTest {
 
     @Test
+    @Ignore
     void test() throws Exception {
         // TODO do a real test
         ChaosMonkey.getInstance().initialize("http://localhost:5008/settings");
@@ -22,6 +24,7 @@ class ChaosMonkeyTest {
     }
 
     @Test
+    @Ignore
     void test2() throws Exception {
         ChaosMonkey.getInstance().initialize("http://localhost:5008/settings");
         while(true) {
