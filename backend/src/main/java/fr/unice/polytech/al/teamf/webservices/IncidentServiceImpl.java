@@ -2,6 +2,7 @@ package fr.unice.polytech.al.teamf.webservices;
 
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import fr.unice.polytech.al.teamf.NotifyCarCrash;
+import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
 import fr.unice.polytech.al.teamf.components.AccountingBean;
 import fr.unice.polytech.al.teamf.components.PackageBean;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
@@ -31,6 +32,8 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public boolean notifyCarCrash(String username, double latitude, double longitude) {
+        if (ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed())
+            return false;
         logger.trace("IncidentServiceImpl.notifyCarCrash");
         // For the POC, assume the existence and the unicity
         User user = userRepository.findByName(username).get(0);

@@ -112,6 +112,12 @@
             <version>1.0.8</version>
             <scope>test</scope>
         </dependency>
+        <!-- Chaos Monkey Framework -->
+        <dependency>
+            <groupId>fr.unice.polytech.al.teamf</groupId>
+            <artifactId>chaos-monkey</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.components.MessageReceiver;
+import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -76,6 +77,8 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
+        ChaosMonkey.getInstance().initialize("http://chaos_monkey:5008/settings");
+
         User thomas = new User("Thomas");
         userRepository.save(thomas);
         User loic = new User("Loic");

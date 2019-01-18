@@ -1,9 +1,9 @@
 #!/bin/bash
 
 set -e
-
-for f in $(ls -d */)
+for f in "chaos_monkey_java" "backend"
 do
+    echo $f
     if [ -f $f/install.sh ]; then
         echo "entering $f"
         cd $f
