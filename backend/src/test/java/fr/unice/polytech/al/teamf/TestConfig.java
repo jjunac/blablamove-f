@@ -25,4 +25,9 @@ public class TestConfig {
     RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         return new RabbitTemplate(connectionFactory);
     }
+
+//    @Bean
+//    ServletWebServerFactory servletWebServerFactory(){
+//        return new TomcatServletWebServerFactory();
+//    }
 }

@@ -8,10 +8,9 @@ import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Notification;
 import fr.unice.polytech.al.teamf.entities.User;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -23,14 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
 @Import({CarCrashBean.class, UserNotifierBean.class, DriverFinderBean.class, TemporaryLocationBean.class, AccountingBean.class, TestConfig.class})
-@AutoConfigureWireMock(port = 5000)
+@AutoConfigureWireMock(port = 5008)
 class CarCrashBeanIntegrationTest extends IntegrationTest {
     
     @Autowired
@@ -42,9 +40,9 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
     @Autowired
     private PullNotifications pullNotifications;
     
-    @BeforeEach
-    void setUp() {
-
+    @BeforeAll
+    void setUpAll() {
+        super.setUp();
         carCrash.accountingBean.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
                 "point-pricing",
                 "point-pricing-exchange",
@@ -68,8 +66,6 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
         params.put("start_long", number);
         params.put("end_lat", number);
         params.put("end_long", number);
-        stubFor(get(urlPathEqualTo("/find_driver")).withQueryParams(params).willReturn(aResponse()
-                .withBody("{\"drivers\":[{\"name\":\"Erick\"}]}").withStatus(200)));
     }
     
     @Test

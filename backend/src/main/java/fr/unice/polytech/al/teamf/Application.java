@@ -1,7 +1,7 @@
 package fr.unice.polytech.al.teamf;
 
-import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
+import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -9,8 +9,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -19,14 +17,17 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.transaction.Transactional;
 
 @SpringBootApplication
+@PropertySource("/external_services_production.properties")
 public class Application implements CommandLineRunner {
 
     @Autowired
@@ -39,6 +40,9 @@ public class Application implements CommandLineRunner {
     static final String topicExchangeName = "external-exchange";
 
     static final String queueName = "external";
+
+    @Value("${chaos_monkey_address}")
+    public String chaos_monkey_url;
 
     @Bean
     Queue queue() {
@@ -77,7 +81,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize("http://chaos_monkey:5008/settings");
+        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings");
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);
