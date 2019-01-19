@@ -1,8 +1,8 @@
 package fr.unice.polytech.al.teamf.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.FindDriver;
+import fr.unice.polytech.al.teamf.NotifyCarCrash;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
@@ -11,6 +11,7 @@ import fr.unice.polytech.al.teamf.entities.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CarCrashBean implements NotifyCarCrash {
 
-    String insurance_url = "http://insurance:5000";
+    @Value("${insurance_address}")
+    String insurance_url;
 
     RabbitTemplate rabbitTemplate;
 

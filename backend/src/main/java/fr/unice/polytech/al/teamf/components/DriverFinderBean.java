@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -25,9 +26,10 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
 
     RabbitTemplate rabbitTemplate;
 
+    @Value("${route_finder_address}")
     @Getter
     @Setter
-    public String routeFinderUrl = "http://route_finder:5000";
+    public String routeFinderUrl;
     @Autowired
     NotifyUser notifyUser;
     @Autowired

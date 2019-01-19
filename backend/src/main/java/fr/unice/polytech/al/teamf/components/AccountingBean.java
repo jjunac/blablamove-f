@@ -7,12 +7,15 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class AccountingBean implements ComputePoints {
-    String point_pricing_url="http://point_pricing:5000";
+
+    @Value("${point_pricing_address}")
+    String point_pricing_url;
 
     RabbitTemplate rabbitTemplate;
 

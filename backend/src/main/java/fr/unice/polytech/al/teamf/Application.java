@@ -22,12 +22,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 
 import javax.transaction.Transactional;
 
 @SpringBootApplication
-@PropertySource("/external_services_production.properties")
 public class Application implements CommandLineRunner {
 
     @Autowired

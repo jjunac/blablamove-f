@@ -57,8 +57,6 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
                 "route-finder",
                 "route-finder-exchange",
                 "routefinder.*");
-
-        driverFinderBean.routeFinderUrl = "http://localhost:5000";
     
         Map<String, StringValuePattern> params = new HashMap<>();
         StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");

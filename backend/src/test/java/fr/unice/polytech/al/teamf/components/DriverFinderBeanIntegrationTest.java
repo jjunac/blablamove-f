@@ -38,9 +38,6 @@ class DriverFinderBeanIntegrationTest extends IntegrationTest {
     @BeforeAll
     void setUpAll() {
         super.setUp();
-        driverFinder.routeFinderUrl = "http://localhost:5000";
-
-
         driverFinder.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
                 "route-finder",
                 "route-finder-exchange",

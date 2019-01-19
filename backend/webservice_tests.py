@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import requests
 import argparse
+import requests
 import time
 
 parser = argparse.ArgumentParser()
@@ -40,7 +40,7 @@ def print_color(text, color): print(color, text, DEFAULT)
 
 
 def step(title):
-	time.sleep(2)
+	time.sleep(1)
 	print_color("#=== %s ===#" % title, BLUE)
 
 
