@@ -1,33 +1,35 @@
 package fr.unice.polytech.al.teamf.components;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.unice.polytech.al.teamf.*;
+import fr.unice.polytech.al.teamf.AnswerMission;
+import fr.unice.polytech.al.teamf.FindDriver;
+import fr.unice.polytech.al.teamf.FindPackageHost;
+import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
 public class DriverFinderBean implements FindDriver, AnswerMission {
+
+    RabbitTemplate rabbitTemplate;
+
+    @Value("${route_finder_address}")
     @Getter
     @Setter
-    public String routeFinderUrl = "http://route_finder:5000";
+    public String routeFinderUrl;
     @Autowired
     NotifyUser notifyUser;
     @Autowired
@@ -36,6 +38,10 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     MissionRepository missionRepository;
     @Autowired
     FindPackageHost findPackageHost;
+
+    public DriverFinderBean(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     public User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival) {
@@ -64,32 +70,14 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     }
 
     private String findUserForRoute(GPSCoordinate departure, GPSCoordinate arrival) {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = String.format("%s/find_driver", routeFinderUrl);
-            HashMap<String, Double> params = new HashMap<>();
-            UriComponentsBuilder builder = UriComponentsBuilder
-                    .fromUriString(url)
-                    .queryParam("start_lat", departure.getLatitude())
-                    .queryParam("start_long", departure.getLongitude())
-                    .queryParam("end_lat", arrival.getLatitude())
-                    .queryParam("end_long", arrival.getLongitude());
-
-            log.debug("trying to get " + builder.toUriString());
-            ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class, params);
-            if (response != null && response.getStatusCode().is2xxSuccessful()) {
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(response.getBody());
-                JsonNode name = root.get("drivers").get(0).get("name");
-                log.debug(String.format("received: %s, from find_route name=%s", root, name));
-                return name.asText();
-            }
-        } catch (ResourceAccessException | HttpClientErrorException e) {
-            log.error("Impossible to reach server.");
-            log.error(e.getMessage());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        String jsonContent = new ObjectMapper()
+                .createObjectNode()
+                .put("departureLatitude", departure.getLatitude())
+                .put("departureLongitude", departure.getLongitude())
+                .put("arrivalLatitude", arrival.getLatitude())
+                .put("arrivalLongitude", arrival.getLongitude())
+                .toString();
+        rabbitTemplate.convertAndSend("route-finder-exchange", "routefinder.finduser", jsonContent);
         return "Erick";
     }
 
