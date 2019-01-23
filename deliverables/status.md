@@ -1,5 +1,20 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 4 
+
+:vertical_traffic_light: **Green** 
+
+ - Chaos Monkey fonctionnel et mise en place de la programmation par aspect en cours
+ - Remise en question de l'architecture du projet au niveau de l'interaction entre client, serveur et notifieur
+ - Tests qui passent avec la file de messages
+ - Gateways implémentées et connectées à la file de messages pour les services externes
+
+### Prévisions semaine 5
+
+- Fin de l'implémentation de la programmation par aspect pour les fonctionnalités impactées par le Chaos Monkey
+- Connexion du client à la file de messages pour les notifications
+- Début d'implémentation des fonctionnalités restantes du scope initial : les retards et les déviations
+
 ## _Status_ semaine 44-45 
 
 :vertical_traffic_light: **Green** 
