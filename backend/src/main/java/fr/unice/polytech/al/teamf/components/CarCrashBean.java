@@ -18,10 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CarCrashBean implements NotifyCarCrash {
-
-    @Value("${insurance_address}")
-    String insurance_url;
-
+    
     RabbitTemplate rabbitTemplate;
 
     public CarCrashBean(RabbitTemplate rabbitTemplate) {

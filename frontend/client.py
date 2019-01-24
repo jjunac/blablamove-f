@@ -108,8 +108,6 @@ def wait_notifications(*args):
                 sleep(2)
             else:
                 for notif in res:
-                    # plyer.notification.notify(
-                    #     title="yolo", message=notif['message'])
                     print(f"You received: {notif['message']}")
         except Exception as e:
             print(e)

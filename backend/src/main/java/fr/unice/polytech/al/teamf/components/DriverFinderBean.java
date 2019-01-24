@@ -25,11 +25,7 @@ import java.util.Map;
 public class DriverFinderBean implements FindDriver, AnswerMission {
 
     RabbitTemplate rabbitTemplate;
-
-    @Value("${route_finder_address}")
-    @Getter
-    @Setter
-    public String routeFinderUrl;
+    
     @Autowired
     NotifyUser notifyUser;
     @Autowired

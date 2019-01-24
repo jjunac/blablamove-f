@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AccountingBean implements ComputePoints {
-
-    @Value("${point_pricing_address}")
-    String point_pricing_url;
-
+    
     RabbitTemplate rabbitTemplate;
 
     public AccountingBean(RabbitTemplate rabbitTemplate) {
