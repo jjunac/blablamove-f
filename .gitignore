@@ -237,3 +237,4 @@ local.properties
 **/.project
 **/.settings
 
+!/.gitignore
