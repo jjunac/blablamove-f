@@ -3,9 +3,9 @@ package fr.unice.polytech.al.teamf.usernotifier.webservices;
 import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import fr.unice.polytech.al.teamf.usernotifier.PullNotifications;
 import fr.unice.polytech.al.teamf.usernotifier.entities.Notification;
+import fr.unice.polytech.al.teamf.usernotifier.entities.User;
+import fr.unice.polytech.al.teamf.usernotifier.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.usernotifier.repositories.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +14,7 @@ import java.util.List;
 @Service
 @AutoJsonRpcServiceImpl
 public class NotificationServiceImpl implements NotificationService {
-
-    private final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
-
+    
     
     private UserRepository userRepository;
     
@@ -30,6 +28,7 @@ public class NotificationServiceImpl implements NotificationService {
     
     @Override
     public List<Notification> pullNotificationForUser(String username) {
-        return pullNotifications.pullNotificationForUser(userRepository.findByName(username).get(0));
+        User user = userRepository.findByName(username).stream().findFirst().orElseThrow(() -> new UnknownUserException(username));
+        return pullNotifications.pullNotificationForUser(user);
     }
 }
