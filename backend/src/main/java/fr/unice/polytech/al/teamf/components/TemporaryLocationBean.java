@@ -4,6 +4,7 @@ import fr.unice.polytech.al.teamf.AnswerPackageHosting;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
+import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Map;
 @Slf4j
 @Component
 public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHosting {
+
+    private Notifier notifier = Notifier.getInstance();
 
     @Autowired
     NotifyUser notifyUser;
@@ -31,8 +34,9 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
         Map<String, Serializable> parameters = new HashMap<>();
         parameters.put("parcelId", parcel.getId());
         parameters.put("username", newHost.getName());
-        notifyUser.notifyUserWithAnswer(newHost, buildHostMessage(parcel.getOwner().getName()),
-                new Answer("/package", "answerToPendingPackageHosting", parameters));
+        notifier.sendNotification(newHost, buildHostMessage(parcel.getOwner().getName()), true);
+//        notifyUser.notifyUserWithAnswer(newHost, buildHostMessage(parcel.getOwner().getName()),
+//                new Answer("/package", "answerToPendingPackageHosting", parameters));
 
         return newHost;
     }
@@ -40,8 +44,10 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
     @Override
     public boolean answerToPendingPackageHosting(Parcel parcel, User user, boolean answer) {
         if(answer) {
-            notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(user.getName()));
-            notifyUser.notifyUser(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()));
+//            notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(user.getName()));
+//            notifyUser.notifyUser(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()));
+            notifier.sendNotification(parcel.getOwner(), buildOwnerMessage(user.getName()), false);
+            notifier.sendNotification(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()), false);
         }
         // FIXME handle error case
         return true;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.*;
+import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.Getter;
@@ -28,6 +29,9 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     @Getter
     @Setter
     public String routeFinderUrl = "http://route_finder:5000";
+
+    private Notifier notifier = Notifier.getInstance();
+
     @Autowired
     NotifyUser notifyUser;
     @Autowired
@@ -53,8 +57,9 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
             Map<String, Serializable> parameters = new HashMap<>();
             parameters.put("missionId", newMission.getId());
             parameters.put("username", newDriver.getName());
-            notifyUser.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()),
-                    new Answer("/package", "answerToPendingMission", parameters));
+            notifier.sendNotification(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()), true);
+//            notifyUser.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()),
+//                    new Answer("/package", "answerToPendingMission", parameters));
             return newDriver;
         }
 
@@ -96,8 +101,10 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     @Override
     public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
         if (answer) {
-            notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
-            notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
+//            notifyUser.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()));
+//            notifyUser.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()));
+            notifier.sendNotification(mission.getOwner(), buildOwnerMessage(newDriver.getName()), false);
+            notifier.sendNotification(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()), false);
         } else {
             findPackageHost.findHost(mission.getParcel());
         }

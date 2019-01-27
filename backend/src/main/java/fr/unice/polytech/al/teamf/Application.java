@@ -10,10 +10,15 @@ import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import javax.transaction.Transactional;
 
@@ -29,6 +34,26 @@ public class Application implements CommandLineRunner {
     ParcelRepository parcelRepository;
     @Autowired
     MissionRepository missionRepository;
+
+    static final String notificationsQueueName = "notifications";
+    static final String notificationsTopicExchangeName = "notifications-exchange";
+
+    @Bean
+    public Queue notificationsQueue() {
+        return new Queue(notificationsQueueName);
+    }
+
+    @Bean
+    TopicExchange notificationsExchange() {
+        return new TopicExchange(notificationsTopicExchangeName);
+    }
+
+    @Bean
+    public Binding bindingNotification(TopicExchange notificationsExchange, Queue notificationsQueue) {
+        return BindingBuilder.bind(notificationsQueue).to(notificationsExchange).with("notifications.#");
+    }
+
+    //TODO Add notification queue name in container config
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
