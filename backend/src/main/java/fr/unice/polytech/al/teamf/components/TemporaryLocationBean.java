@@ -7,6 +7,7 @@ import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +19,17 @@ import java.util.Map;
 @Component
 public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHosting {
 
+    RabbitTemplate rabbitTemplate;
     private Notifier notifier = Notifier.getInstance();
 
     @Autowired
     NotifyUser notifyUser;
     @Autowired
     UserRepository userRepository;
+
+    public TemporaryLocationBean(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     public User findHost(Parcel parcel) {
@@ -34,7 +40,7 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
         Map<String, Serializable> parameters = new HashMap<>();
         parameters.put("parcelId", parcel.getId());
         parameters.put("username", newHost.getName());
-        notifier.sendNotification(newHost, buildHostMessage(parcel.getOwner().getName()), true);
+        notifier.sendNotification(newHost, buildHostMessage(parcel.getOwner().getName()), true, rabbitTemplate);
 //        notifyUser.notifyUserWithAnswer(newHost, buildHostMessage(parcel.getOwner().getName()),
 //                new Answer("/package", "answerToPendingPackageHosting", parameters));
 
@@ -46,8 +52,8 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
         if(answer) {
 //            notifyUser.notifyUser(parcel.getOwner(), buildOwnerMessage(user.getName()));
 //            notifyUser.notifyUser(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()));
-            notifier.sendNotification(parcel.getOwner(), buildOwnerMessage(user.getName()), false);
-            notifier.sendNotification(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()), false);
+            notifier.sendNotification(parcel.getOwner(), buildOwnerMessage(user.getName()), false, rabbitTemplate);
+            notifier.sendNotification(parcel.getKeeper(), buildKeeperMessage(user.getName(), parcel.getOwner().getName()), false, rabbitTemplate);
         }
         // FIXME handle error case
         return true;

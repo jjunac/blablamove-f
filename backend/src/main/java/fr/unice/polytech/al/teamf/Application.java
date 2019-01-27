@@ -62,10 +62,7 @@ public class Application implements CommandLineRunner {
         return BindingBuilder.bind(notificationsQueue).to(notificationsExchange).with("notifications.#");
     }
 
-    //TODO Add notification queue name in container config
-
     static final String topicExchangeName = "external-exchange";
-
     static final String queueName = "external";
 
     @Value("${chaos_monkey_address}")
@@ -91,7 +88,7 @@ public class Application implements CommandLineRunner {
                                              MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName);
+        container.setQueueNames(queueName, notificationsQueueName);
         container.setMessageListener(listenerAdapter);
         return container;
     }

@@ -6,7 +6,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 public class Notifier {
     private static final Notifier instance = new Notifier();
-    private static final RabbitTemplate rabbitTemplate = new RabbitTemplate();
 
     private Notifier(){}
 
@@ -14,7 +13,7 @@ public class Notifier {
         return instance;
     }
 
-    public void sendNotification(User receiver, String notificationContent, boolean answerNeeded){
+    public void sendNotification(User receiver, String notificationContent, boolean answerNeeded, RabbitTemplate rabbitTemplate){
         String jsonContent = new ObjectMapper()
                 .createObjectNode()
                 .put("content", notificationContent)

@@ -13,7 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 @Slf4j
@@ -44,7 +50,7 @@ public class CarCrashBean implements NotifyCarCrash {
         contactInsurance(user);
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             accountingBean.computePoints(mission);
-            notifier.sendNotification(mission.getOwner(), buildMessage(user.getName()), false);
+            notifier.sendNotification(mission.getOwner(), buildMessage(user.getName()), false, rabbitTemplate);
 //            notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
             Parcel parcel = mission.getParcel();
             parcel.setMission(null);
@@ -54,11 +60,26 @@ public class CarCrashBean implements NotifyCarCrash {
     }
 
     boolean contactInsurance(User user) {
-        String jsonContent = new ObjectMapper()
-                .createObjectNode()
-                .put("user", user.getName())
-                .toString();
-        rabbitTemplate.convertAndSend("insurance-exchange", "insurance.involvement", jsonContent);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
+                .fromHttpUrl(String.format("%s/insurance/%s", insurance_url, user.getName()));
+        try {
+            ClientHttpResponse queryResponse = new RestTemplate().execute(uriComponentsBuilder.toUriString(),
+                    HttpMethod.GET,
+                    null,
+                    clientHttpResponse -> clientHttpResponse);
+            log.debug("contacting insurance with user " + user.getName());
+            if (queryResponse.getStatusCode().is2xxSuccessful()) {
+                return new ObjectMapper()
+                        .readTree(queryResponse.getBody())
+                        .get("insuranceInvolvement")
+                        .asBoolean();
+            }
+        } catch (ResourceAccessException | HttpClientErrorException e) {
+            log.error("Impossible to reach server.");
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false; // handle this properly
     }
 

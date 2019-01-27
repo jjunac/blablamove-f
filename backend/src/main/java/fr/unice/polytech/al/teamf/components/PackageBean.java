@@ -11,6 +11,7 @@ import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PackageBean implements ManagePackage {
 
+    RabbitTemplate rabbitTemplate;
     private Notifier notifier = Notifier.getInstance();
 
     @Autowired
@@ -26,6 +28,10 @@ public class PackageBean implements ManagePackage {
     MissionRepository missionRepository;
     @Autowired
     ParcelRepository parcelRepository;
+
+    public PackageBean(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     public boolean missionFinished(Mission mission) {
@@ -48,7 +54,7 @@ public class PackageBean implements ManagePackage {
         log.trace("PackageBean.dropPackage");
         parcel.setKeeper(host);
 //        notifyUser.notifyUser(parcel.getOwner(), buildDroppedPackageMessage(host.getName()));
-        notifier.sendNotification(parcel.getOwner(), buildDroppedPackageMessage(host.getName()), false);
+        notifier.sendNotification(parcel.getOwner(), buildDroppedPackageMessage(host.getName()), false, rabbitTemplate);
         return true;
     }
 
@@ -62,7 +68,7 @@ public class PackageBean implements ManagePackage {
         parcel.setKeeper(newDriver);
         mission.setOngoing();
 //        notifyUser.notifyUser(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()));
-        notifier.sendNotification(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()), false);
+        notifier.sendNotification(mission.getParcel().getOwner(), buildTakenPackageMessage(newDriver.getName()), false, rabbitTemplate);
         return newDriver.addTransportedMission(mission);
     }
 
@@ -71,7 +77,7 @@ public class PackageBean implements ManagePackage {
         log.trace("PackageBean.takePackage");
         mission.setOngoing();
 //        notifyUser.notifyUser(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()));
-        notifier.sendNotification(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()), false);
+        notifier.sendNotification(mission.getOwner(), buildChangeDriverMessage(newDriver.getName()), false, rabbitTemplate);
         return true;
     }
 

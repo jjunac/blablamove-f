@@ -6,11 +6,13 @@ import fr.unice.polytech.al.teamf.TestConfig;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,6 +31,15 @@ class FindHostBeanIntegrationTest extends IntegrationTest {
     private PackageBean managePackage;
     @Autowired
     private PullNotifications pullNotifications;
+
+    @BeforeAll
+    void setUpAll() {
+        super.setUp();
+        hostFinder.rabbitTemplate = TestUtils.queueAndExchangeSetup(new AnnotationConfigApplicationContext(TestConfig.class),
+                "notifications",
+                "notifications-exchange",
+                "notifications.*");
+    }
 
     @Test
     void shouldNotifyOwnersWhenANewDriverHasBeenFound() {
