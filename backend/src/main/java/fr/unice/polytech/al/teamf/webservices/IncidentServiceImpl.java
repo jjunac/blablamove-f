@@ -32,7 +32,7 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public boolean notifyCarCrash(String username, double latitude, double longitude) {
-        if (ChaosMonkey.getInstance().draw("NOTIFY_CAR_CRASH").hasFailed())
+        if (ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed())
             return false;
         logger.trace("IncidentServiceImpl.notifyCarCrash");
         // For the POC, assume the existence and the unicity

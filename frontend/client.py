@@ -40,8 +40,11 @@ def rpc_call(url, method, params):
 
 def request_webservice(url, method, params, output_message=None):
     res, err, status = rpc_call(url, method, params)
-    if output_message and res and not err:
-        print(f"#===== {output_message} =====#")
+    if output_message and not err:
+        if res:
+            print(f"#===== {output_message} =====#")
+        else:
+            print("#===== Query failed =====#")
     if err:
         print(f"Error {status:d}: {err}")
         # exit(status)
@@ -105,8 +108,6 @@ def wait_notifications(*args):
                 sleep(2)
             else:
                 for notif in res:
-                    # plyer.notification.notify(
-                    #     title="yolo", message=notif['message'])
                     print(f"You received: {notif['message']}")
         except Exception as e:
             print(e)

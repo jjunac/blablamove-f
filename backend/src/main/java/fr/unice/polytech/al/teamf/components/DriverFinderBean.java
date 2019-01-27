@@ -1,8 +1,10 @@
 package fr.unice.polytech.al.teamf.components;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.unice.polytech.al.teamf.*;
+import fr.unice.polytech.al.teamf.AnswerMission;
+import fr.unice.polytech.al.teamf.FindDriver;
+import fr.unice.polytech.al.teamf.FindPackageHost;
+import fr.unice.polytech.al.teamf.NotifyUser;
 import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
@@ -10,18 +12,14 @@ import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -40,6 +38,10 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     MissionRepository missionRepository;
     @Autowired
     FindPackageHost findPackageHost;
+
+    public DriverFinderBean(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     public User findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate coordinate, GPSCoordinate arrival) {

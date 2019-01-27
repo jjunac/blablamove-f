@@ -36,6 +36,32 @@ services:
     ports:
       - "5001:5000"
     stdin_open: true
+  point_pricing_gateway:
+    build: ./gateways/PointPricingGateway
+    image: point_pricing_gateway
+    restart: unless-stopped
+    container_name: point_pricing_gateway
+    depends_on:
+      - "point_pricing"
+      - "queue"
+    expose:
+      - "5673"
+    ports:
+      - "5673:5672"
+    stdin_open: true
+  insurance_gateway:
+    build: ./gateways/InsuranceGateway
+    image: insurance_gateway
+    restart: unless-stopped
+    container_name: insurance_gateway
+    depends_on:
+      - "insurance"
+      - "queue"
+    expose:
+      - "5674"
+    ports:
+      - "5674:5672"
+    stdin_open: true
   route_finder:
     build: ./external/RouteFinder
     image: route_finder
@@ -44,6 +70,19 @@ services:
       - "5002"
     ports:
       - "5002:5000"
+    stdin_open: true
+  route_finder_gateway:
+    build: ./gateways/RouteFinderGateway
+    image: route_finder_gateway
+    restart: unless-stopped
+    container_name: route_finder_gateway
+    depends_on:
+      - "route_finder"
+      - "queue"
+    expose:
+      - "5675"
+    ports:
+      - "5675:5672"
     stdin_open: true
   queue:
     image: rabbitmq

@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
+import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -14,7 +15,15 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -55,6 +64,43 @@ public class Application implements CommandLineRunner {
 
     //TODO Add notification queue name in container config
 
+    static final String topicExchangeName = "external-exchange";
+
+    static final String queueName = "external";
+
+    @Value("${chaos_monkey_address}")
+    public String chaos_monkey_url;
+
+    @Bean
+    Queue queue() {
+        return new Queue(queueName, false);
+    }
+
+    @Bean
+    TopicExchange exchange() {
+        return new TopicExchange(topicExchangeName);
+    }
+
+    @Bean
+    Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("external.#");
+    }
+
+    @Bean
+    SimpleMessageListenerContainer pointPricingContainer(ConnectionFactory connectionFactory,
+                                             MessageListenerAdapter listenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(queueName);
+        container.setMessageListener(listenerAdapter);
+        return container;
+    }
+
+    @Bean
+    MessageListenerAdapter pointPricingListenerAdapter(MessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveMessage");
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -62,7 +108,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize("http://localhost:5008/settings");
+        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings");
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);
@@ -92,8 +138,6 @@ public class Application implements CommandLineRunner {
         parcel2.setMission(thomasMission);
         missionRepository.save(thomasMission);
         johann.addTransportedMission(thomasMission);
-
-        //logger.debug(johann.toString());
 
     }
 
