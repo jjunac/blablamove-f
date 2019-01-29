@@ -1,4 +1,4 @@
-package fr.unice.polytech.al.teamf.components;
+package fr.unice.polytech.al.teamf.message_listeners;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class MessageReceiver {
+public class PointPricingMessageReceiver {
 
     public void receiveMessage(String message){
         log.info(message);

@@ -1,11 +1,11 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
-import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.message_listeners.MessageReceiver;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
@@ -35,41 +35,122 @@ public class Application implements CommandLineRunner {
     @Autowired
     MissionRepository missionRepository;
 
-    static final String topicExchangeName = "external-exchange";
+//    static final String sendingTopicExchangeName = "external-sending-exchange";
 
-    static final String queueName = "external";
+//    static final String sendingQueueName = "external-sending";
+
+    static final String pointpricingTopicExchangeName = "pointpricing-receiving-exchange";
+
+    static final String pointpricingQueueName = "pointpricing-receiving";
+
+    static final String routefindingTopicExchangeName = "routefinding-receiving-exchange";
+
+    static final String routefindingQueueName = "routefinding-receiving";
+
+    static final String insuranceTopicExchangeName = "insurance-receiving-exchange";
+
+    static final String insuranceQueueName = "insurance-receiving";
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
 
+//    @Bean
+//    Queue sendingQueue() {
+//        return new Queue(sendingQueueName, false);
+//    }
+
     @Bean
-    Queue queue() {
-        return new Queue(queueName, false);
+    Queue pointPricingQueue() {
+        return new Queue(pointpricingQueueName, false);
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
+    Queue routeFindingQueue() {
+        return new Queue(routefindingQueueName, false);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("external.#");
+    Queue insuranceQueue() {
+        return new Queue(insuranceQueueName, false);
+    }
+
+//    @Bean
+//    TopicExchange sendingExchange() {
+//        return new TopicExchange(sendingTopicExchangeName);
+//    }
+
+    @Bean
+    TopicExchange pointPricingExchange() {
+        return new TopicExchange(pointpricingTopicExchangeName);
     }
 
     @Bean
-    SimpleMessageListenerContainer pointPricingContainer(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter listenerAdapter) {
+    TopicExchange routeFindingExchange() {
+        return new TopicExchange(routefindingTopicExchangeName);
+    }
+
+    @Bean
+    TopicExchange insuranceExchange() {
+        return new TopicExchange(insuranceTopicExchangeName);
+    }
+
+//    @Bean
+//    Binding sendingBinding() {
+//        return BindingBuilder.bind(sendingQueue()).to(sendingExchange()).with("external.contact.#");
+//    }
+
+    @Bean
+    Binding pointPricingBinding() {
+        return BindingBuilder.bind(pointPricingQueue()).to(pointPricingExchange()).with("external.pointpricing.#");
+    }
+
+    @Bean
+    Binding routeFindingBinding() {
+        return BindingBuilder.bind(routeFindingQueue()).to(routeFindingExchange()).with("external.routefinder.#");
+    }
+
+    @Bean
+    Binding insuranceBinding() {
+        return BindingBuilder.bind(insuranceQueue()).to(insuranceExchange()).with("external.insurance.#");
+    }
+
+    @Bean
+    SimpleMessageListenerContainer pointPricingContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
+        return getSimpleMessageListenerContainer(connectionFactory, pointPricingListenerAdapter(receiver), pointpricingQueueName);
+    }
+
+    @Bean
+    SimpleMessageListenerContainer routeFindingContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
+        return getSimpleMessageListenerContainer(connectionFactory, routeFindingListenerAdapter(receiver), routefindingQueueName);
+    }
+
+    @Bean
+    SimpleMessageListenerContainer insuranceContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
+        return getSimpleMessageListenerContainer(connectionFactory, insuranceListenerAdapter(receiver), insuranceQueueName);
+    }
+
+    private SimpleMessageListenerContainer getSimpleMessageListenerContainer(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter, String queueName) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
         container.setMessageListener(listenerAdapter);
+//        container.setChannelAwareMessageListener();
         return container;
     }
 
     @Bean
     MessageListenerAdapter pointPricingListenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+        return new MessageListenerAdapter(receiver, "receivePointPricingMessage");
+    }
+
+    @Bean
+    MessageListenerAdapter routeFindingListenerAdapter(MessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveRouteFindingMessage");
+    }
+
+    @Bean
+    MessageListenerAdapter insuranceListenerAdapter(MessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveInsuranceMessage");
     }
 
     public static void main(String[] args) {
