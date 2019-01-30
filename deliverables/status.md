@@ -1,5 +1,20 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 5 
+
+:vertical_traffic_light: **Green** 
+
+ - Programmation par aspect mise en place, besoin d'y connecter le Chaos Monkey
+ - Ajout de nouvelles queues en cours pour les callbacks des gateways
+ - Nouveau notifieur passant par la file de messages implémenté
+ - Mise à jour du backend en cours pour recevoir les messages du notifieur
+
+### Prévisions semaine 6
+
+- Programmation par aspect et Chaos Monkey connectés entre eux
+- Notifieur et backend connectés via la file de messages
+- Réflexion sur les résultats à faire ressortir du Chaos Monkey
+
 ## _Status_ semaine 4 
 
 :vertical_traffic_light: **Green** 
