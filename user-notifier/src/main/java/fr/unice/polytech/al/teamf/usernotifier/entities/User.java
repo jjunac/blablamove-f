@@ -34,7 +34,7 @@ public class User implements Serializable {
     public void clearNotifications() {
         for(Iterator<Notification> notificationIterator = notifications.iterator();
             notificationIterator.hasNext(); ) {
-            Notification notification = notificationIterator .next();
+            Notification notification = notificationIterator.next();
             notification.setUser(null);
             notificationIterator.remove();
         }

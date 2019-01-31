@@ -17,5 +17,5 @@ public class Answer implements Serializable {
     private String route;
     private String methodName;
     @ElementCollection
-    private Map<String, Serializable> parameters;
+    private Map<String, String> parameters;
 }

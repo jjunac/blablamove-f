@@ -3,16 +3,11 @@ package fr.unice.polytech.al.teamf.components;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.NotifyCarCrash;
-import fr.unice.polytech.al.teamf.NotifyUser;
-import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
-import fr.unice.polytech.al.teamf.entities.Mission;
-import fr.unice.polytech.al.teamf.entities.Parcel;
-import fr.unice.polytech.al.teamf.entities.User;
+import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.notifier.Notifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
@@ -50,12 +45,13 @@ public class CarCrashBean implements NotifyCarCrash {
         contactInsurance(user);
         for (Mission mission : user.getTransportedMissionsWithStatus(Mission.Status.ONGOING)) {
             accountingBean.computePoints(mission);
-            notifier.sendNotification(mission.getOwner(), buildMessage(user.getName()), false, rabbitTemplate);
-//            notifyUser.notifyUser(mission.getOwner(), buildMessage(user.getName()));
+            notifier.sendNotification(mission.getOwner(),new Notification(mission.getOwner(),buildMessage(user.getName()),null),  rabbitTemplate);
             Parcel parcel = mission.getParcel();
-            parcel.setMission(null);
-            mission.setParcel(null);
-            findDriver.findNewDriver(user, parcel, coordinate, mission.getArrival());
+            if (parcel!=null) {
+                parcel.setMission(null);
+                mission.setParcel(null);
+                findDriver.findNewDriver(user, parcel, coordinate, mission.getArrival());
+            }
         }
     }
 

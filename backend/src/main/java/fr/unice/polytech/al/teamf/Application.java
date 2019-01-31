@@ -15,10 +15,6 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -63,14 +59,14 @@ public class Application implements CommandLineRunner {
     }
 
     static final String topicExchangeName = "external-exchange";
-    static final String queueName = "external";
+    static final String externalSevicesQueue = "external";
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
 
     @Bean
     Queue queue() {
-        return new Queue(queueName, false);
+        return new Queue(externalSevicesQueue, false);
     }
 
     @Bean
@@ -88,8 +84,9 @@ public class Application implements CommandLineRunner {
                                              MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName, notificationsQueueName);
+        container.setQueueNames(externalSevicesQueue);
         container.setMessageListener(listenerAdapter);
+        
         return container;
     }
 
@@ -105,7 +102,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings");
+        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings","localhost");
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);

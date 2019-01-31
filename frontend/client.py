@@ -8,8 +8,9 @@ import pprint
 rpc_id = 0
 
 server_address = "http://localhost:8080"
+notification_address = "http://localhost:2501"
 incident_url = f"{server_address}/incident"
-notification_url = f"{server_address}/notification"
+notification_url = f"{notification_address}/notification"
 package_url = f"{server_address}/package"
 
 missions = []

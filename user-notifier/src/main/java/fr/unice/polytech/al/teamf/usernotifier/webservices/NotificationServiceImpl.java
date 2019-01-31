@@ -9,7 +9,9 @@ import fr.unice.polytech.al.teamf.usernotifier.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AutoJsonRpcServiceImpl
@@ -28,7 +30,12 @@ public class NotificationServiceImpl implements NotificationService {
     
     @Override
     public List<Notification> pullNotificationForUser(String username) {
-        User user = userRepository.findByName(username).stream().findFirst().orElseThrow(() -> new UnknownUserException(username));
-        return pullNotifications.pullNotificationForUser(user);
+        Optional<User> first = userRepository.findByName(username).stream().findFirst();
+        if (first.isPresent()) {
+            User user = first.get();
+            return pullNotifications.pullNotificationForUser(user);
+        }else{
+            return new ArrayList<>();
+        }
     }
 }

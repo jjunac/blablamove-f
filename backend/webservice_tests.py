@@ -18,7 +18,7 @@ MAGENTA = "\035[95m"
 CYAN = "\033[96m"
 
 rpc_id = 0
-
+notificationUrl = "http://localhost:2501/notification"
 
 def rpc_call(url, method, params):
     global rpc_id
@@ -89,9 +89,9 @@ else:
                                                                                                    None))
 
 step("Jeremy and Thomas are notified that Johann had an accident")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Jeremy"})))
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Thomas"})))
 
 if args.skip_externals:
@@ -106,7 +106,7 @@ else:
     assert_equals("10.0,42.0", driver["to"])
 
 step("Erick is asked to take packages transported by Johann")
-notifications = request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+notifications = request_webservice(notificationUrl, "pullNotificationForUser",
                                    {"username": "Erick"})
 assert_equals(2, len(notifications))
 
@@ -122,11 +122,11 @@ assert_equals(True,
                                  parameters))
 
 step("Johann is notified that Erick will take Jeremy's package")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Johann"})))
 
 step("Jeremy is notified that Erick will take his package")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Jeremy"})))
 
 step("Erick refuses to take Thomas' package")
@@ -136,7 +136,7 @@ assert_equals(True,
                                  parameters))
 
 step("Julien is asked to host Thomas' package")
-notifications = request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+notifications = request_webservice(notificationUrl, "pullNotificationForUser",
                                    {"username": "Julien"})
 assert_equals(1, len(notifications))
 
@@ -150,11 +150,11 @@ assert_equals(True,
                                  parameters))
 
 step("Johann is notified that Julien will host Thomas's package")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Johann"})))
 
 step("Thomas is notified that Julien will host his package")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Thomas"})))
 
 step("Erick takes Jeremy's package from Johann")
@@ -162,7 +162,7 @@ assert_equals(True, request_webservice("http://" + args.host + ":8080/package", 
                                        {"missionId": jeremysMissionId, "username": "Erick"}))
 
 step("Jeremy is notified that Erick took his package from Johann")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Jeremy"})))
 
 step("Johann drops Thomas' package to Julien's house")
@@ -170,7 +170,7 @@ assert_equals(True, request_webservice("http://" + args.host + ":8080/package", 
                                        {"parcelId": thomasParcelId, "username": "Julien"}))
 
 step("Thomas is notified that Johann dropped his package to Julien's house")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Thomas"})))
 
 step("Erick drops Jeremy's package to Jeremy's house")
@@ -189,7 +189,7 @@ assert_equals(True, request_webservice("http://" + args.host + ":8080/package", 
                                        {"parcelId": thomasParcelId, "username": "Loic"}))
 
 step("Thomas is notified that Loic took his package from Julien's house")
-assert_equals(1, len(request_webservice("http://" + args.host + ":8080/notification", "pullNotificationForUser",
+assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Thomas"})))
 
 step("Loic drops Jeremy's package to Jeremy's house")
