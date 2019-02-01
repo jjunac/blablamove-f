@@ -93,7 +93,7 @@ public class ChaosMonkey {
     }
 
     public Draw draw(String setting) {
-        return new Draw(getSetting(setting));
+        return new Draw(getSetting(setting), setting);
     }
 
 
