@@ -56,7 +56,7 @@ public class Receiver implements CommandLineRunner {
                         .createObjectNode()
                         .put("points", nbPointsAfterModification)
                         .toString();
-                rabbitTemplate.convertAndSend("pointpricing-receiving-exchange", "external.pointpricing", jsonContent);
+                rabbitTemplate.convertAndSend("pointpricing-receiving", jsonContent);
             } else if (queryResponse.getStatusCode().is4xxClientError()) {
                 throw new UnknownUserException(user);
             }

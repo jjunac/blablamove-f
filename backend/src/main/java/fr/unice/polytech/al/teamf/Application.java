@@ -9,10 +9,7 @@ import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,29 +31,14 @@ public class Application implements CommandLineRunner {
     @Autowired
     MissionRepository missionRepository;
 
-//    static final String sendingTopicExchangeName = "external-sending-exchange";
-
-//    static final String sendingQueueName = "external-sending";
-
-    static final String pointpricingTopicExchangeName = "pointpricing-receiving-exchange";
-
     static final String pointpricingQueueName = "pointpricing-receiving";
 
-    static final String routefindingTopicExchangeName = "routefinding-receiving-exchange";
-
     static final String routefindingQueueName = "routefinding-receiving";
-
-    static final String insuranceTopicExchangeName = "insurance-receiving-exchange";
 
     static final String insuranceQueueName = "insurance-receiving";
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
-
-//    @Bean
-//    Queue sendingQueue() {
-//        return new Queue(sendingQueueName, false);
-//    }
 
     @Bean
     Queue pointPricingQueue() {
@@ -73,46 +55,6 @@ public class Application implements CommandLineRunner {
         return new Queue(insuranceQueueName, false);
     }
 
-//    @Bean
-//    TopicExchange sendingExchange() {
-//        return new TopicExchange(sendingTopicExchangeName);
-//    }
-
-    @Bean
-    TopicExchange pointPricingExchange() {
-        return new TopicExchange(pointpricingTopicExchangeName);
-    }
-
-    @Bean
-    TopicExchange routeFindingExchange() {
-        return new TopicExchange(routefindingTopicExchangeName);
-    }
-
-    @Bean
-    TopicExchange insuranceExchange() {
-        return new TopicExchange(insuranceTopicExchangeName);
-    }
-
-//    @Bean
-//    Binding sendingBinding() {
-//        return BindingBuilder.bind(sendingQueue()).to(sendingExchange()).with("external.contact.#");
-//    }
-
-    @Bean
-    Binding pointPricingBinding() {
-        return BindingBuilder.bind(pointPricingQueue()).to(pointPricingExchange()).with("external.pointpricing.#");
-    }
-
-    @Bean
-    Binding routeFindingBinding() {
-        return BindingBuilder.bind(routeFindingQueue()).to(routeFindingExchange()).with("external.routefinder.#");
-    }
-
-    @Bean
-    Binding insuranceBinding() {
-        return BindingBuilder.bind(insuranceQueue()).to(insuranceExchange()).with("external.insurance.#");
-    }
-
     @RabbitListener(queues = pointpricingQueueName)
     public void listenPointPricing(String message){
         log.info("point-pricing message : " + message);
@@ -127,7 +69,6 @@ public class Application implements CommandLineRunner {
     public void listenInsurance(String message){
         log.info("insurance message : " + message);
     }
-
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
