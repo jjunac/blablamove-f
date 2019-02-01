@@ -31,7 +31,6 @@ public class TemporaryLocationBean implements FindPackageHost, AnswerPackageHost
     
     @Override
     public User findHost(Parcel parcel) {
-        log.trace("FindPackageHostBean.findHost " +parcel);
         // Mocking new Host user
         User newHost = userRepository.findByName("Julien").get(0);
         

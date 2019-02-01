@@ -33,7 +33,7 @@ public class IncidentServiceImpl implements IncidentService {
         logger.trace("IncidentServiceImpl.notifyCarCrash");
         // For the POC, assume the existence and the unicity
         User user = userRepository.findByName(username).get(0);
-        logger.debug(user.getOwnedMissions().stream().map(Mission::getId).collect(Collectors.toList()).toString());
+        logger.debug("The user's missions are: "+user.getOwnedMissions().stream().map(Mission::getId).collect(Collectors.toList()).toString());
         notifyCarCrash.notifyCrash(user, new GPSCoordinate(latitude, longitude));
         return true;
     }

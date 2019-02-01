@@ -6,6 +6,7 @@ import fr.unice.polytech.al.teamf.FindDriver;
 import fr.unice.polytech.al.teamf.FindPackageHost;
 import fr.unice.polytech.al.teamf.*;
 import fr.unice.polytech.al.teamf.entities.Mission;
+import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.exceptions.UnknownUserException;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
@@ -14,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -82,5 +86,18 @@ public class PackageServiceImpl implements PackageService {
     public boolean takePackageFromHost(long parcelId, String username) {
         log.trace("PackageServiceImpl.takePackageFromHost");
         return managePackage.takePackageFromHost(userRepository.findByName(username).get(0), parcelRepository.findById(parcelId).get());
+    }
+    
+    @Override
+    public long getPackageMissionId(long parcelId) {
+        log.debug("missions "+StreamSupport.stream(missionRepository.findAll().spliterator(),false).map(mission -> {
+            List<Long> res = new ArrayList<>();
+            res.add(mission.getId());
+            res.add(mission.getParcel().getId());
+            res.add(mission.getParcel().getMission().getId());
+            return res;
+        }));
+        Optional<Parcel> optionalParcel = parcelRepository.findById(parcelId);
+        return optionalParcel.map(parcel -> parcel.getMission().getId()).orElse(-1L);
     }
 }

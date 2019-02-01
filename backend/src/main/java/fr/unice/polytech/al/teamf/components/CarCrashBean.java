@@ -56,26 +56,11 @@ public class CarCrashBean implements NotifyCarCrash {
     }
 
     boolean contactInsurance(User user) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-                .fromHttpUrl(String.format("%s/insurance/%s", insurance_url, user.getName()));
-        try {
-            ClientHttpResponse queryResponse = new RestTemplate().execute(uriComponentsBuilder.toUriString(),
-                    HttpMethod.GET,
-                    null,
-                    clientHttpResponse -> clientHttpResponse);
-            log.debug("contacting insurance with user " + user.getName());
-            if (queryResponse.getStatusCode().is2xxSuccessful()) {
-                return new ObjectMapper()
-                        .readTree(queryResponse.getBody())
-                        .get("insuranceInvolvement")
-                        .asBoolean();
-            }
-        } catch (ResourceAccessException | HttpClientErrorException e) {
-            log.error("Impossible to reach server.");
-            log.error(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String jsonContent = new ObjectMapper()
+                .createObjectNode()
+                .put("user", user.getName())
+                .toString();
+        rabbitTemplate.convertAndSend("insurance-exchange", "insurance.involvement", jsonContent);
         return false; // handle this properly
     }
 

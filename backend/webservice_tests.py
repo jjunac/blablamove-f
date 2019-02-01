@@ -202,13 +202,17 @@ step("Loic takes Thomas' package from Julien's house")
 assert_equals(True, request_webservice("http://" + args.host + ":8080/package", "takePackageFromHost",
                                        {"parcelId": thomasParcelId, "username": "Loic"}))
 
+loic_mission_id = request_webservice("http://" + args.host + ":8080/package", "getPackageMissionId",
+                            {"parcelId": thomasParcelId})
+assert_equals(True, loic_mission_id != -1)
+
 step("Thomas is notified that Loic took his package from Julien's house")
 assert_equals(1, len(request_webservice(notificationUrl, "pullNotificationForUser",
                                         {"username": "Thomas"})))
 
 step("Loic drops Jeremy's package to Jeremy's house")
 assert_equals(True, request_webservice("http://" + args.host +
-                                       ":8080/package", "missionFinished", {"mission": 24}))
+                                       ":8080/package", "missionFinished", {"mission": loic_mission_id}))
 
 step("Loic has been paid for his contribution")
 if args.skip_externals:

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@Transactional
 public class DriverFinderBean implements FindDriver, AnswerMission {
     RabbitTemplate rabbitTemplate;
     @Getter
@@ -49,10 +51,9 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
         if (username != null) {
             User newDriver = userRepository.findByName(username).get(0);
             Mission newMission = new Mission(newDriver, parcel.getOwner(), coordinate, arrival, parcel);
-            missionRepository.save(newMission);
             newDriver.addTransportedMission(newMission);
             parcel.setMission(newMission);
-            
+            newMission = missionRepository.save(newMission);
             Map<String, Serializable> parameters = new HashMap<>();
             parameters.put("missionId", newMission.getId());
             parameters.put("username", newDriver.getName());
