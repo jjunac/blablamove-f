@@ -56,12 +56,8 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
             Map<String, Serializable> parameters = new HashMap<>();
             parameters.put("missionId", newMission.getId());
             parameters.put("username", newDriver.getName());
-            notifier.sendNotification(newDriver, new Notification(newDriver, buildNewDriverMessage(
-                    currentDriver.getName(),
-                    parcel.getOwner().getName()),
-                            new Answer("/package", "answerToPendingMission", parameters)),
-                    rabbitTemplate);
-            
+            notifier.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()),
+                    new Answer("/package", "answerToPendingMission", parameters),rabbitTemplate);
             return newDriver;
         }
         
