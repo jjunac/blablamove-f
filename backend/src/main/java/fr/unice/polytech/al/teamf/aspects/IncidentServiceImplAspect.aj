@@ -16,11 +16,9 @@ public aspect IncidentServiceImplAspect {
 
     boolean around(String username, double latitude, double longitude)
             : callNotifyCarCrash(username, latitude, longitude) {
-        logger.info("##### YOLO");
-        return false;
-        /*if (ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed())
+        if (ChaosMonkey.getInstance().draw("notify_car_crash").hasFailed())
             return false;
-        return proceed(username, latitude, longitude);*/
+        return proceed(username, latitude, longitude);
     }
 
 }
