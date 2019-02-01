@@ -5,17 +5,15 @@ import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
-import fr.unice.polytech.al.teamf.message_listeners.MessageReceiver;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 
 import javax.transaction.Transactional;
 
+@Slf4j
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -114,44 +113,21 @@ public class Application implements CommandLineRunner {
         return BindingBuilder.bind(insuranceQueue()).to(insuranceExchange()).with("external.insurance.#");
     }
 
-    @Bean
-    SimpleMessageListenerContainer pointPricingContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
-        return getSimpleMessageListenerContainer(connectionFactory, pointPricingListenerAdapter(receiver), pointpricingQueueName);
+    @RabbitListener(queues = pointpricingQueueName)
+    public void listenPointPricing(String message){
+        log.info("point-pricing message : " + message);
     }
 
-    @Bean
-    SimpleMessageListenerContainer routeFindingContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
-        return getSimpleMessageListenerContainer(connectionFactory, routeFindingListenerAdapter(receiver), routefindingQueueName);
+    @RabbitListener(queues = routefindingQueueName)
+    public void listenRouteFinding(String message){
+        log.info("route-finding message : " + message);
     }
 
-    @Bean
-    SimpleMessageListenerContainer insuranceContainer(ConnectionFactory connectionFactory, MessageReceiver receiver) {
-        return getSimpleMessageListenerContainer(connectionFactory, insuranceListenerAdapter(receiver), insuranceQueueName);
+    @RabbitListener(queues = insuranceQueueName)
+    public void listenInsurance(String message){
+        log.info("insurance message : " + message);
     }
 
-    private SimpleMessageListenerContainer getSimpleMessageListenerContainer(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter, String queueName) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName);
-        container.setMessageListener(listenerAdapter);
-//        container.setChannelAwareMessageListener();
-        return container;
-    }
-
-    @Bean
-    MessageListenerAdapter pointPricingListenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receivePointPricingMessage");
-    }
-
-    @Bean
-    MessageListenerAdapter routeFindingListenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveRouteFindingMessage");
-    }
-
-    @Bean
-    MessageListenerAdapter insuranceListenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveInsuranceMessage");
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

@@ -38,7 +38,7 @@ public class AccountingBean implements ComputePoints {
                 .put("user", user.getName())
                 .put("points", nbPoints)
                 .toString();
-        rabbitTemplate.convertAndSend("point-pricing-exchange", "pointpricing.points", jsonContent);
+        rabbitTemplate.convertAndSend("point-pricing", jsonContent);
         return 0; // handle this properly
     }
     

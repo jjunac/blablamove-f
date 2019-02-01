@@ -4,7 +4,6 @@ import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
 import fr.unice.polytech.al.teamf.entities.User;
-import fr.unice.polytech.al.teamf.message_listeners.PointPricingMessageReceiver;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
@@ -21,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @ExtendWith(SpringExtension.class)
-@Import({TestConfig.class, PointPricingMessageReceiver.class, RestTemplate.class})
+@Import({TestConfig.class, RestTemplate.class})
 @TestPropertySource("/external_services_test.properties")
 @AutoConfigureWireMock(port = 5008)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

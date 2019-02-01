@@ -70,7 +70,7 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
                 .put("arrivalLatitude", arrival.getLatitude())
                 .put("arrivalLongitude", arrival.getLongitude())
                 .toString();
-        rabbitTemplate.convertAndSend("route-finder-exchange", "routefinder.finduser", jsonContent);
+        rabbitTemplate.convertAndSend("route-finder", jsonContent);
         return "Erick"; // TODO: 1/25/19 move logic to message reception
     }
 

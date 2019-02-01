@@ -62,7 +62,7 @@ public class Receiver implements CommandLineRunner {
                         .createObjectNode()
                         .put("driverName", name.toString())
                         .toString();
-                rabbitTemplate.convertAndSend(Application.topicExchangeName, "external.routefinder", jsonContent);
+                rabbitTemplate.convertAndSend("routefinding-receiving-exchange", "external.routefinder", jsonContent);
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
             log.error("Impossible to reach server.");
