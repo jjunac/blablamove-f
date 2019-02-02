@@ -83,11 +83,6 @@ public class Application implements CommandLineRunner {
         log.info("point-pricing message : " + message);
     }
 
-    @RabbitListener(queues = routefindingQueueName)
-    public void listenRouteFinding(String message){
-        log.info("route-finding message : " + message);
-    }
-
     @RabbitListener(queues = insuranceQueueName)
     public void listenInsurance(String message){
         log.info("insurance message : " + message);
@@ -132,5 +127,7 @@ public class Application implements CommandLineRunner {
         johann.addTransportedMission(thomasMission);
 
     }
+
+
 
 }
