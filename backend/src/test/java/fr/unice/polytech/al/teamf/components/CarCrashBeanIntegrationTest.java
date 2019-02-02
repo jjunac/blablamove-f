@@ -81,6 +81,13 @@ class CarCrashBeanIntegrationTest extends IntegrationTest {
         
         carCrash.notifyCrash(benjamin, gps);
 
+        // Wait for the asynchronous magic to happen.
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         assertThat(pullNotifications.pullNotificationForUser(philippe))
                 .asList()
                 .extracting("message")
