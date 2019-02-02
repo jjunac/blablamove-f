@@ -60,7 +60,7 @@ public class CarCrashBean implements NotifyCarCrash {
                 .createObjectNode()
                 .put("user", user.getName())
                 .toString();
-        rabbitTemplate.convertAndSend("insurance-exchange", "insurance.involvement", jsonContent);
+        rabbitTemplate.convertAndSend("insurance", jsonContent);
         return false; // handle this properly
     }
 

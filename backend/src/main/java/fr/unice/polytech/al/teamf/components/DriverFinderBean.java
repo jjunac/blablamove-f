@@ -8,8 +8,6 @@ import fr.unice.polytech.al.teamf.entities.*;
 import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +73,8 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
                 .put("arrivalLatitude", arrival.getLatitude())
                 .put("arrivalLongitude", arrival.getLongitude())
                 .toString();
-        rabbitTemplate.convertAndSend("route-finder-exchange", "routefinder.finduser", jsonContent);
-        return "Erick";
+        rabbitTemplate.convertAndSend("route-finder", jsonContent);
+        return "Erick"; // TODO: 1/25/19 move logic to message reception
     }
     
     @Override
