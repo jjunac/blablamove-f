@@ -60,7 +60,7 @@ public class Receiver implements CommandLineRunner {
                 log.debug(String.format("received: %s, from find_route name=%s", root, name));
                 String jsonContent = new ObjectMapper()
                         .createObjectNode()
-                        .put("driverName", name.toString())
+                        .put("driverName", name.asText())
                         .toString();
                 rabbitTemplate.convertAndSend("routefinding-receiving", jsonContent);
             }
