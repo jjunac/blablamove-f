@@ -8,13 +8,8 @@ import fr.unice.polytech.al.teamf.notifier.Notifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
@@ -40,6 +35,7 @@ public class CarCrashBean implements NotifyCarCrash {
      * @param user User transporting the packages
      */
     @Override
+    @Transactional
     public void notifyCrash(User user, GPSCoordinate coordinate) {
         log.trace("NotifyCarCrashBean.notifyCrash");
         contactInsurance(user);
@@ -61,7 +57,7 @@ public class CarCrashBean implements NotifyCarCrash {
                 .put("user", user.getName())
                 .toString();
         rabbitTemplate.convertAndSend("insurance", jsonContent);
-        return false; // handle this properly
+        return true; // handle this properly
     }
 
     static String buildMessage(String username) {

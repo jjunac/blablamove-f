@@ -9,22 +9,25 @@ import fr.unice.polytech.al.teamf.notifier.Notifier;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 @Slf4j
-@Component
 @Transactional
+@Component
 public class DriverFinderBean implements FindDriver, AnswerMission {
     RabbitTemplate rabbitTemplate;
     
@@ -36,21 +39,17 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
     MissionRepository missionRepository;
     @Autowired
     FindPackageHost findPackageHost;
-    private User currentDriver;
-    private Parcel parcel;
-    private GPSCoordinate departure;
-    private GPSCoordinate arrival;
+    
     public DriverFinderBean(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
     
+    private List<Function<String, Void>> functions = new ArrayList<>();
+    
     @Override
     public void findNewDriver(User currentDriver, Parcel parcel, GPSCoordinate departure, GPSCoordinate arrival) {
         log.trace("FindDriverBean.findNewDriver");
-        this.currentDriver = currentDriver;
-        this.parcel = parcel;
-        this.departure = departure;
-        this.arrival = arrival;
+        
         String jsonContent = new ObjectMapper()
                 .createObjectNode()
                 .put("departureLatitude", departure.getLatitude())
@@ -59,39 +58,47 @@ public class DriverFinderBean implements FindDriver, AnswerMission {
                 .put("arrivalLongitude", arrival.getLongitude())
                 .toString();
         rabbitTemplate.convertAndSend("route-finder", jsonContent);
-    }
-
-
-    @RabbitListener(queues = "routefinding-receiving")
-    public void listenRouteFinding(String message){
-        log.info("route-finding message : " + message);
+        Message message = rabbitTemplate.receive("routefinding-receiving",2000);
         try {
-            String username = new ObjectMapper().readTree(message).get("driverName").asText();
-            if (Stream.of(username, currentDriver, parcel, departure, arrival).allMatch(Objects::nonNull)) {
-                log.info(username + " answers to pending mission");
-                User newDriver = userRepository.findByName(username).get(0);
-                Mission newMission = new Mission(newDriver, parcel.getOwner(), departure, arrival, parcel);
-                newDriver.addTransportedMission(newMission);
+            String username = new ObjectMapper().readTree(message.getBody()).get("driverName").asText();
+            log.info(username + " found");
+            User newDriver = userRepository.findByName(username).get(0);
+            Mission newMission = new Mission(newDriver, parcel.getOwner(), departure, arrival, parcel);
+            newDriver.addTransportedMission(newMission);
             parcel.setMission(newMission);
             newMission = missionRepository.save(newMission);
-                Map<String, Serializable> parameters = new HashMap<>();
-                parameters.put("missionId", newMission.getId());
-                parameters.put("username", newDriver.getName());
-                notifier.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()),
-                        new Answer("/package", "answerToPendingMission", parameters),rabbitTemplate);
-            
+            Map<String, Serializable> parameters = new HashMap<>();
+            log.info("mission " + newMission.getId() + "parcel" + parcel.getId());
+            parameters.put("missionId", newMission.getId());
+            parameters.put("username", newDriver.getName());
+            notifier.notifyUserWithAnswer(newDriver, buildNewDriverMessage(currentDriver.getName(), parcel.getOwner().getName()),
+                    new Answer("/package", "answerToPendingMission", parameters), rabbitTemplate);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
         
-        findPackageHost.findHost(parcel);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
     }
     
-    
+//    @Transactional
+////    @RabbitListener(queues = "routefinding-receiving")
+//    public void listenRouteFinding(String message) {
+//        log.trace("FindDriverBean.listenRouteFinding");
+//        log.info("route-finding message : " + message);
+//        try {
+//            String username = new ObjectMapper().readTree(message).get("driverName").asText();
+////            Function<String, Void> func = functions.remove(0);
+////            func.apply(username);
+//
+//            //            findPackageHost.findHost(parcel);
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//        }
+//    }
     
     @Override
-    public boolean answerToPendingMission(Mission mission, User newDriver, boolean answer) {
+    public boolean answerToPendingMission(long missionId, String newDriverName, boolean answer) {
+        Mission mission = missionRepository.findById(missionId).get();
+        User newDriver = userRepository.findByName(newDriverName).get(0);
         if (answer) {
             notifier.notifyUser(mission.getOwner(), buildOwnerMessage(newDriver.getName()), rabbitTemplate);
             notifier.notifyUser(mission.getParcel().getKeeper(), buildCurrentDriverMessage(newDriver.getName(), mission.getOwner().getName()), rabbitTemplate);

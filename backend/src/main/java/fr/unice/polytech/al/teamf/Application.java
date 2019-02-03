@@ -40,25 +40,13 @@ public class Application implements CommandLineRunner {
 
     static final String insuranceQueueName = "insurance-receiving";
     static final String notificationsQueueName = "notifications";
-    static final String notificationsTopicExchangeName = "notifications-exchange";
 
     @Bean
     public Queue notificationsQueue() {
         return new Queue(notificationsQueueName);
     }
+    
 
-    @Bean
-    TopicExchange notificationsExchange() {
-        return new TopicExchange(notificationsTopicExchangeName);
-    }
-
-    @Bean
-    public Binding bindingNotification(TopicExchange notificationsExchange, Queue notificationsQueue) {
-        return BindingBuilder.bind(notificationsQueue).to(notificationsExchange).with("notifications.#");
-    }
-
-    static final String topicExchangeName = "external-exchange";
-    static final String externalSevicesQueue = "external";
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
