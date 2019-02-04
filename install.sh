@@ -5,7 +5,7 @@ source utils.sh
 
 parse_args $@
 
-for f in "chaos_monkey_java" "backend" "gateways"
+for f in "chaos_monkey_java" "backend" "gateways" "user-notifier"
 do
     echo $f
     if [ -f $f/install.sh ]; then

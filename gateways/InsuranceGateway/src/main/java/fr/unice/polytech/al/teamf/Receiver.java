@@ -55,7 +55,7 @@ public class Receiver implements CommandLineRunner {
                         .createObjectNode()
                         .put("insurance_involvement", result)
                         .toString();
-                rabbitTemplate.convertAndSend(Application.topicExchangeName, "external.insurance", jsonContent);
+                rabbitTemplate.convertAndSend("insurance-receiving", jsonContent);
             }
         } catch (ResourceAccessException | HttpClientErrorException e) {
             log.error("Impossible to reach insurance service.");

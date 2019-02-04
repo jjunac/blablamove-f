@@ -1,7 +1,6 @@
 package fr.unice.polytech.al.teamf;
 
 import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
-import fr.unice.polytech.al.teamf.components.MessageReceiver;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -9,13 +8,12 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 
 import javax.transaction.Transactional;
 
+@Slf4j
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -35,41 +34,46 @@ public class Application implements CommandLineRunner {
     @Autowired
     MissionRepository missionRepository;
 
-    static final String topicExchangeName = "external-exchange";
+    static final String pointpricingQueueName = "pointpricing-receiving";
 
-    static final String queueName = "external";
+    static final String routefindingQueueName = "routefinding-receiving";
+
+    static final String insuranceQueueName = "insurance-receiving";
+    static final String notificationsQueueName = "notifications";
+
+    @Bean
+    public Queue notificationsQueue() {
+        return new Queue(notificationsQueueName);
+    }
+    
+
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
 
     @Bean
-    Queue queue() {
-        return new Queue(queueName, false);
+    Queue pointPricingQueue() {
+        return new Queue(pointpricingQueueName, false);
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
+    Queue routeFindingQueue() {
+        return new Queue(routefindingQueueName, false);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("external.#");
+    Queue insuranceQueue() {
+        return new Queue(insuranceQueueName, false);
     }
 
-    @Bean
-    SimpleMessageListenerContainer pointPricingContainer(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter listenerAdapter) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName);
-        container.setMessageListener(listenerAdapter);
-        return container;
+    @RabbitListener(queues = pointpricingQueueName)
+    public void listenPointPricing(String message){
+        log.info("point-pricing message : " + message);
     }
 
-    @Bean
-    MessageListenerAdapter pointPricingListenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    @RabbitListener(queues = insuranceQueueName)
+    public void listenInsurance(String message){
+        log.info("insurance message : " + message);
     }
 
     public static void main(String[] args) {
@@ -79,7 +83,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings");
+        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings","localhost");
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);
@@ -111,5 +115,7 @@ public class Application implements CommandLineRunner {
         johann.addTransportedMission(thomasMission);
 
     }
+
+
 
 }

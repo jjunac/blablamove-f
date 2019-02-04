@@ -17,7 +17,6 @@ services:
       - "8080"
     ports:
       - "8080:8080"
-    stdin_open: true
   insurance:
     build: ./external/Insurance
     image: insurance
@@ -92,6 +91,16 @@ services:
       - "5672"
     ports:
       - "5672:5672"
+  user-notifier:
+    image: user-notifier
+    build: ./user-notifier
+    container_name: user-notifier
+    depends_on:
+      - "queue"
+    expose:
+      - "2501"
+    ports:
+      - "2501:2501"
   chaos_monkey:
     build: ./chaos_monkey
     image: chaos_monkey

@@ -14,23 +14,11 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Application {
 
-    static final String topicExchangeName = "route-finder-exchange";
-
     static final String queueName = "route-finder";
 
     @Bean
     Queue queue() {
         return new Queue(queueName, false);
-    }
-
-    @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
-    }
-
-    @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("routefinder.#");
     }
 
     @Bean

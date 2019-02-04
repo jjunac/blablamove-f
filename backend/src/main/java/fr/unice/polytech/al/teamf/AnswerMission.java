@@ -5,6 +5,6 @@ import fr.unice.polytech.al.teamf.entities.User;
 
 public interface AnswerMission {
 
-    boolean answerToPendingMission(Mission mission, User driver, boolean answer);
+    boolean answerToPendingMission(long missionId, String newDriverName, boolean answer);
 
 }

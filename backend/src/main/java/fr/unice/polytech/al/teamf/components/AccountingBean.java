@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AccountingBean implements ComputePoints {
-
-    @Value("${point_pricing_address}")
-    String point_pricing_url;
-
+    
     RabbitTemplate rabbitTemplate;
 
     public AccountingBean(RabbitTemplate rabbitTemplate) {
@@ -41,7 +38,7 @@ public class AccountingBean implements ComputePoints {
                 .put("user", user.getName())
                 .put("points", nbPoints)
                 .toString();
-        rabbitTemplate.convertAndSend("point-pricing-exchange", "pointpricing.points", jsonContent);
+        rabbitTemplate.convertAndSend("point-pricing", jsonContent);
         return 0; // handle this properly
     }
     

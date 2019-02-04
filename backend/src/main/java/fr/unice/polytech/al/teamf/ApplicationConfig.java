@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@PropertySource("/external_services.properties")
+@PropertySource("/blablamove.properties")
 public class ApplicationConfig implements WebMvcConfigurer {
 
     @Bean

@@ -8,8 +8,9 @@ import pprint
 rpc_id = 0
 
 server_address = "http://localhost:8080"
+notification_address = "http://localhost:2501"
 incident_url = f"{server_address}/incident"
-notification_url = f"{server_address}/notification"
+notification_url = f"{notification_address}/notification"
 package_url = f"{server_address}/package"
 
 missions = []
@@ -108,8 +109,6 @@ def wait_notifications(*args):
                 sleep(2)
             else:
                 for notif in res:
-                    # plyer.notification.notify(
-                    #     title="yolo", message=notif['message'])
                     print(f"You received: {notif['message']}")
         except Exception as e:
             print(e)
