@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source utils.sh
+source ../utils.sh
 
 parse_args $@
 
