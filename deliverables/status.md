@@ -1,5 +1,19 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 6 
+
+:vertical_traffic_light: **Green** 
+
+ - Programmation par aspect terminée et connectée au Chaos Monkey
+ - Ajout des nouvelles queues pour les callbacks des gateways terminée
+ - Tests d'intégration réparés avec le nouveau notifieur
+
+### Prévisions semaine 7
+
+- Réflexion sur les paramètres intéressants à intégrer au Chaos Monkey
+- Ajout de ces paramètres au Chaos Monkey
+- Mise en place de monitoring pour observer l'impact du Chaos Monkey
+
 ## _Status_ semaine 5 
 
 :vertical_traffic_light: **Green** 
