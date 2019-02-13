@@ -1,5 +1,16 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 7 
+
+:vertical_traffic_light: **Green** 
+
+ - Les gateways sont connectées au Chaos Monkey (des soucis concernant le build des aspects ont freiné notre progression)
+
+### Prévisions semaine 8
+
+- Mise en place de monitoring pour observer l'impact du Chaos Monkey
+- Rélexion sur l'intégration du Chaos Monkey dans le monolithe
+
 ## _Status_ semaine 6 
 
 :vertical_traffic_light: **Green** 
