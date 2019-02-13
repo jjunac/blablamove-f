@@ -5,7 +5,7 @@ import fr.unice.polytech.al.teamf.chaosmonkey.ChaosMonkey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PointPrincingGatewayAspect {
+public aspect PointPrincingGatewayAspect {
 
     private final Logger logger = LoggerFactory.getLogger(Receiver.class);
 
@@ -17,7 +17,7 @@ public class PointPrincingGatewayAspect {
     void around(String message)
             : receive(message) {
         if (ChaosMonkey.getInstance().draw("point_pricing").hasFailed()){
-            log.info("The chaos monkey cut the connection to the point pricing service");
+            logger.info("The chaos monkey cut the connection to the point pricing service");
         } else {
             proceed(message);
         }
