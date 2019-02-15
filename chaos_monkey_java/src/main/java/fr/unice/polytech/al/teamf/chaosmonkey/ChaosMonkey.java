@@ -24,21 +24,22 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 public class ChaosMonkey {
-    
+
     private static final ChaosMonkey INSTANCE = new ChaosMonkey();
     private static final Logger log = LoggerFactory.getLogger(ChaosMonkey.class);
-    
+
     private boolean initialized = false;
     private Map<String, Double> settings;
-    
+    private Channel logChannel;
+
     private ChaosMonkey() {
         settings = new HashMap<>();
     }
-    
+
     public static ChaosMonkey getInstance() {
         return INSTANCE;
     }
-    
+
     public void initialize(String chaosMonkeyUrl, String queueUrl) throws ConnectionException {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(chaosMonkeyUrl);
@@ -54,19 +55,22 @@ public class ChaosMonkey {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        
+
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(queueUrl);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            
+
             channel.exchangeDeclare("submit_chaos_settings", "fanout");
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, "submit_chaos_settings", "");
-            
+
+            logChannel = connection.createChannel();
+            channel.exchangeDeclare("chaos_logs_exchange", "fanout");
+
             log.info("Listening 'submit_chaos_settings' messages...");
-            
+
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
                 JSONParser jsonParser = new JSONParser();
@@ -78,7 +82,7 @@ public class ChaosMonkey {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                
+
             };
             channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
             });
@@ -87,17 +91,17 @@ public class ChaosMonkey {
         }
         initialized = true;
     }
-    
+
     public double getSetting(String name) {
         if (!initialized) {
             throw new IllegalStateException("Chaos Monkey framework has not been initialized.");
         }
         return settings.get(name);
     }
-    
+
     public Draw draw(String setting) {
-        return new Draw(getSetting(setting), setting);
+        return new Draw(getSetting(setting), setting, logChannel);
     }
-    
-    
+
+
 }

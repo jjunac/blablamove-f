@@ -1,6 +1,9 @@
 package fr.unice.polytech.al.teamf.chaosmonkey;
 
+import java.io.IOException;
 import java.util.Random;
+
+import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +14,17 @@ public class Draw {
     public final double failProbability;
     public final double draw;
 
-    public Draw(double failProbability, String setting) {
+
+    public Draw(double failProbability, String setting, Channel logChannel) {
+        String message = setting;
+        try {
+            logChannel.basicPublish("chaos_logs_exchange", "", null, message.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.failProbability = failProbability;
         this.draw = new Random().nextDouble();
-        if(hasSucceeded()) {
+        if (hasSucceeded()) {
             log.info("You are lucky this time, normal behavior for " + setting);
         } else {
             log.info("IT'S CHAOS TIME !!! " + setting + "failed !");
