@@ -13,7 +13,7 @@ channel.exchange_declare(exchange='chaos_logs_exchange', exchange_type='fanout')
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue
 
-channel.queue_bind(exchange='logs',
+channel.queue_bind(exchange='chaos_logs_exchange',
                    queue=queue_name)
 
 
