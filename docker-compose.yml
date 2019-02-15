@@ -113,6 +113,18 @@ services:
     stdin_open: true
     depends_on:
       - "queue"
+  monitoring_service:
+      build: ./monitoring_service
+      image: monitoring_service
+      restart: unless-stopped
+      container_name: monitoring_service
+      expose:
+        - "5009"
+      ports:
+        - "5009:5009"
+      stdin_open: true
+      depends_on:
+        - "queue"
   database:
     image: 1000kit/h2
     stdin_open: true
