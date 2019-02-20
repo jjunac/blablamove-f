@@ -86,10 +86,11 @@ public class ChaosMonkey {
             };
             channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
             });
+            initialized = true;
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
+            
         }
-        initialized = true;
     }
 
     public double getSetting(String name) {

@@ -19,7 +19,6 @@ public class Draw {
     public Draw(double failProbability, String setting, Channel logChannel) {
         String message = setting;
         try {
-            System.out.println(setting+" "+logChannel);
             logChannel.basicPublish("chaos_logs_exchange", "", null, message.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();

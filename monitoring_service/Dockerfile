@@ -1,6 +1,5 @@
-FROM tiangolo/uwsgi-nginx-flask:python3.7
-ENV LISTEN_PORT 5009
-EXPOSE 5009
-COPY . /app/
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python", "/app/main.py"]
+FROM python:3.7.2-stretch
+WORKDIR /app
+COPY . .
+RUN pip3 install pika==0.12.0
+ENTRYPOINT ["python", "main.py"]

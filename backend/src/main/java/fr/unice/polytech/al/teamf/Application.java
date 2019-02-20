@@ -50,7 +50,7 @@ public class Application implements CommandLineRunner {
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
 
-    @Value("spring.rabbitmq.host")
+    @Value("${spring.rabbitmq.host}")
     public String rabbitmq_host;
 
 
@@ -86,6 +86,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
+        log.info("rabbitmq address "+rabbitmq_host);
         ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings", rabbitmq_host);
 
         User thomas = new User("Thomas");
