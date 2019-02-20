@@ -45,11 +45,14 @@ public class Application implements CommandLineRunner {
     public Queue notificationsQueue() {
         return new Queue(notificationsQueueName);
     }
-    
 
 
     @Value("${chaos_monkey_address}")
     public String chaos_monkey_url;
+
+    @Value("spring.rabbitmq.host")
+    public String rabbitmq_host;
+
 
     @Bean
     Queue pointPricingQueue() {
@@ -67,12 +70,12 @@ public class Application implements CommandLineRunner {
     }
 
     @RabbitListener(queues = pointpricingQueueName)
-    public void listenPointPricing(String message){
+    public void listenPointPricing(String message) {
         log.info("point-pricing message : " + message);
     }
 
     @RabbitListener(queues = insuranceQueueName)
-    public void listenInsurance(String message){
+    public void listenInsurance(String message) {
         log.info("insurance message : " + message);
     }
 
@@ -83,7 +86,7 @@ public class Application implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... arg0) throws Exception {
-        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings","localhost");
+        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings", rabbitmq_host);
 
         User thomas = new User("Thomas");
         userRepository.save(thomas);
@@ -115,7 +118,6 @@ public class Application implements CommandLineRunner {
         johann.addTransportedMission(thomasMission);
 
     }
-
 
 
 }

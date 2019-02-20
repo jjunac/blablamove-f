@@ -1,6 +1,7 @@
 package fr.unice.polytech.al.teamf.chaosmonkey;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import com.rabbitmq.client.Channel;
@@ -18,7 +19,8 @@ public class Draw {
     public Draw(double failProbability, String setting, Channel logChannel) {
         String message = setting;
         try {
-            logChannel.basicPublish("chaos_logs_exchange", "", null, message.getBytes());
+            System.out.println(setting+" "+logChannel);
+            logChannel.basicPublish("chaos_logs_exchange", "", null, message.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }

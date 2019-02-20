@@ -122,7 +122,6 @@ services:
         - "5009"
       ports:
         - "5009:5009"
-      stdin_open: true
       depends_on:
         - "queue"
   database:
