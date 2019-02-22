@@ -1,4 +1,5 @@
 import pika
+from time import strftime, gmtime
 
 if __name__ == '__main__':
     print("Connecting to rabbimq")
@@ -13,7 +14,7 @@ if __name__ == '__main__':
 
 
     def callback(ch, method, properties, body):
-        print(f"[x] {body}")
+        print(f"{strftime('%Y-%m-%d %H:%M:%S', gmtime())} {body.decode('utf-8')}")
 
 
     channel.basic_consume(callback,

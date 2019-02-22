@@ -88,8 +88,7 @@ public class ChaosMonkey {
             });
             initialized = true;
         } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
-            
+            throw new ConnectionException(e);
         }
     }
 
