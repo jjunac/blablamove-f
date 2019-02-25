@@ -89,7 +89,6 @@ public class Application implements CommandLineRunner {
     @Transactional
     public void run(String... arg0) throws Exception {
         log.info("rabbitmq address " + rabbitmq_host);
-        ChaosMonkey.getInstance().initialize(chaos_monkey_url + "/settings", rabbitmq_host);
         
         User thomas = new User("Thomas");
         userRepository.save(thomas);
