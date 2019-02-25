@@ -24,11 +24,6 @@ settings = parse_properties("settings.properties")
 app.logger.info("Loaded settings: " + str(settings))
 app.logger.info("%d settings loaded" % len(settings))
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='queue'))
-submit_channel = connection.channel()
-
-submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
-
 
 #######################
 ### R O U T E S
@@ -47,6 +42,10 @@ def route_settings():
         return jsonify(settings)
     else:
         try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host='queue'))
+            submit_channel = connection.channel()
+
+            submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
             submit_channel.basic_publish(exchange='submit_chaos_settings',
                                 routing_key='',
                                 body=json.dumps(request.form))
