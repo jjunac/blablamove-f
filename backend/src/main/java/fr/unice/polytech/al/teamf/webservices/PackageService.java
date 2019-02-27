@@ -24,4 +24,5 @@ public interface PackageService {
 
     boolean takePackageFromHost(@JsonRpcParam(value = "parcelId") long parcelId,
                            @JsonRpcParam(value = "username") String username);
+    long getPackageMissionId(@JsonRpcParam(value = "parcelId") long parcelId);
 }

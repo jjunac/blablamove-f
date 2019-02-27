@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+  <title>Chaos Monkey settings</title>
+</head>
+
+<body>
+  <div>
+    <div class="jumbotron jumbotron-fluid banner">
+    </div>
+  </div>
+  <div class="container">
+    <h1 class="display-4 text-center title">CHAOS MONKEY SETTINGS</h1>
+    {% if "status" in args %}
+    {% if args["status"] == "success" %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Settings pushed successfully.</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% elif args["status"] == "fail" %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Cannot push settings: {% if args["error"] %}</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
+    {% endif %}
+    <form action="/settings" method="post">
+      <table class="table table-striped settings">
+        <thead>
+          <tr>
+            <th scope="col">Setting name</th>
+            <th scope="col">Current fail probability</th>
+            <th scope="col">Desired fail probability</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for setting, probability in settings.items() %}
+          <tr>
+            <th scope="row">{{setting}}</th>
+            <td>{{probability}}</td>
+            <td><input type="text" name="{{setting}}" value="{{probability}}" class="form-control"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </form>
+    </table>
+    <div class="text-center">
+      <button type="submit" class="btn btn-danger col-5 impact mess-up"><span>🙈 Mess up ! 🙈</span></button>
+    </div>
+    </form>
+
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,7 +1,5 @@
 package fr.unice.polytech.al.teamf;
 
-import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-import fr.unice.polytech.al.teamf.components.DriverFinderBean;
 import fr.unice.polytech.al.teamf.entities.GPSCoordinate;
 import fr.unice.polytech.al.teamf.entities.Mission;
 import fr.unice.polytech.al.teamf.entities.Parcel;
@@ -9,13 +7,23 @@ import fr.unice.polytech.al.teamf.entities.User;
 import fr.unice.polytech.al.teamf.repositories.MissionRepository;
 import fr.unice.polytech.al.teamf.repositories.ParcelRepository;
 import fr.unice.polytech.al.teamf.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+@ExtendWith(SpringExtension.class)
+@Import({TestConfig.class, RestTemplate.class})
+@TestPropertySource("/external_services_test.properties")
+@AutoConfigureWireMock(port = 5008)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class IntegrationTest {
     
     @Autowired
@@ -24,21 +32,15 @@ public abstract class IntegrationTest {
     protected ParcelRepository parcelRepository;
     @Autowired
     protected MissionRepository missionRepository;
-    
-    
-    public static void setupDriverFinder(DriverFinderBean driverFinder) {
-        driverFinder.setRouteFinderUrl("http://localhost:5000");
-        
-        Map<String, StringValuePattern> params = new HashMap<>();
-        StringValuePattern number = matching("[+-]?([0-9]*[.])?[0-9]+");
-        params.put("start_lat", number);
-        params.put("start_long", number);
-        params.put("end_lat", number);
-        params.put("end_long", number);
-        stubFor(get(urlPathEqualTo("/find_driver")).withQueryParams(params).willReturn(aResponse()
-                .withBody("{\"drivers\":[{\"name\":\"Erick\"}]}").withStatus(200)));
+    @Autowired
+    protected Application application;
+
+    @BeforeAll
+    protected void setUp(){
+        stubFor(get(urlPathEqualTo("/settings")).willReturn(aResponse()
+                .withBody("{\"notify_car_crash\":\"0.2\",\"notify_package_hosting\":\"0\"}").withStatus(200)));
     }
-    
+
     public User createAndSaveUser(String name) {
         User user = new User(name);
         userRepository.save(user);
@@ -61,5 +63,7 @@ public abstract class IntegrationTest {
         missionRepository.save(mission);
         return mission;
     }
+
+
     
 }
