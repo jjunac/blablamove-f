@@ -1,5 +1,13 @@
 # _BlablaMove_ - Équipe F
 
+## _Status_ semaine 9 
+
+:vertical_traffic_light: **Green** 
+
+ - Préparation de la soutenance
+ - Tournage et montage de la vidéo
+ - Finalisation du code : correction d'un souci de connexion sur le Chaos Monkey
+
 ## _Status_ semaine 7 
 
 :vertical_traffic_light: **Green** 
