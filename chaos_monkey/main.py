@@ -9,9 +9,7 @@ from utils import parse_properties
 
 app = Flask(__name__)
 
-
 time.sleep(7)
-
 
 #######################
 ### S E T U P
@@ -47,8 +45,8 @@ def route_settings():
 
             submit_channel.exchange_declare(exchange='submit_chaos_settings', exchange_type='fanout')
             submit_channel.basic_publish(exchange='submit_chaos_settings',
-                                routing_key='',
-                                body=json.dumps(request.form))
+                                         routing_key='',
+                                         body=json.dumps(request.form))
             settings = request.form
             print("Sending new settings to the nodes")
             return redirect("/?status=success")

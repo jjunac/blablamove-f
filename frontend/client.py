@@ -1,9 +1,7 @@
+import argparse
 import threading
 from time import sleep
 import requests
-from argparse import ArgumentParser
-# import plyer
-import pprint
 
 rpc_id = 0
 
@@ -143,6 +141,9 @@ commands = {"help": help, "exit": quit, "notify_car_crash": notify_car_crash,
             "wait_notifications": wait_notifications, "take_package": take_package, "drop_package": drop_package,
             "mission_finished": mission_finished, "missions": list_missions,
             "take_package_from_host": take_package_from_host}
+parser = argparse.ArgumentParser()
+parser.add_argument("--pause", type=int, default=0, const=5, nargs="?")
+args = parser.parse_args()
 
 username = input("What is your username: ")
 while True:
@@ -153,5 +154,7 @@ while True:
             print("Command does not exist, type help to have the list of commands")
         else:
             commands[command](*line[1:])
+        if args.pause != 0:
+            sleep(args.pause)
     except EOFError:
         exit(0)
