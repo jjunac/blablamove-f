@@ -9,6 +9,8 @@ parser.add_argument("--skip-externals",
                     help="skip external service tests", action="store_true")
 parser.add_argument(
     "--host", help="Specify host. Default: localhost", type=str, default="localhost")
+parser.add_argument(
+    "--pause", help="Wait user input between each step", action="store_true")
 args = parser.parse_args()
 
 DEFAULT = "\033[00m"
@@ -45,7 +47,10 @@ def print_color(text, color): print(color, text, DEFAULT)
 
 
 def step(title):
-    time.sleep(1)
+    if args.pause:
+        input("Press Enter to continue...")
+    else:
+        time.sleep(1)
     print_color("#=== %s ===#" % title, BLUE)
 
 

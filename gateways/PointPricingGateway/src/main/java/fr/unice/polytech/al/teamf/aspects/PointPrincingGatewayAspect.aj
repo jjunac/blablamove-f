@@ -18,6 +18,7 @@ public aspect PointPrincingGatewayAspect {
             : receive(message) {
         if (ChaosMonkey.getInstance().draw("point_pricing").hasFailed()){
             logger.info("The chaos monkey cut the connection to the point pricing service");
+            throw new RuntimeException("Chaos Monkey");
         } else {
             proceed(message);
         }

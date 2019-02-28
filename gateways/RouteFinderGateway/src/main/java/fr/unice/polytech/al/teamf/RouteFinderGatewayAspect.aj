@@ -17,7 +17,7 @@ public aspect RouteFinderGatewayAspect {
             : callRouteFinderReceiveMessage(message) {
         if (ChaosMonkey.getInstance().draw("route_finder_gateway").hasFailed()) {
             logger.info("The chaos monkey told me to crash \uD83D\uDE22");
-            return;
+            throw new RuntimeException("Chaos Monkey");
         }
         proceed(message);
         return ;

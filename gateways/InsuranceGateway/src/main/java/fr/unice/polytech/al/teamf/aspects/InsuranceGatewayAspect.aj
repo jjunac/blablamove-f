@@ -19,6 +19,7 @@ public aspect InsuranceGatewayAspect {
             proceed(message);
         } else {
             logger.info("Request to Insurance Gateway failed due to Chaos Monkey");
+            throw new RuntimeException("Chaos Monkey");
         }
     }
 }
